@@ -1,0 +1,22 @@
+{#
+/**
+ * @file cloud_alert.html.twig
+ * Default theme implementation to present CloudAlert data.
+ *
+ * This template is used when viewing a cloud_alert entity's page,
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_cloud_alert()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('cloud_alert') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>

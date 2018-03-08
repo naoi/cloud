@@ -1,0 +1,12 @@
+cloud.cloud_context.*:
+  type: config_entity
+  label: 'CloudContext config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string

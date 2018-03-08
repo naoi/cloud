@@ -1,0 +1,22 @@
+# Cloud Cluster routing definition
+
+cloud_cluster.settings_tab:
+  route_name: cloud_cluster.settings
+  title: 'Settings'
+  base_route: cloud_cluster.settings
+
+entity.cloud_cluster.canonical:
+  route_name: entity.cloud_cluster.canonical
+  base_route: entity.cloud_cluster.canonical
+  title: 'View'
+
+entity.cloud_cluster.edit_form:
+  route_name: entity.cloud_cluster.edit_form
+  base_route: entity.cloud_cluster.canonical
+  title: Edit
+
+entity.cloud_cluster.delete_form:
+  route_name: entity.cloud_cluster.delete_form
+  base_route: entity.cloud_cluster.canonical
+  title: Delete
+

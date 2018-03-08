@@ -1,0 +1,9 @@
+# MENU_NORMAL_ITEM
+cloud.service_providers.menu:
+  title: 'Cloud Service Providers'
+  route_name: 'cloud.service_providers'
+
+# MENU_NORMAL_ITEM
+cloud.design.menu:
+  title: 'Design'
+  route_name: 'cloud.design'

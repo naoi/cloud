@@ -1,0 +1,4 @@
+entity.cloud_pricing.collection:
+  title: 'Cloud Pricing Configuration'
+  route_name: entity.cloud_pricing.collection
+  base_route: entity.cloud_pricing.collection

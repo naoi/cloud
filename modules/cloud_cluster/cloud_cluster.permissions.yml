@@ -1,0 +1,21 @@
+# created by yas 2016/05/25
+
+add cloud cluster:
+  title: 'Add cluster'
+  description: 'Allow to add server cluster'
+
+list cloud cluster:
+  title: 'List cluster'
+  description: 'Allow access to list server cluster'
+
+view cloud cluster:
+  title: 'View cluster'
+  description: 'Allow access to view server cluster'
+
+edit cloud cluster:
+  title: 'Edit cluster'
+  description: 'Allow to edit server cluster'
+
+delete cloud cluster:
+  title: 'Delete cluster'
+  description: 'Allow to delete server cluster'

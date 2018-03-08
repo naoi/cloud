@@ -1,0 +1,14 @@
+entity.cloud_cluster.add_form:
+  route_name: entity.cloud_cluster.add_form
+  title: 'Add Cloud Cluster'
+  appears_on:
+    - entity.cloud_cluster.collection
+    - entity.cloud_cluster.canonical
+
+entity.cloud_cluster.collection:
+  route_name: entity.cloud_cluster.collection
+  title: 'List Cloud Cluster'
+  appears_on:
+    - entity.cloud_cluster.add_form
+    - entity.cloud_cluster.edit_form
+    - entity.cloud_cluster.delete_form

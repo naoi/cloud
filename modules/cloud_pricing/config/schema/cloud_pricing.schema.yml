@@ -1,0 +1,31 @@
+cloud_pricing.cloud.*:
+  type: config_entity
+  label: 'Cloud Pricing Information Config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    cloud_context:
+      type: string
+      label: 'Cloud Context'
+    instance_type:
+      type: string
+      label: 'Instance Type'
+    description:
+      type: string
+      label: 'Description'
+    linux_usage:
+      type: float
+      label: 'Linux Usage'
+    windows_usage:
+      type: float
+      label: 'Windows Usage'
+    created:
+      type: integer
+      label: 'Date Created'
+    changed:
+      type: integer
+      label: 'Date Updated'
+    uuid:
+      type: string
+      label: 'UUID'

@@ -1,0 +1,22 @@
+# updated by yas 2016/05/25
+# updated by yas 2016/05/23
+
+add cloud server template:
+  title: 'Add server template'
+  description: 'Allow to add server template'
+
+list cloud server template:
+  title: 'List server template'
+  description: 'Allow access to list server template'
+
+view cloud server template:
+  title: 'View server template'
+  description: 'Allow access to view server template'
+
+edit cloud server template:
+  title: 'Edit server template'
+  description: 'Allow to edit server template'
+
+delete cloud server template:
+  title: 'Delete server template'
+  description: 'Allow to delete server template'

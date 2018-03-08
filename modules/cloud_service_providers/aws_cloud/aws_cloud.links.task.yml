@@ -1,0 +1,87 @@
+# Updated by yas 2016/06/23
+# Created by yas 2016/06/20
+
+aws_cloud.settings.cloud_context.list:
+  title: 'AWS Cloud List'
+  route_name: 'entity.cloud_context.collection'
+  base_route: 'aws_cloud.settings'  # this should be 'base_route', not 'parent'
+  description: 'Configure AWS Cloud.'
+  weight: -1
+
+aws_cloud.settings:
+  title: 'AWS Cloud Settings'
+  route_name: 'aws_cloud.settings'
+  base_route: 'aws_cloud.settings'
+  description: 'Configure AWS Cloud.'
+  weight: 1
+
+aws_cloud.local_tasks.cloud_context.list_all:
+  title: 'All'
+  route_name: 'cloud.service_providers'
+  base_route: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: -1
+
+# @TODO: Needs to be organized.
+aws_cloud.local_tasks.cloud_context:
+  deriver: 'Drupal\aws_cloud\Plugin\Derivative\AwsCloudLocalTasks'
+# # route_name: 'entity.aws_cloud_instance.collection'
+# # class: 'Drupal\aws_cloud\Plugin\Menu\AwsCloudTab'
+  weight: 10
+
+aws_cloud.local_tasks.instance:
+  title: 'Instances'
+  route_name: 'entity.aws_cloud_instance.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+aws_cloud.local_tasks.image:
+  title: 'Images'
+  route_name: 'entity.aws_cloud_image.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+aws_cloud.local_tasks.security_group:
+  title: 'Security Groups'
+  route_name: 'entity.aws_cloud_security_group.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+aws_cloud.local_tasks.elastic_ip:
+  title: 'Elastic IPs'
+  route_name: 'entity.aws_cloud_elastic_ip.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+aws_cloud.local_tasks.network_interface:
+  title: 'Network Interfaces'
+  route_name: 'entity.aws_cloud_network_interface.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+aws_cloud.local_tasks.key_pair:
+  title: 'Key Pairs'
+  route_name: 'entity.aws_cloud_key_pair.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+
+aws_cloud.local_tasks.volume:
+  title: 'Volumes'
+  route_name: 'entity.aws_cloud_volume.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+
+aws_cloud.local_tasks.snapshot:
+  title: 'Snapshots'
+  route_name: 'entity.aws_cloud_snapshot.collection'
+  base_route: 'aws_cloud.local_tasks.cloud_context'
+# parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
+  weight: 10
+

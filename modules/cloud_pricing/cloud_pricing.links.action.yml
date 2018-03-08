@@ -1,0 +1,13 @@
+entity.cloud_pricing.add_form:
+  route_name: 'entity.cloud_pricing.add_form'
+  title: 'Add Pricing Information'
+  appears_on:
+    - entity.cloud_pricing.collection
+
+entity.cloud_pricing.collection:
+  route_name: entity.cloud_pricing.collection
+  title: 'List Pricing Information'
+  appears_on:
+    - entity.cloud_pricing.add_form
+    - entity.cloud_pricing.edit_form
+    - entity.cloud_pricing.delete_form

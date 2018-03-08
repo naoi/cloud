@@ -1,0 +1,9 @@
+name: Cloud Pricing
+description: 'Get a pricing details of instances.'
+package: Cloud
+dependencies:
+  - cloud
+core: 8.x
+version: 8.x-1.x
+project: cloud
+type: module

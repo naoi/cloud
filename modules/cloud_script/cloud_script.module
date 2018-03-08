@@ -1,0 +1,186 @@
+<?php
+
+/**
+ * @file
+ * Provides scripting feature such as bash, Perl and etc (Mainly bash scripts).
+ * Works with Cloud and Server Templates module.
+ *
+ */
+
+\Drupal::moduleHandler()->loadInclude('cloud'          , 'inc', 'cloud.constants'            );
+\Drupal::moduleHandler()->loadInclude('cloud_script', 'inc', 'cloud_script.constants'  );
+\Drupal::moduleHandler()->loadInclude('cloud_script', 'inc', 'cloud_script'            );
+\Drupal::moduleHandler()->loadInclude('cloud_script', 'inc', 'cloud_script.db'         );
+\Drupal::moduleHandler()->loadInclude('cloud_script', 'inc', 'cloud_script.exec.helper');
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function cloud_script_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the cloud_server_templates module.
+    case 'help.page.cloud_server_templates':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Cloud Server Templates') . '</p>';
+      $output = '<p>' . t('The cloud_script module creates a user interface for users to manage automated script. Users can create automated scripts.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+/*
+function cloud_script_menu() {
+  $items = array();
+  $items['design/scripting/list'] = array(
+    'title' => 'Scripting',
+    'description' => 'List of all scripts',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_script_list'),
+    'weight' => -1,
+    'access arguments' => array('list scripts'),
+    'file' => '',
+  );
+  $items['design/scripting/create'] = array(
+    'title' => 'Add/Edit Script',
+    'description' => 'Add/Edit Script',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_script_create'),
+    'access arguments' => array('create script'),
+    'file' => '',
+    'type' => MENU_CALLBACK,
+  );
+  $items['design/scripting/%/edit'] = array(
+    'title' => 'Add/Edit Script',
+    'description' => 'Add/Edit Script',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_script_create', 2),
+    'access arguments' => array('create script'),
+    'file' => '',
+    'type' => MENU_CALLBACK,
+  );
+  $items['design/scripting/getdata'] = array(
+    'title' => 'Scripting Get data',
+    'page callback' => '_cloud_script_getdata',
+    'page arguments' => array('cloud_script'),
+    'access arguments' => array('list scripts'),
+    'file' => '',
+    'type' => MENU_CALLBACK,
+  );
+  $items['design/scripting/describe/%'] = array(
+    'title' => 'Script Info',
+    'description' => 'Script Info',
+    'access arguments' => array('list scripts'),
+    'file' => '',
+    'type' => MENU_CALLBACK,
+  );
+  $items['design/scripting/describe/%/info'] = array(
+    'title' => 'Info',
+    'description' => 'Info',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_script_desc_info', 3),
+    'access arguments' => array('view script'),
+    'file' => '',
+    'weight' => 1,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['design/scripting/%/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'cloud_script_delete',
+    'page arguments' => array(2),
+    'access arguments' => array('delete script'),
+    'file' => '',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+*/
+
+/**
+ * Implements hook_permission().
+ */
+/*
+function cloud_script_permission() {
+
+  return array(
+    'create script' => array(
+      'title' => t('create script'),
+      'description' => t('TODO Add a description for \'create script\''),
+    ),
+    'view script' => array(
+      'title' => t('view script'),
+      'description' => t('TODO Add a description for \'view script\''),
+    ),
+    'list scripts' => array(
+      'title' => t('list scripts'  ),
+      'description' => t('TODO Add a description for \'list scripts\''),
+    ),
+    'edit script' => array(
+      'title' => t('edit script'),
+      'description' => t('TODO Add a description for \'edit script\''),
+    ),
+    'delete script' => array(
+      'title' => t('delete script'),
+      'description' => t('TODO Add a description for \'delete script\''),
+    ),
+  );
+}
+*/
+
+/**
+ * Implements hook_theme().
+ */
+/*
+function cloud_script_theme() {
+
+  return array(
+    'cloud_script_list' => array(
+      'render element' => 'form',
+      'file' => 'cloud_script.inc',
+    ),
+    'cloud_script_desc_info' => array(
+      'render element' => 'form',
+      'file' => 'cloud_script.inc',
+    ),
+    'cloud_script_desc_script' => array(
+      'render element' => 'form',
+      'file' => 'cloud_script.inc',
+    ),
+    'cloud_script_create' => array(
+      'render element' => 'form',
+      'file' => 'cloud_script.inc',
+    ),
+  );
+}
+*/
+
+/**
+ * Implements hook_cron().
+ */
+/*
+function cloud_script_cron() {
+  $cloud_list = cloud_get_all_clouds();
+  foreach ($cloud_list as $cloud_context) {
+    _cloud_script_exec_script_on_instances($cloud_context);
+  }
+}
+*/
+
+/**
+ *
+ * @param type $cloud_context
+ * @param type $op
+ * @param type $params
+ * @return type
+ */
+/*
+function _cloud_script_under_progress_scripts_for_instance($params) {
+  return _cloud_script_under_progress_scripts_for_instance_db($params);
+}
+*/

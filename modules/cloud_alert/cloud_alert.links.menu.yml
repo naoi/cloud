@@ -1,0 +1,12 @@
+# # CloudAlert menu items definition
+# entity.cloud_alert.collection:
+#   title: 'CloudAlert: Listing'
+#   route_name: entity.cloud_alert.collection
+#   description: 'List CloudAlert'
+# 
+# cloud_alert.admin.structure.settings:
+#   title: CloudAlert Settings
+#   description: 'Configure CloudAlert entity'
+#   route_name:  cloud_alert.settings
+#   parent: system.admin_structure
+# 

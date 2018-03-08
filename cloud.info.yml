@@ -1,0 +1,11 @@
+name: Cloud
+type: module
+description: Allows users to manage Clouds.
+package: Cloud
+
+version : 8.x-1.x
+core : 8.x
+project : cloud
+
+scripts:
+  - js/cloud.js

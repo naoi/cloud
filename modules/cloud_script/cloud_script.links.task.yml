@@ -1,0 +1,21 @@
+# CloudScript routing definition
+cloud_script.settings_tab:
+  route_name: cloud_script.settings
+  title: 'Settings'
+  base_route: cloud_script.settings
+
+entity.cloud_script.canonical:
+  route_name: entity.cloud_script.canonical
+  base_route: entity.cloud_script.canonical
+  title: 'View'
+
+entity.cloud_script.edit_form:
+  route_name: entity.cloud_script.edit_form
+  base_route: entity.cloud_script.canonical
+  title: Edit
+
+entity.cloud_script.delete_form:
+  route_name:  entity.cloud_script.delete_form
+  base_route:  entity.cloud_script.canonical
+  title: Delete
+

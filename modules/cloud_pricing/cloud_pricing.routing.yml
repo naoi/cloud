@@ -1,0 +1,130 @@
+# MENU_LOCAL_TASK
+# cloud.pricing.getList:
+#   path: 'admin/config/clouds/{cloud_context}/pricing'
+#   defaults:
+#     _form: '\Drupal\cloud_pricing\Form\CloudPricingListForm'
+#     _title: 'Pricing Info'
+#   requirements:
+#     _permission: 'list pricing'
+# 
+# # MENU_CALLBACK
+# cloud.pricing.create:
+#   path: 'admin/config/clouds/{cloud_context}/pricing/create'
+#   defaults:
+#     _form: '\Drupal\cloud_pricing\Form\CloudPricingCreateForm'
+#     _title: 'Add/Edit Pricing'
+#   requirements:
+#     _permission: 'create pricing'
+# 
+# # MENU_CALLBACK
+# cloud.pricing.edit:
+#   path: 'admin/config/clouds/{cloud_context}/pricing/{pricing_id}/edit'
+#   defaults:
+#     _form: '\Drupal\cloud_pricing\Form\CloudPricingCreateForm'
+#     _title: 'Add/Edit Pricing'
+#   requirements:
+#     _permission: 'edit pricing'
+# 
+# # MENU_CALLBACK
+# cloud.pricing.getData:
+#   path: 'admin/config/clouds/{cloud_context}/pricing/getdata'
+#   defaults:
+#     _controller: '\Drupal\cloud_pricing\Controller\CloudPricingController::getData'
+#     _title: 'Get Pricing Data'
+#   requirements:
+#     _permission: 'list pricing'
+# 
+# # MENU_CALLBACK
+# cloud.pricing.delete:
+#   path: 'admin/config/clouds/{cloud_context}/pricing/{pricing_id}/delete'
+#   defaults:
+#     _controller: '\Drupal\cloud_pricing\Controller\CloudPricingController::delete'
+#     _title: 'Delete'
+#   requirements:
+#    _permission: 'delete pricing'
+
+#   $items['admin/config/clouds/%/pricing/create'] = array(
+#     'title' => 'Add/Edit Pricing',
+#     'page callback' => 'drupal_get_form',
+#     'page arguments' => array('cloud_pricing_create', '', 3),
+#     'access arguments' => array('create pricing'),
+#     'type' => MENU_CALLBACK,
+#   );
+# 
+#   $items['admin/config/clouds/%/pricing/%/edit'] = array(
+#     'title' => 'Add/Edit Pricing',
+#     'page callback' => 'drupal_get_form',
+#     'page arguments' => array('cloud_pricing_create', 5, 3),
+#     'access arguments' => array('create pricing'),
+#     'type' => MENU_CALLBACK,
+#   );
+# 
+#   $items['admin/config/clouds/%/pricing/%/delete'] = array(
+#     'title' => 'Delete',
+#     'page callback' => 'cloud_pricing_delete',
+#     'page arguments' => array(5, 3),
+#     'access arguments' => array('list pricing'),
+#     'type' => MENU_CALLBACK,
+#   );
+# 
+#   $items['admin/config/pricing/getdata'] = array(
+#     'title' => 'pricing Get data',
+#     'page callback' => '_cloud_pricing_getdata',
+#     'page arguments' => array('Pricing'),
+#     'access arguments' => array('list pricing'),
+#     'type' => MENU_CALLBACK,
+#   );
+#   $items['admin/config/clouds/%/pricing'] = array(
+#     'title' => 'Pricing Info',
+#     'description' => 'Pricing Info',
+#     'page callback' => 'drupal_get_form',
+#     'page arguments' => array('cloud_pricing_list', 3),
+#     'access arguments' => array(3, 'administer cloud'),
+#     'access callback' => 'cloud_pricing_access',
+#     'weight' => 1,
+#     'type' => MENU_LOCAL_TASK,
+#   );
+#
+#   return $items;
+# }
+
+# CloudPricing routing definition
+entity.cloud_pricing.collection:
+  path: '/admin/config/cloud/{cloud_context}/pricing'
+  defaults:
+    _entity_list: 'cloud_pricing'
+    _title: 'Cloud Pricing Configuration'
+  requirements:
+    _permission: 'list cloud pricing'
+
+entity.cloud_pricing.add_form:
+  path: '/admin/config/cloud/{cloud_context}/pricing/add'
+  defaults:
+    _entity_form: 'cloud_pricing.add'
+    _title: 'Add Cloud Pricing'
+  requirements:
+    _permission: 'add cloud pricing'
+
+entity.cloud_pricing.edit_form:
+  path: '/admin/config/cloud/{cloud_context}/pricing/{cloud_pricing}'
+  defaults:
+    _entity_form: 'cloud_pricing.edit'
+    _title: 'Edit Cloud Pricing'
+  requirements:
+    _permission: 'edit cloud pricing'
+
+entity.cloud_pricing.edit_form.edit:
+  path: '/admin/config/cloud/{cloud_context}/pricing/{cloud_pricing}/edit'
+  defaults:
+    _entity_form: 'cloud_pricing.edit'
+    _title: 'Edit Cloud Pricing'
+  requirements:
+    _permission: 'edit cloud pricing'
+
+entity.cloud_pricing.delete_form:
+  path: '/admin/config/cloud/{cloud_context}/pricing/{cloud_pricing}/delete'
+  defaults:
+    _entity_form: 'cloud_pricing.delete'
+    _title: 'Delete Cloud Pricing'
+  requirements:
+    _permission: 'delete cloud pricing'

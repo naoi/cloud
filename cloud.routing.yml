@@ -1,0 +1,70 @@
+# MENU_CALLBACK
+cloud.service_providers:
+  path: '/clouds'
+  defaults:
+    _controller: 'Drupal\cloud\Controller\CloudController::getInstanceList'
+    _title: 'Clouds'
+  requirements:
+    _permission: 'access dashboard'
+
+# MENU_CALLBACK
+cloud.design:
+  path: '/clouds/design'
+  defaults:
+    _controller: 'Drupal\cloud\Controller\CloudController::getCloudServerTemplateList'
+    _title: 'Server Templates'
+  requirements:
+    _permission: 'access dashboard'
+
+# MENU_CALLBACK
+cloud.getData:
+  path: '/clouds/getdata'
+  defaults:
+    _controller: '\Drupal\cloud\Controller\CloudController::getData'
+  requirements:
+    _permission: 'access content'
+
+# Dynamic Routing
+# route_callbacks:
+#  - '\Drupal\cloud\Plugin\Menu\LocalAction\CloudLocalAction::routes'
+
+# MENU_CALLBACK
+# cloud.getInstanceListCallback:
+#  path: '/clouds/callback_get_all_instances_list'
+#  defaults:
+#    _controller: '\Drupal\cloud\Controller\CloudController::getInstanceListCallback'
+#  requirements:
+#    _permission: 'access content'
+# CloudContext routing definition
+# entity.cloud_context.collection:
+#   path: '/admin/config/system/cloud_context'
+#   defaults:
+#     _entity_list: 'cloud_context'
+#     _title: 'Cloud Configuration'
+#   requirements:
+#     _permission: 'administer site configuration'
+# 
+# entity.cloud_context.add_form:
+#   path: '/admin/config/system/cloud_context/add'
+#   defaults:
+#     _entity_form: 'cloud_context.add'
+#     _title: 'Add Cloud'
+#   requirements:
+#     _permission: 'administer site configuration'
+# 
+# entity.cloud_context.edit_form:
+#   path: '/admin/config/system/cloud_context/{cloud_context}'
+#   defaults:
+#     _entity_form: 'cloud_context.edit'
+#     _title: 'Edit Cloud'
+#   requirements:
+#     _permission: 'administer site configuration'
+# 
+# entity.cloud_context.delete_form:
+#   path: '/admin/config/system/cloud_context/{cloud_context}/delete'
+#   defaults:
+#     _entity_form: 'cloud_context.delete'
+#     _title: 'Delete Cloud'
+#   requirements:
+#     _permission: 'administer site configuration'
+# 

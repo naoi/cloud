@@ -1,0 +1,22 @@
+# Cloud Alert routing definition
+
+cloud_alert.settings_tab:
+  route_name: cloud_alert.settings
+  title: 'Settings'
+  base_route: cloud_alert.settings
+
+entity.cloud_alert.canonical:
+  route_name: entity.cloud_alert.canonical
+  base_route: entity.cloud_alert.canonical
+  title: 'View'
+
+entity.cloud_alert.edit_form:
+  route_name: entity.cloud_alert.edit_form
+  base_route: entity.cloud_alert.canonical
+  title: Edit
+
+entity.cloud_alert.delete_form:
+  route_name: entity.cloud_alert.delete_form
+  base_route: entity.cloud_alert.canonical
+  title: Delete
+

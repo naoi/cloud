@@ -1,0 +1,56 @@
+# Updated by yas 2016/06/23
+# Created by yas 2016/05/25.
+
+# Cloud Cluster routing definition
+entity.cloud_cluster.canonical:
+  path: '/clouds/design/cloud_cluster/{cloud_cluster}'
+  defaults:
+    _entity_view: 'cloud_cluster'
+    _title: 'Cloud Cluster Content'
+  requirements:
+    _entity_access: 'cloud_cluster.view'
+    _permission: 'view cloud cluster'
+
+entity.cloud_cluster.collection:
+  path: '/clouds/design/cloud_cluster'
+  defaults:
+    _entity_list: 'cloud_cluster'
+    _title: 'Cloud Cluster List'
+  requirements:
+    _permission: 'list cloud cluster'
+
+entity.cloud_cluster.add_form:
+  path: '/clouds/design/cloud_cluster/add'
+  defaults:
+    _entity_form: cloud_cluster.add
+    _title: 'Add Cloud Cluster'
+  requirements:
+    _entity_create_access: 'cloud_cluster'
+    _permission: 'add cloud cluster'
+
+entity.cloud_cluster.edit_form:
+  path: '/clouds/design/cloud_cluster/{cloud_cluster}/edit'
+  defaults:
+    _entity_form: cloud_cluster.edit
+    _title: 'Edit Cloud Cluster'
+  requirements:
+    _entity_access: 'cloud_cluster.edit'
+    _permission: 'edit cloud cluster'
+
+entity.cloud_cluster.delete_form:
+  path: '/clouds/design/cloud_cluster/{cloud_cluster}/delete'
+  defaults:
+    _entity_form: cloud_cluster.delete
+    _title: 'Delete Cloud Cluster'
+  requirements:
+    _entity_access: 'cloud_cluster.delete'
+    _permission: 'delete cloud cluster'
+
+cloud_cluster.settings:
+  path: 'admin/structure/cloud/cloud_cluster'
+  defaults:
+   _form: '\Drupal\cloud_cluster\Entity\Form\CloudClusterSettingsForm'
+   _title: 'Cloud Cluster Settings'
+  requirements:
+    _permission: 'administer cloud cluster'
+

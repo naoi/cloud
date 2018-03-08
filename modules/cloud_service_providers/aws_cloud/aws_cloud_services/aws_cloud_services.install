@@ -1,0 +1,11 @@
+<?php
+// aws_cloud.services.install
+
+/**
+ * @file
+ * Install for aws_cloud.services.module
+ */
+
+/**
+* Implementation of hook_schema().
+*/

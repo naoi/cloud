@@ -1,0 +1,14 @@
+entity.cloud_script.add_form:
+  route_name: entity.cloud_script.add_form
+  title: 'Add Cloud Script'
+  appears_on:
+    - entity.cloud_script.collection
+#   - entity.cloud_script.canonical
+
+entity.cloud_script.collection:
+  route_name: entity.cloud_script.collection
+  title: 'List Cloud Script'
+  appears_on:
+    - entity.cloud_script.add_form
+    - entity.cloud_script.edit_form
+    - entity.cloud_script.delete_form

@@ -1,0 +1,52 @@
+aws_cloud.cloud.*:
+  type: config_entity
+  label: 'AWS Cloud Information Config'
+  mapping:
+    id:
+      type: string
+      label: 'Cloud Context'
+    label:
+      type: label
+      label: 'Display Name'
+    cloud_type:
+      type: string
+      label: 'Cloud Type'
+    description:
+      type: string
+      label: 'Description'
+    api_version:
+      type: string
+      label: 'API Version'
+    endpoint:
+      type: string
+      label: 'API Endpoint URI'
+    region:
+      type: string
+      label: 'Region'
+    aws_access_key:
+      type: string
+      label: 'Access Key'
+    aws_secret_key:
+      type: string
+      label: 'Secret Key'
+    user_id:
+      type: string
+      label: 'User ID'
+    image_upload_url:
+      type: string
+      label: 'Image Upload URL'
+    image_register_url:
+      type: string
+      label: 'Image Register URL'
+    certificate:
+      type: string
+      label: 'X.509 Certificate'
+    created:
+      type: integer
+      label: 'Date Created'
+    changed:
+      type: integer
+      label: 'Date Updated'
+    uuid:
+      type: string
+      label: 'UUID'

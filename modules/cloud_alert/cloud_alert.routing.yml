@@ -1,0 +1,56 @@
+# Updated by yas 2016/06/23
+# Updated by yas 2016/05/23.
+
+# Cloud Alert routing definition
+entity.cloud_alert.canonical:
+  path: '/clouds/design/cloud_alert/{cloud_alert}'
+  defaults:
+    _entity_view: 'cloud_alert'
+    _title: 'Cloud Alert Content'
+  requirements:
+    _entity_access: 'cloud_alert.view'
+    _permission: 'view cloud alert'
+
+entity.cloud_alert.collection:
+  path: '/clouds/design/cloud_alert'
+  defaults:
+    _entity_list: 'cloud_alert'
+    _title: 'Cloud Alert List'
+  requirements:
+    _permission: 'list cloud alert'
+
+entity.cloud_alert.add_form:
+  path: '/clouds/design/cloud_alert/add'
+  defaults:
+    _entity_form: cloud_alert.add
+    _title: 'Add Cloud Alert'
+  requirements:
+    _entity_create_access: 'cloud_alert'
+    _permission: 'add cloud alert'
+
+entity.cloud_alert.edit_form:
+  path: '/clouds/design/cloud_alert/{cloud_alert}/edit'
+  defaults:
+    _entity_form: cloud_alert.edit
+    _title: 'Edit Cloud Alert'
+  requirements:
+    _entity_access: 'cloud_alert.edit'
+    _permission: 'edit cloud alert'
+
+entity.cloud_alert.delete_form:
+  path: '/clouds/design/cloud_alert/{cloud_alert}/delete'
+  defaults:
+    _entity_form: cloud_alert.delete
+    _title: 'Delete Cloud Alert'
+  requirements:
+    _entity_access: 'cloud_alert.delete'
+    _permission: 'delete cloud alert'
+
+cloud_alert.settings:
+  path: 'admin/structure/cloud/cloud_alert'
+  defaults:
+   _form: '\Drupal\cloud_alert\Entity\Form\CloudAlertSettingsForm'
+   _title: 'Cloud Alert Settings'
+  requirements:
+    _permission: 'administer cloud alert'
+

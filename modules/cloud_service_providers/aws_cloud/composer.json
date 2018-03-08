@@ -1,0 +1,6 @@
+{
+  "name": "drupal/aws_cloud",
+  "require" : {
+    "aws/aws-sdk-php" : "3.*.*@dev"
+  }
+}

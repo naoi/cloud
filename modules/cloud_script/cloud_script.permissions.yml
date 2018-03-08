@@ -1,0 +1,21 @@
+# updated by yas 2016/05/25
+
+add cloud script:
+  title: 'Add script'
+  description: 'Allow to add cloud automation script'
+
+list cloud script:
+  title: 'List script'
+  description: 'Allow to list cloud automation script'
+
+view cloud script:
+  title: 'View script'
+  description: 'Allow to view cloud automation script'
+
+edit cloud script:
+  title: 'Edit script'
+  description: 'Allow to edit cloud automation script'
+
+delete cloud script:
+  title: 'Delete script'
+  description: 'Allow to delete cloud automation script'

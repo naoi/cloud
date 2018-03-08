@@ -1,0 +1,20 @@
+CHANGE HISTORY
+==============
+2016/04/15 8.x-1.x-dev
+- Fixed and testd on drupal-8.2.x-dev
+- NOTE: Changed the URL removing 'cloud' for Server Templates and Scripting in case of conflict including 'cloud' in hostname (e.g. http://cloud.example.com or http://example.com/cloud)
+
+2015/09/28 8.x-1.x-dev
+- Fixed and tested on drupal-8.0.0-beta15
+- NOTE: Server Templates module didn't pass SimpleTest
+
+2015/08/20 8.x-1.x-dev
+- Uploaded some modules
+
+2015/07/28 8.x-1.x-dev
+- Initial commit
+
+2015/05/19 8.x-1.x-dev
+- Initial copy
+
+End of CHANGELOG.txt

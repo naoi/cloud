@@ -1,0 +1,6 @@
+# MENU_NORMAL_ITEM
+# cloud.pricing.getList:
+#  title: 'Pricing Info'
+#  route_name: 'cloud.pricing.getList'
+#  parent_id:  'cloud.pricing.getList'
+#  weight: 1

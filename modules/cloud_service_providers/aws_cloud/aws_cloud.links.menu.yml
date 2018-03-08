@@ -1,0 +1,16 @@
+# Updated by yas 2016/06/23
+# Updated by yas 2016/06/22
+# Updated by yas 2016/06/21
+# Created by yas 2016/06/20
+
+entity.cloud_context.collection:
+  route_name: 'entity.cloud_context.collection'
+  title: AWS Cloud
+  description: 'Configure AWS Cloud.'
+  parent: system.admin_config_services
+
+aws_cloud.menu.cloud_context:
+  deriver: 'Drupal\aws_cloud\Plugin\Derivative\AwsCloudMenuLinks'
+# route_name: 'entity.aws_cloud_instance.collection'
+# class: 'Drupal\aws_cloud\Plugin\Menu\AwsCloudTab'
+  weight: 100

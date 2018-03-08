@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * @file
+ * Provides pricing for hourly rate configuration for Billing module.
+ * Works with Cloud and Billing module.
+ *
+ */
+use Drupal\Core\Routing\RouteMatchInterface;
+
+\Drupal::moduleHandler()->loadInclude('cloud'        , 'inc', 'cloud.constants'        );
+\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing.constants');
+\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing'          );
+\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing.db'       );
+
+/**
+ * Implements hook_help().
+ */
+function cloud_pricing_help($route_name, RouteMatchInterface $route_match) {
+
+  switch ($route_name) {
+
+    case 'help.page.cloud_pricing':
+      $output = '<p>' . t('The cloud module creates a user interface for users to manage clouds. Users can Create Instances,  Describe Instances etc..') . '</p>';
+
+      return $output;
+  }
+}
+
+
+/**
+ * Permission callback function to concatenate the
+ * access type based on clouds
+ */
+function cloud_pricing_access($cloud_context, $access) {
+
+  $access = \Drupal::currentUser()->hasPermission($cloud_context . ' ' . $access);
+
+  return $access;
+}
+
+/**
+ * Implements hook_permission().
+ */
+/*
+function cloud_pricing_permission() {
+
+  return array(
+    'create pricing' => array(
+      'title' => t('create pricing'),
+      'description' => t('Permission to create pricing'),
+    ),
+    'list pricing' => array(
+      'title' => t('list pricing'),
+      'description' => t('Permission to view pricing'),
+    ),
+    'edit pricing' => array(
+      'title' => t('edit pricing'),
+      'description' => t('Permission to edit pricing'),
+    ),
+    'delete pricing' => array(
+      'title' => t('delete pricing'),
+      'description' => t('Permission to delete pricing'),
+    ),
+  );
+}
+*/
+
+/**
+ * Implements hook_cloud_save().
+ * Store any cloud_pricing data
+ */
+function cloud_pricing_cloud_save($op, $cloud) {
+  if ($op == 'create') {
+    if (isset($cloud->cloud_pricing_data)) {
+      $pricing_data = &$cloud->cloud_pricing_data;
+      $cloud_type = $cloud->cloud_name;
+      foreach ($pricing_data as $key => $data) {
+        $data_values = array(
+          'instance_type_select'     => $data['instance_type'     ]  ,
+          'description_text'         => isset($data['description' ] )
+                                      ? $data['description'] : ''    ,
+          'linux_usage_text'         => $data['linux_or_unix_cost']  ,
+          'windows_usage_text'       => $data['windows_cost'      ]  ,
+          'cloud_context'            => $cloud_type                  ,
+        );
+        // Insert the data in the Pricing table
+        _cloud_pricing_insert($data_values);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_cloud_delete().
+ * Delete the pricing data upon cloud delete
+ */
+function cloud_pricing_cloud_delete($cloud_name) {
+
+  cloud_pricing_delete_data($cloud_name);
+}
+

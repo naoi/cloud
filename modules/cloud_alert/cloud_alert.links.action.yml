@@ -1,0 +1,14 @@
+entity.cloud_alert.add_form:
+  route_name: entity.cloud_alert.add_form
+  title: 'Add Cloud Alert'
+  appears_on:
+    - entity.cloud_alert.collection
+    - entity.cloud_alert.canonical
+
+entity.cloud_alert.collection:
+  route_name: entity.cloud_alert.collection
+  title: 'List Cloud Alert'
+  appears_on:
+    - entity.cloud_alert.add_form
+    - entity.cloud_alert.edit_form
+    - entity.cloud_alert.delete_form

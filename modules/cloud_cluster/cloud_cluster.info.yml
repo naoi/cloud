@@ -1,0 +1,10 @@
+name: Cloud Cluster
+description: 'A cluster consists of a group of servers that work together'
+package: Cloud
+dependencies:
+  - cloud
+  - cloud_server_template
+core: 8.x
+version: 8.x-1.x
+project: cloud
+type: module

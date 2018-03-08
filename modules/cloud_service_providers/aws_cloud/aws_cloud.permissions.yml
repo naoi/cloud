@@ -1,0 +1,199 @@
+# Updated by yas 2016/06/02
+# Updated by yas 2016/05/25
+# Updated by yas 2016/05/20
+
+###########
+# AWS Cloud
+###########
+
+administer aws_cloud:
+  title: 'Administer AWS Cloud settings'
+  description: 'Perform administration tasks for AWS Cloud.'
+
+####################
+# AWS Cloud Provider
+####################
+
+add aws cloud provider:
+  title: 'Add AWS Cloud service provider'
+  description: 'Allow to add cloud provider'
+list aws cloud provider:
+  title: 'List AWS Cloud service provider'
+  description: 'Allow to list cloud provider'
+view aws cloud provider:
+  title: 'View AWS Cloud service provider'
+  description: 'Allow to view cloud provider'
+edit aws cloud provider:
+  title: 'Edit AWS Cloud service provider'
+  description: 'Allow to edit cloud provider'
+delete aws cloud provider:
+  title: 'Delete AWS Cloud service provider'
+  description: 'Allow to delete cloud provider'
+
+
+####################
+# AWS Cloud Instance
+####################
+
+add aws cloud instance:
+  title: 'Launch AWS Cloud instance'
+  description: 'Allow to launch instance'
+list aws cloud instance:
+  title: 'List AWS Cloud instance'
+  description: 'Allow to list instance'
+view aws cloud instance:
+  title: 'View AWS Cloud instance'
+  description: 'Allow to view instance'
+edit aws cloud instance:
+  title: 'Edit AWS Cloud instance'
+  description: 'Allow to edit instance'
+delete aws cloud instance:
+  title: 'Terminate AWS Cloud instance'
+  description: 'Allow to terminate instance'
+
+
+#################
+# AWS Cloud Image
+#################
+
+add aws cloud image:
+  title: 'Add AWS Cloud image'
+  description: 'Allow to add image'
+list aws cloud image:
+  title: 'List AWS Cloud image'
+  description: 'Allow to list image'
+view aws cloud image:
+  title: 'View AWS Cloud image'
+  description: 'Allow to view image'
+edit aws cloud image:
+  title: 'Edit AWS Cloud image'
+  description: 'Allow to edit image'
+delete aws cloud image:
+  title: 'Delete AWS Cloud image'
+  description: 'Allow to delete image'
+
+
+#############################
+# AWS Cloud Network Interface
+#############################
+
+add aws cloud network interface:
+  title: 'Add AWS Cloud network interface'
+  description: 'Allow to add network interface'
+list aws cloud network interface:
+  title: 'List AWS Cloud network interface'
+  description: 'Allow to list network interface'
+view aws cloud network interface:
+  title: 'View AWS Cloud network interface'
+  description: 'Allow to view network interface'
+edit aws cloud network interface:
+  title: 'Edit AWS Cloud network interface'
+  description: 'Allow to edit network interface'
+delete aws cloud network interface:
+  title: 'Delete AWS Cloud network interface'
+  description: 'Allow to delete network interface'
+
+
+######################
+# AWS Cloud Elastic IP
+######################
+
+add aws cloud elastic ip:
+  title: 'Add AWS Cloud Elastic IP'
+  description: 'Allow to add Elastic IP'
+list aws cloud elastic ip:
+  title: 'List AWS Cloud Elastic IP'
+  description: 'Allow to list Elastic IP'
+view aws cloud elastic ip:
+  title: 'View AWS Cloud Elastcic IP'
+  description: 'Allow to view Elastic IP'
+edit aws cloud elastic ip:
+  title: 'Edit AWS Cloud Elastic IP'
+  description: 'Allow to edit Elastic IP'
+delete aws cloud elastic ip:
+  title: 'Delete AWS Cloud Elastic IP'
+  description: 'Allow to delete Elastic IP'
+
+
+####################
+# AWS Cloud Key Pair
+####################
+
+add aws cloud key pair:
+  title: 'Add AWS Cloud key pair'
+  description: 'Allow to add key pair'
+list aws cloud key pair:
+  title: 'List AWS Cloud key pair'
+  description: 'Allow to list key pair'
+view aws cloud key pair:
+  title: 'View AWS Cloud key pair'
+  description: 'Allow to view key pair'
+edit aws cloud key pair:
+  title: 'Edit AWS Cloud key pair'
+  description: 'Allow to edit key pair'
+delete aws cloud key pair:
+  title: 'Delete AWS Cloud key pair'
+  description: 'Allow to delete key pair'
+
+
+##########################
+# AWS Cloud Security Group
+##########################
+
+add aws cloud security group:
+  title: 'Add AWS Cloud security group'
+  description: 'Allow to add security group'
+list aws cloud security group:
+  title: 'List AWS Cloud security group'
+  description: 'Allow to list security group'
+view aws cloud security group:
+  title: 'View AWS Cloud security group'
+  description: 'Allow to view security group'
+edit aws cloud security group:
+  title: 'Edit AWS Cloud security group'
+  description: 'Allow to edit security group'
+delete aws cloud security group:
+  title: 'Delete AWS Cloud security group'
+  description: 'Allow to delete security group'
+
+
+############
+# AWS Cloud EBS Volume
+############
+
+add aws cloud volume:
+  title: 'Add AWS Cloud EBS volume'
+  description: 'Allow to add volume'
+list aws cloud volume:
+  title: 'List AWS Cloud EBS volume'
+  description: 'Allow to list volume'
+view aws cloud volume:
+  title: 'View AWS Cloud EBS volume'
+  description: 'Allow to view volume'
+edit aws cloud volume:
+  title: 'Edit AWS Cloud EBS volume'
+  description: 'Allow to edit volume'
+delete aws cloud volume:
+  title: 'Delete AWS Cloud EBS volume'
+  description: 'Allow to delete volume'
+
+
+##############
+# AWS Cloud EBS Snapshot
+##############
+
+add aws cloud snapshot:
+  title: 'Add AWS Cloud EBS snapshot'
+  description: 'Allow to add snapshot'
+list aws cloud snapshot:
+  title: 'List AWS Cloud EBS snapshot'
+  description: 'Allow to list snapshot'
+view aws cloud snapshot:
+  title: 'View AWS Cloud EBS snapshot'
+  description: 'Allow to view snapshot'
+edit aws cloud snapshot:
+  title: 'Edit AWS Cloud EBS snapshot'
+  description: 'Allow to edit snapshot'
+delete aws cloud snapshot:
+  title: 'Delete AWS Cloud EBS snapshot'
+  description: 'Allow to delete snapshot'

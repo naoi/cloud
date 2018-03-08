@@ -1,0 +1,54 @@
+# Updated by yas 2016/06/23.
+
+# CloudScript routing definition
+entity.cloud_script.canonical:
+  path: '/clouds/design/script/{cloud_script}'
+  defaults:
+    _entity_view: 'cloud_script'
+    _title: 'Cloud Script'
+  requirements:
+    _entity_access: 'cloud_script.view'
+    _permission: 'view cloud script'
+
+entity.cloud_script.collection:
+  path: '/clouds/design/script'
+  defaults:
+    _entity_list: 'cloud_script'
+    _title: 'Cloud Script List'
+  requirements:
+    _permission: 'list cloud script'
+
+entity.cloud_script.add_form:
+  path: '/clouds/design/script/add'
+  defaults:
+    _entity_form: cloud_script.add
+    _title: 'Add Cloud Script'
+  requirements:
+    _entity_create_access: 'cloud_script'
+    _permission: 'add cloud script'
+
+entity.cloud_script.edit_form:
+  path: '/clouds/design/script/{cloud_script}/edit'
+  defaults:
+    _entity_form: cloud_script.edit
+    _title: 'Edit Cloud Script'
+  requirements:
+    _entity_access: 'cloud_script.edit'
+    _permission: 'edit cloud script'
+
+entity.cloud_script.delete_form:
+  path: '/clouds/design/script/{cloud_script}/delete'
+  defaults:
+    _entity_form: cloud_script.delete
+    _title: 'Delete Cloud Script'
+  requirements:
+    _entity_access: 'cloud_script.delete'
+    _permission: 'delete cloud script'
+
+cloud_script.settings:
+  path: '/clouds/design/structure/script'
+  defaults:
+    _form: '\Drupal\cloud_script\Entity\Form\CloudScriptSettingsForm'
+    _title: 'Cloud Script Settings'
+  requirements:
+    _permission: 'administer cloud script entity'

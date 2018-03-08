@@ -1,0 +1,21 @@
+# updated by yas 2016/05/23
+
+add cloud alert:
+  title: 'Add alert'
+  description: 'Allow to add alert'
+
+list cloud alert:
+  title: 'List Cloud Alert'
+  description: 'Allow access to list alert'
+
+view cloud alert:
+  title: 'View alert'
+  description: 'Allow access to view alert'
+
+edit cloud alert:
+  title: 'Edit alert'
+  description: 'Allow to edit alert'
+
+delete cloud alert:
+  title: 'Delete alert'
+  description: 'Allow to delete alert'

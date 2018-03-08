@@ -1,0 +1,14 @@
+entity.cloud_server_template.add_form:
+  route_name: entity.cloud_server_template.add_form
+  title: 'Add Server Template'
+  appears_on:
+    - entity.cloud_server_template.collection
+#   - entity.cloud_server_template.canonical
+
+entity.cloud_server_template.collection:
+  route_name: entity.cloud_server_template.collection
+  title: 'List Server Template'
+  appears_on:
+    - entity.cloud_server_template.add_form
+    - entity.cloud_server_template.edit_form
+    - entity.cloud_server_template.delete_form

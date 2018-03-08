@@ -1,0 +1,7 @@
+name: Cloud Alerts
+description: 'Get a quick synopsis of Alert Specifications .'
+package: Cloud
+core: 8.x
+version: 8.x-1.x
+project: cloud
+type: module

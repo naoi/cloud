@@ -1,0 +1,7 @@
+name: Cloud Script
+description: 'An executable piece of code.'
+package: Cloud
+core: 8.x
+version: 8.x-1.x
+project: cloud
+type: module

@@ -1,0 +1,212 @@
+<?php
+
+/**
+ * @file
+ * Provides a set of trigger and action for cloud management
+ * Works with Cloud module.
+ *
+ */
+
+\Drupal::moduleHandler()->loadInclude('cloud'      , 'inc', 'cloud.constants'      );
+\Drupal::moduleHandler()->loadInclude('cloud_alert', 'inc', 'cloud_alert.constants');
+\Drupal::moduleHandler()->loadInclude('cloud_alert', 'inc', 'cloud_alert'          );
+\Drupal::moduleHandler()->loadInclude('cloud_alert', 'inc', 'cloud_alert.db'       );
+
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cloud_alert_get_options() {
+
+  $alerts_escalations       = array(
+    'critical' => t('critical'),
+    'default' => t('default'),
+    'scale in' => t('scale in'),
+    'scale out' => t('scale out'),
+    'send e-mail' => t('send e-mail'),
+    'warning' => t('warning'),
+  );
+  $alerts_metric_options    = array(
+    'cpu' => t('CPU'),
+    'memory' => t('Memory/RAM'),
+    'traffic' => t('Traffic'),
+    'disk' => t('Disk'),
+    'users' => t('Users/Users'),
+  );
+  $alerts_variable_options  = array(
+    'value' => t('value'),
+    'state' => t('state'),
+    'count' => t('count'),
+    'status' => t('status'),
+    'ping' => t('ping'),
+  );
+  $alerts_condition_options = array(
+    '<' => '<',
+    '>' => '>',
+    '=' => '=',
+    '!=' => '!=',
+  );
+
+  asort($alerts_escalations       );
+  asort($alerts_metric_options    );
+  asort($alerts_variable_options  );
+  asort($alerts_condition_options );
+
+  $alerts_options = array(
+    'ALERTS_ESCALATIONS' => $alerts_escalations       ,
+    'ALERTS_METRIC_OPTIONS' => $alerts_metric_options    ,
+    'ALERTS_VARIABLE_OPTIONS' => $alerts_variable_options  ,
+    'ALERTS_CONDITION_OPTIONS' => $alerts_condition_options,
+  );
+
+  return $alerts_options;
+}
+
+/**
+ * Implements hook_help().
+ */
+function cloud_alert_help($section) {
+
+  switch ($section) {
+
+    case 'admin/help#':
+      $output = '<p>' . t('The cloud module creates a user interface for users to manage clouds. Users can Create Instances,   Describe Instances etc..') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function cloud_alert_menu() {
+
+  $items = array();
+
+  $access = \Drupal::currentUser()->hasPermission('access design');
+
+  // alerts Menu
+
+  $items['design/alerts'] = array(
+    'title' => 'Alerts',
+    'description' => 'Get a quick synopsis of Alert Specifications.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_alert_list'),
+    'weight' => 15,
+    'access arguments' => array('list server templates'),
+    'file' => '',
+  );
+
+  $items['design/alerts/getdata'] = array(
+    'path' => 'design/alerts/getdata',
+    'title' => 'alerts Get data',
+    'page callback' => '_cloud_alert_getdata',
+    'page arguments' => array('cloud_alert'),
+    'access arguments' => array('list alerts'),
+    'type' => MENU_CALLBACK,
+    'file' => '',
+  );
+
+  $items['design/alerts/%/view'] = array(
+    //'path'             => '',
+    'title' => 'Alert Info',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_alert_view', 2),
+    //'weight'           => -1,
+    'access arguments' => array('list alerts'),
+    'type' => MENU_CALLBACK,
+    'file' => '',
+  );
+
+  $items['design/alerts/create'] = array(
+    //'path'           => '',
+    'title' => 'Add/Edit Alert',
+    'description' => 'Get a quick synopsis of Alert Specifications.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_alert'),
+    //'weight'           => -1,
+    'access arguments' => array('create alert'),
+    'type' => MENU_CALLBACK,
+    'file' => '',
+  );
+
+  $items['design/alerts/%/edit'] = array(
+    //'path'             => '',
+    'title' => 'Add/Edit Alert',
+    'description' => 'Get a quick synopsis of Alert Specifications.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cloud_alert', 2),
+    //'weight'           => -1,
+    'access arguments' => array('create alert'),
+    'type' => MENU_CALLBACK,
+    'file' => '',
+  );
+
+
+  $items['design/alerts/%/delete'] = array(
+    //'path'             => '',
+    'title' => 'Delete',
+    'page callback' => 'cloud_alert_delete',
+    'page arguments' => array(2),
+    'access arguments' => array('delete alert'),
+    'type' => MENU_CALLBACK,
+    'file' => '',
+  );
+
+  // End of alerts Menu
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function cloud_alert_permission() {
+
+  return array(
+    'list alerts' => array(
+      'title' => t('list alerts'  ),
+      'description' => t('TODO Add a description for \'list alerts\''),
+    ),
+    'create alert' => array(
+      'title' => t('create alert'),
+      'description' => t('TODO Add a description for \'create alert\''),
+    ),
+    'view alerts' => array(
+      'title' => t('view alerts'  ),
+      'description' => t('TODO Add a description for \'view alerts\''),
+    ),
+    'edit alert' => array(
+      'title' => t('edit alert'),
+      'description' => t('TODO Add a description for \'edit alert\''),
+    ),
+    'delete alert' => array(
+      'title' => t('delete alert'),
+      'description' => t('TODO Add a description for \'delete alert\''),
+    ),
+  );
+}
+
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cloud_alert_theme() {
+
+  return array(
+    'cloud_alert_list' => array(
+      'render element' => 'form',
+      'file' => 'cloud_alert.inc',
+    ),
+    'cloud_alert_view' => array(
+      'render element' => 'form',
+      'file' => 'cloud_alert.inc',
+    ),
+    'cloud_alert' => array(
+      'render element' => 'form',
+      'file' => 'cloud_alert.inc',
+    ),
+  );
+}

@@ -1,0 +1,6 @@
+entity.cloud_context.add_form:
+  route_name: 'entity.cloud_context.add_form'
+  title: 'Add CloudContext'
+  appears_on:
+    - entity.cloud_context.collection
+

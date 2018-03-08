@@ -1,0 +1,590 @@
+# Updated by yas 2016/06/23
+# Updated by yas 2016/06/21
+# Updated by yas 2016/06/02
+# Updated by yas 2016/05/31
+# Updated by yas 2016/05/30
+# Updated by yas 2016/05/28
+# Updated by yas 2016/05/26
+# Updated by yas 2016/05/25
+# Updated by yas 2016/05/24
+# Updated by yas 2016/05/23
+# Updated by yas 2016/05/22
+# Updated by yas 2016/05/21
+# Updated by yas 2016/05/20
+# Updated by yas 2016/05/19
+# Updated by yas 2016/05/18
+# Updated by yas 2016/05/17
+
+##############################
+# AWS Cloud Routing Definition
+##############################
+
+# route_callbacks:
+#  - '\Drupal\aws_cloud\Routing\AwsCloudRoutes::routes'
+
+######################
+# AWS SDK API Callback
+######################
+aws_cloud.updateInstanceList:
+  path: '/clouds/aws_cloud/{cloud_context}/instance/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateInstanceList'
+  requirements:
+    _permission: 'list aws cloud instance'
+
+aws_cloud.updateImageList:
+  path: '/clouds/aws_cloud/{cloud_context}/image/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateImageList'
+  requirements:
+    _permission: 'list aws cloud image'
+
+aws_cloud.updateSecurityGroupList:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateSecurityGroupList'
+  requirements:
+    _permission: 'list aws cloud security_group'
+
+aws_cloud.updateNetworkInterfaceList:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateNetworkInterfaceList'
+  requirements:
+    _permission: 'list aws cloud network_interface'
+
+aws_cloud.updateElasticIpList:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateElasticIpList'
+  requirements:
+    _permission: 'list aws cloud elastic_ip'
+
+aws_cloud.updateKeyPairList:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateKeyPairList'
+  requirements:
+    _permission: 'list aws cloud key_pair'
+
+aws_cloud.updateVolumeList:
+  path: '/clouds/aws_cloud/{cloud_context}/volume/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateVolumeList'
+  requirements:
+    _permission: 'list aws cloud volume'
+
+aws_cloud.updateSnapshotList:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot/update'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateSnapshotList'
+  requirements:
+    _permission: 'list aws cloud snapshot'
+
+
+##########################
+# AWS Cloud Admin Settings
+##########################
+aws_cloud.settings:
+  path: '/admin/config/services/cloud/aws_cloud'
+  defaults:
+    _title: AWS Cloud
+    _form: '\Drupal\aws_cloud\Form\Config\AwsCloudAdminSettings'
+  requirements:
+    _permission: 'administer aws_cloud'
+
+##################
+# AWS Cloud Config
+##################
+
+entity.cloud_context.canonical:
+  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}'
+  defaults:
+    _entity_view: 'cloud_context'
+    _title: 'AWS Cloud Service Provider Configuration'
+  requirements:
+    _permission: 'view aws cloud provider'
+
+entity.cloud_context.collection:
+  path: '/admin/config/services/cloud/aws_cloud/cloud_context'
+  defaults:
+    _entity_list: 'cloud_context'
+    _title: 'AWS Cloud Service Provider'
+  requirements:
+    _permission: 'list aws cloud provider'
+
+entity.cloud_context.add_form:
+  path: '/admin/config/services/cloud/aws_cloud/cloud_context/add'
+  defaults:
+    _entity_form: 'cloud_context.add'
+    _title: 'Add AWS Cloud Service Provider Configuration'
+  requirements:
+    _permission: 'add aws cloud provider'
+
+entity.cloud_context.edit_form:
+  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}/edit'
+  defaults:
+    _entity_form: 'cloud_context.edit'
+    _title: 'Edit AWS Cloud Service Provider | Region'
+  requirements:
+    _permission: 'edit aws cloud provider'
+
+entity.cloud_context.edit_form.edit:
+  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}/edit'
+  defaults:
+    _entity_form: 'cloud_context.edit'
+    _title: 'Edit AWS Cloud Service Provider Configuration'
+  requirements:
+    _permission: 'edit aws cloud provider'
+
+entity.cloud_context.delete_form:
+  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}/delete'
+  defaults:
+    _entity_form: 'cloud_context.delete'
+    _title: 'Delete AWS Cloud Service Provider Configuration'
+  requirements:
+    _permission: 'delete aws cloud provider'
+
+
+#####################
+# AWS Cloud Instances
+#####################
+
+# MENU_CALLBACK
+# comment out for now
+entity.aws_cloud_instance.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/instance/{aws_cloud_instance}'
+  defaults:
+    _entity_view: 'aws_cloud_instance'
+    _title: 'AWS Cloud Instance'
+  requirements:
+    _permission: 'view aws cloud instance'
+    aws_cloud_instance: \d+
+
+entity.aws_cloud_instance.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/instance'
+  defaults:
+    _entity_list: 'aws_cloud_instance'
+    _title: 'AWS Cloud Instance'
+  requirements:
+    _permission: 'list aws cloud instance'
+
+entity.aws_cloud_instance.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/instance/launch'
+  defaults:
+    _entity_form: 'aws_cloud_instance.add'
+    _title: 'Launch AWS Cloud Instance'
+  requirements:
+    _permission: 'add aws cloud instance'
+
+entity.aws_cloud_instance.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/instance/{aws_cloud_instance}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_instance.edit'
+    _title: 'Edit AWS Cloud Instance'
+  requirements:
+    _permission: 'edit aws cloud instance'
+
+entity.aws_cloud_instance.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/instance/{aws_cloud_instance}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_instance.edit'
+    _title: 'Edit AWS Cloud Instance'
+  requirements:
+    _permission: 'edit aws cloud instance'
+
+
+entity.aws_cloud_instance.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/instance/{aws_cloud_instance}/terminate'
+  defaults:
+    _entity_form: 'aws_cloud_instance.delete'
+    _title: 'Terminate AWS Cloud Instance'
+  requirements:
+    _permission: 'delete aws cloud instance'
+
+
+
+##################
+# AWS Cloud Images
+##################
+entity.aws_cloud_image.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/image/{aws_cloud_image}'
+  defaults:
+    _entity_view: 'aws_cloud_image'
+    _title: 'AWS Cloud Image'
+  requirements:
+    _entity_access: 'aws_cloud_image.view'
+    _permission: 'view aws cloud image'
+
+entity.aws_cloud_image.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/image'
+  defaults:
+    _entity_list: 'aws_cloud_image'
+    _title: 'AWS Cloud Image'
+  requirements:
+    _permission: 'list aws cloud image'
+
+entity.aws_cloud_image.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/image/add'
+  defaults:
+    _entity_form: 'aws_cloud_image.add'
+    _title: 'Add AWS Cloud Image'
+  requirements:
+    _permission: 'add aws cloud image'
+
+entity.aws_cloud_image.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/image/{aws_cloud_image}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_image.edit'
+    _title: 'Edit AWS Cloud Image'
+  requirements:
+    _permission: 'edit aws cloud image'
+
+entity.aws_cloud_image.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/image/{aws_cloud_image}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_image.edit'
+    _title: 'Edit AWS Cloud Image'
+  requirements:
+    _permission: 'edit aws cloud image'
+
+entity.aws_cloud_image.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/image/{aws_cloud_image}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_image.delete'
+    _title: 'Delete AWS Cloud Image'
+  requirements:
+    _permission: 'delete aws cloud image'
+
+
+##############################
+# AWS Cloud Network Interfaces
+##############################
+
+entity.aws_cloud_network_interface.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface/{aws_cloud_network_interface}'
+  defaults:
+    _entity_view: 'aws_cloud_network_interface'
+    _title: 'AWS Cloud Network Interface'
+  requirements:
+    _entity_access: 'aws_cloud_network_interface.view'
+    _permission: 'view aws cloud network interface'
+
+entity.aws_cloud_network_interface.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface'
+  defaults:
+    _entity_list: 'aws_cloud_network_interface'
+    _title: 'AWS Cloud Network Interface'
+  requirements:
+    _permission: 'list aws cloud network interface'
+
+entity.aws_cloud_network_interface.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface/add'
+  defaults:
+    _entity_form: 'aws_cloud_network_interface.add'
+    _title: 'Add AWS Cloud Network Interface'
+  requirements:
+    _permission: 'add aws cloud network interface'
+
+entity.aws_cloud_network_interface.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface/{aws_cloud_network_interface}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_network_interface.edit'
+    _title: 'Edit AWS Cloud Network Interface'
+  requirements:
+    _permission: 'edit aws cloud network interface'
+
+entity.aws_cloud_network_interface.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface/{aws_cloud_network_interface}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_network_interface.edit'
+    _title: 'Edit AWS Cloud Network Interface'
+  requirements:
+    _permission: 'edit aws cloud network interface'
+
+entity.aws_cloud_network_interface.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/network_interface/{aws_cloud_network_interface}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_network_interface.delete'
+    _title: 'Delete AWS Cloud Network Interface'
+  requirements:
+    _permission: 'delete aws cloud network interface'
+
+
+######################
+# AWS Cloud Elastic IP
+######################
+
+entity.aws_cloud_elastic_ip.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/{aws_cloud_elastic_ip}'
+  defaults:
+    _entity_view: 'aws_cloud_elastic_ip'
+    _title: 'AWS Cloud Elastic IP'
+  requirements:
+    _entity_access: 'aws_cloud_elastic_ip.view'
+    _permission: 'view aws cloud elastic ip'
+
+entity.aws_cloud_elastic_ip.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip'
+  defaults:
+    _entity_list: 'aws_cloud_elastic_ip'
+    _title: 'AWS Cloud Elastic IP'
+  requirements:
+    _permission: 'list aws cloud elastic ip'
+
+entity.aws_cloud_elastic_ip.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/add'
+  defaults:
+    _entity_form: 'aws_cloud_elastic_ip.add'
+    _title: 'Add AWS Cloud Elastic IP'
+  requirements:
+    _permission: 'add aws cloud elastic ip'
+
+entity.aws_cloud_elastic_ip.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/{aws_cloud_elastic_ip}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_elastic_ip.edit'
+    _title: 'Edit AWS Cloud Elastic IP'
+  requirements:
+    _permission: 'edit aws cloud elastic ip'
+
+entity.aws_cloud_elastic_ip.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/{aws_cloud_elastic_ip}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_elastic_ip.edit'
+    _title: 'Edit AWS Cloud Elastic IP'
+  requirements:
+    _permission: 'edit aws cloud elastic ip'
+
+entity.aws_cloud_elastic_ip.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/{aws_cloud_elastic_ip}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_elastic_ip.delete'
+    _title: 'Delete AWS Cloud Elastic IP'
+  requirements:
+    _permission: 'delete aws cloud elastic ip'
+
+
+###########################
+# AWS Cloud Security Groups
+###########################
+
+entity.aws_cloud_security_group.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}'
+  defaults:
+    _entity_view: 'aws_cloud_security_group'
+    _title: 'AWS Cloud Security Group'
+  requirements:
+    _entity_access: 'aws_cloud_security_group.view'
+    _permission: 'view aws cloud security group'
+
+entity.aws_cloud_security_group.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group'
+  defaults:
+    _entity_list: 'aws_cloud_security_group'
+    _title: 'AWS Cloud Security Group'
+  requirements:
+    _permission: 'list aws cloud security group'
+
+entity.aws_cloud_security_group.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group/add'
+  defaults:
+    _entity_form: 'aws_cloud_security_group.add'
+    _title: 'Add AWS Cloud Security Group'
+  requirements:
+    _permission: 'add aws cloud security group'
+
+entity.aws_cloud_security_group.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_security_group.edit'
+    _title: 'Edit AWS Cloud Security Group'
+  requirements:
+    _permission: 'edit aws cloud security group'
+
+entity.aws_cloud_security_group.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_security_group.edit'
+    _title: 'Edit AWS Cloud Security Group'
+  requirements:
+    _permission: 'edit aws cloud security group'
+
+entity.aws_cloud_security_group.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_security_group.delete'
+    _title: 'Delete AWS Cloud Security Group'
+  requirements:
+    _permission: 'delete aws cloud security group'
+
+
+#####################
+# AWS Cloud Key Pairs
+#####################
+
+entity.aws_cloud_key_pair.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}'
+  defaults:
+    _entity_view: 'aws_cloud_key_pair'
+    _title: 'AWS Cloud Key Pair'
+  requirements:
+    _entity_access: 'aws_cloud_key_pair.view'
+    _permission: 'view aws cloud key pair'
+  options:
+    parameters:
+      cloud_context:
+        type: "entity:cloud_context"
+      aws_cloud_key_pair:
+        type: "entity:aws_cloud_key_pair"
+
+entity.aws_cloud_key_pair.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair'
+  defaults:
+    _entity_list: 'aws_cloud_key_pair'
+    _title: 'AWS Cloud Key Pair'
+  requirements:
+    _permission: 'list aws cloud key pair'
+
+entity.aws_cloud_key_pair.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/add'
+  defaults:
+    _entity_form: 'aws_cloud_key_pair.add'
+    _title: 'Add AWS Cloud Key Pair'
+  requirements:
+    _permission: 'add aws cloud key pair'
+
+entity.aws_cloud_key_pair.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}'
+  defaults:
+    _entity_form: 'aws_cloud_key_pair.edit'
+    _title: 'Edit AWS Cloud Key Pair'
+  requirements:
+    _permission: 'edit aws cloud key pair'
+
+entity.aws_cloud_key_pair.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_key_pair.edit'
+    _title: 'Edit AWS Cloud Key Pair'
+  requirements:
+    _permission: 'edit aws cloud key pair'
+
+entity.aws_cloud_key_pair.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_key_pair.delete'
+    _title: 'Delete AWS Cloud Key Pair'
+  requirements:
+    _permission: 'delete aws cloud key pair'
+
+
+##################
+# AWS Cloud Volume
+##################
+
+entity.aws_cloud_volume.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/volume/{aws_cloud_volume}'
+  defaults:
+    _entity_view: 'aws_cloud_volume'
+    _title: 'AWS Cloud Volume'
+  requirements:
+    _entity_access: 'aws_cloud_volume.view'
+    _permission: 'view aws cloud volume'
+
+entity.aws_cloud_volume.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/volume'
+  defaults:
+    _entity_list: 'aws_cloud_volume'
+    _title: 'AWS Cloud Volume'
+  requirements:
+    _permission: 'list aws cloud volume'
+
+entity.aws_cloud_volume.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/volume/add'
+  defaults:
+    _entity_form: 'aws_cloud_volume.add'
+    _title: 'Add AWS Cloud Volume'
+  requirements:
+    _permission: 'add aws cloud volume'
+
+entity.aws_cloud_volume.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/volume/{aws_cloud_volume}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_volume.edit'
+    _title: 'Edit AWS Cloud Volume'
+  requirements:
+    _permission: 'edit aws cloud volume'
+
+entity.aws_cloud_volume.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/volume/{aws_cloud_volume}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_volume.edit'
+    _title: 'Edit AWS Cloud Volume'
+  requirements:
+    _permission: 'edit aws cloud volume'
+
+entity.aws_cloud_volume.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/volume/{aws_cloud_volume}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_volume.delete'
+    _title: 'Delete AWS Cloud Volume'
+  requirements:
+    _permission: 'delete aws cloud volume'
+
+
+#####################
+# AWS Cloud Snapshots
+#####################
+
+entity.aws_cloud_snapshot.canonical:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot/{aws_cloud_snapshot}'
+  defaults:
+    _entity_view: 'aws_cloud_snapshot'
+    _title: 'AWS Cloud Snapshot'
+  requirements:
+    _entity_access: 'aws_cloud_snapshot.view'
+    _permission: 'view aws cloud snapshot'
+
+entity.aws_cloud_snapshot.collection:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot'
+  defaults:
+    _entity_list: 'aws_cloud_snapshot'
+    _title: 'AWS Cloud Snapshot'
+  requirements:
+    _permission: 'list aws cloud snapshot'
+
+entity.aws_cloud_snapshot.add_form:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot/add'
+  defaults:
+    _entity_form: 'aws_cloud_snapshot.add'
+    _title: 'Add AWS Cloud Snapshot'
+  requirements:
+    _permission: 'add aws cloud snapshot'
+
+entity.aws_cloud_snapshot.edit_form:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot/{aws_cloud_snapshot}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_snapshot.edit'
+    _title: 'Edit AWS Cloud Snapshot'
+  requirements:
+    _permission: 'edit aws cloud snapshot'
+
+entity.aws_cloud_snapshot.edit_form.edit:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot/edit/{aws_cloud_snapshot}/edit'
+  defaults:
+    _entity_form: 'aws_cloud_snapshot.edit'
+    _title: 'Edit AWS Cloud Snapshot'
+  requirements:
+    _permission: 'edit aws cloud snapshot'
+
+entity.aws_cloud_snapshot.delete_form:
+  path: '/clouds/aws_cloud/{cloud_context}/snapshot/{aws_cloud_snapshot}/delete'
+  defaults:
+    _entity_form: 'aws_cloud_snapshot.delete'
+    _title: 'Delete AWS Cloud Snapshot'
+  requirements:
+    _permission: 'delete aws cloud snapshot'
+#
+#route_callbacks:
+#  - '\Drupal\aws_cloud\Routing\AwsCloudRoutes::routes'

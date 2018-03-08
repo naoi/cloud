@@ -1,0 +1,186 @@
+# updated by yas 2016/06/02
+# updated by yas 2016/06/01
+# updated by yas 2016/05/20
+# updated by yas 2016/05/19
+
+##################
+# AWS Cloud Config
+##################
+
+aws_cloud.settings:
+  route_name: 'aws_cloud.settings'
+  title: 'AWS Cloud Settings'
+  weight: -1
+  base_route: aws_cloud.settings
+
+############################
+# AWS Cloud Service Provider
+############################
+
+entity.cloud_context.add_form:
+  route_name: entity.cloud_context.add_form
+  title: 'Add AWS Cloud Service Provider'
+  appears_on:
+    - entity.cloud_context.collection
+
+entity.cloud_context.collection:
+  route_name: entity.cloud_context.collection
+  title: 'List AWS Cloud Service Providers'
+  weight: 1
+  base_route: aws_cloud.settings
+  appears_on:
+    - entity.cloud_context.add_form
+    - entity.cloud_context.edit_form
+    - entity.cloud_context.delete_form
+
+
+####################
+# AWS Cloud Instance
+####################
+
+entity.aws_cloud_instance.add_form:
+  route_name: entity.aws_cloud_instance.add_form
+  title: 'Add | Launch AWS Cloud Instance'
+  appears_on:
+    - entity.aws_cloud_instance.collection
+
+entity.aws_cloud_instance.collection:
+  route_name: entity.aws_cloud_instance.collection
+  title: 'List AWS Cloud Instances'
+  appears_on:
+    - entity.aws_cloud_instance.add_form
+    - entity.aws_cloud_instance.edit_form
+    - entity.aws_cloud_instance.delete_form
+
+
+####################
+# AWS Cloud Image
+####################
+
+entity.aws_cloud_image.add_form:
+  route_name: entity.aws_cloud_image.add_form
+  title: 'Add AWS Cloud Image'
+  appears_on:
+    - entity.aws_cloud_image.collection
+
+entity.aws_cloud_image.collection:
+  route_name: entity.aws_cloud_image.collection
+  title: 'List AWS Cloud Images'
+  appears_on:
+    - entity.aws_cloud_image.add_form
+    - entity.aws_cloud_image.edit_form
+    - entity.aws_cloud_image.delete_form
+
+
+#############################
+# AWS Cloud Network Interface
+#############################
+
+entity.aws_cloud_network_interface.add_form:
+  route_name: entity.aws_cloud_network_interface.add_form
+  title: 'Add AWS Cloud Network Interface'
+  appears_on:
+    - entity.aws_cloud_network_interface.collection
+
+entity.aws_cloud_network_interface.collection:
+  route_name: entity.aws_cloud_network_interface.collection
+  title: 'List AWS Cloud Network Interfaces'
+  appears_on:
+    - entity.aws_cloud_network_interface.add_form
+    - entity.aws_cloud_network_interface.edit_form
+    - entity.aws_cloud_network_interface.delete_form
+
+
+######################
+# AWS Cloud Elastic IP
+######################
+
+entity.aws_cloud_elastic_ip.add_form:
+  route_name: entity.aws_cloud_elastic_ip.add_form
+  title: 'Add AWS Cloud Elastic IP'
+  appears_on:
+    - entity.aws_cloud_elastic_ip.collection
+
+entity.aws_cloud_elastic_ip.collection:
+  route_name: entity.aws_cloud_elastic_ip.collection
+  title: 'List AWS Cloud Elastic IPs'
+  appears_on:
+    - entity.aws_cloud_elastic_ip.add_form
+    - entity.aws_cloud_elastic_ip.edit_form
+    - entity.aws_cloud_elastic_ip.delete_form
+
+
+####################
+# AWS Cloud Key Pair
+####################
+
+entity.aws_cloud_key_pair.add_form:
+  route_name: entity.aws_cloud_key_pair.add_form
+  title: 'Add AWS Cloud Key Pair'
+  appears_on:
+    - entity.aws_cloud_key_pair.collection
+
+entity.aws_cloud_key_pair.collection:
+  route_name: entity.aws_cloud_key_pair.collection
+  title: 'List AWS Cloud Key Pairs'
+  appears_on:
+    - entity.aws_cloud_key_pair.add_form
+    - entity.aws_cloud_key_pair.edit_form
+    - entity.aws_cloud_key_pair.delete_form
+
+
+##########################
+# AWS Cloud Security Group
+##########################
+
+entity.aws_cloud_security_group.add_form:
+  route_name: entity.aws_cloud_security_group.add_form
+  title: 'Add AWS Cloud Security Group'
+  appears_on:
+    - entity.aws_cloud_security_group.collection
+
+entity.aws_cloud_security_group.collection:
+  route_name: entity.aws_cloud_security_group.collection
+  title: 'List AWS Cloud Security Groups'
+  appears_on:
+    - entity.aws_cloud_security_group.add_form
+    - entity.aws_cloud_security_group.edit_form
+    - entity.aws_cloud_security_group.delete_form
+
+
+##################
+# AWS Cloud Volume
+##################
+
+entity.aws_cloud_volume.add_form:
+  route_name: entity.aws_cloud_volume.add_form
+  title: 'Add AWS Cloud Volume'
+  appears_on:
+    - entity.aws_cloud_volume.collection
+
+entity.aws_cloud_volume.collection:
+  route_name: entity.aws_cloud_volume.collection
+  title: 'List AWS Cloud Volumes'
+  appears_on:
+    - entity.aws_cloud_volume.add_form
+    - entity.aws_cloud_volume.edit_form
+    - entity.aws_cloud_volume.delete_form
+
+
+####################
+# AWS Cloud Snapshot
+####################
+
+entity.aws_cloud_snapshot.add_form:
+  route_name: entity.aws_cloud_snapshot.add_form
+  title: 'Add AWS Cloud Snapshot'
+  appears_on:
+    - entity.aws_cloud_snapshot.collection
+
+entity.aws_cloud_snapshot.collection:
+  route_name: entity.aws_cloud_snapshot.collection
+  title: 'List AWS Cloud Snapshots'
+  appears_on:
+    - entity.aws_cloud_snapshot.add_form
+    - entity.aws_cloud_snapshot.edit_form
+    - entity.aws_cloud_snapshot.delete_form

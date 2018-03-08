@@ -1,0 +1,9 @@
+cloud:
+  version: 8.x-1.x
+  css:
+    theme:
+      css/cloud.css: {}
+  js:
+    js/cloud.js: {}
+  dependencies:
+    - core/jquery

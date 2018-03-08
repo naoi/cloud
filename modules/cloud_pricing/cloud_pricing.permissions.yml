@@ -1,0 +1,21 @@
+# updated by yas 2016/05/25
+
+add cloud pricing:
+  title: 'Add cloud pricing'
+  description: 'Allow to add cloud pricing'
+
+list cloud pricing:
+  title: 'List cloud pricing'
+  description: 'Allow access to list cloud pricing'
+
+view cloud pricing:
+  title: 'View cloud pricing'
+  description: 'Allow to view cloud pricing'
+
+edit cloud pricing:
+  title: 'Edit cloud pricing'
+  description: 'Allow to edit cloud pricing'
+
+delete cloud pricing:
+  title: 'Delete cloud pricing'
+  description: 'Allow to delete cloud pricing'
