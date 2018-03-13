@@ -46,6 +46,12 @@ use Drupal\aws_cloud\Aws\Config\ConfigInterface;
 class Config extends ConfigEntityBase implements ConfigInterface {
 
   /**
+   * Entity bundle this module implements
+   * @var string
+   */
+  private $entity_bundle = 'aws_cloud';
+
+  /**
    * Cloud Display Name.
    *
    * @var string
@@ -264,4 +270,7 @@ class Config extends ConfigEntityBase implements ConfigInterface {
     return $this->langcode;
   }
 
+  public function entity_bundle() {
+    return $this->entity_bundle;
+  }
 }

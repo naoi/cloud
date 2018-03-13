@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - cloud_server_template.cloud_server_template_type.aws_cloud
+    - field.storage.cloud_server_template.field_ssh_key
+id: cloud_server_template.aws_cloud.field_ssh_key
+field_name: field_ssh_key
+entity_type: cloud_server_template
+bundle: aws_cloud
+label: 'SSH Key'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:aws_cloud_key_pair'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: key_pair_name
+      direction: ASC
+    auto_create: false
+field_type: entity_reference

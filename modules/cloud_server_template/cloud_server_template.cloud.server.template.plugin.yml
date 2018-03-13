@@ -1,0 +1,5 @@
+# Example cloud_server_template_plugin plugin definitions.
+# Plugin property $defaults are defined in CloudServerTemplatePluginManager.
+#cloud_server.cloud_server_template:
+#  id: cloud_server_template
+#  bundle: cloud_server_template

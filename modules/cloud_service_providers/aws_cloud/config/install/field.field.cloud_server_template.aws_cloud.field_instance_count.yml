@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - cloud_server_template.cloud_server_template_type.aws_cloud
+    - field.storage.cloud_server_template.field_instance_count
+id: cloud_server_template.aws_cloud.field_instance_count
+field_name: field_instance_count
+entity_type: cloud_server_template
+bundle: aws_cloud
+label: 'Instance Count'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

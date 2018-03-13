@@ -1,17 +1,21 @@
 <?php
 
-namespace Drupal\aws_cloud\Entity\Ec2;
+namespace Drupal\cloud\Entity;
 
+use Drupal\Core\Entity\RevisionableInterface;
+use Drupal\cloud\CloudContextInterface;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\user\EntityOwnerInterface;
+use Drupal\user\UserInterface;
 
 /**
- * Contains common methods for AWS Cloud entities.
+ * Base class for all cloud based entities.
  *
  * The main purpose of this class is to provide the
  * cloud_context as a parameter in urlRouteParameters method.
  */
-class EC2ContentEntityBase extends ContentEntityBase {
+class CloudContentEntityBase extends ContentEntityBase implements EntityOwnerInterface, CloudContextInterface {
 
   /**
    * {@inheritdoc}
@@ -37,6 +41,49 @@ class EC2ContentEntityBase extends ContentEntityBase {
     $this->set('cloud_context', $cloud_context);
     return $this;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOwner() {
+    return $this->get('user_id')->entity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOwnerId() {
+    return $this->get('owner_id')->target_id;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setOwnerId($owner_id) {
+    return $this->set('owner_id', $owner_id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setOwner(UserInterface $account) {
+    return $this->set('user_id', $account->id());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function created() {
+    return $this->get('created')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function changed() {
+    return $this->get('changed')->value;
+  }
+
 
   /**
    * {@inheritdoc}

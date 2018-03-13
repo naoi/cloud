@@ -1,0 +1,135 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - cloud_server_template.cloud_server_template_type.aws_cloud
+    - field.field.cloud_server_template.aws_cloud.field_availability_zone
+    - field.field.cloud_server_template.aws_cloud.field_description
+    - field.field.cloud_server_template.aws_cloud.field_group_id
+    - field.field.cloud_server_template.aws_cloud.field_image_id
+    - field.field.cloud_server_template.aws_cloud.field_instance_count
+    - field.field.cloud_server_template.aws_cloud.field_instance_type
+    - field.field.cloud_server_template.aws_cloud.field_kernel_id
+    - field.field.cloud_server_template.aws_cloud.field_ram
+    - field.field.cloud_server_template.aws_cloud.field_security_group
+    - field.field.cloud_server_template.aws_cloud.field_ssh_key
+    - field.field.cloud_server_template.aws_cloud.field_ssh_username
+    - field.field.cloud_server_template.aws_cloud.field_user_data
+  module:
+    - user
+id: cloud_server_template.aws_cloud.default
+targetEntityType: cloud_server_template
+bundle: aws_cloud
+mode: default
+content:
+  field_availability_zone:
+    weight: 12
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_description:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_group_id:
+    weight: 6
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_image_id:
+    weight: 3
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_instance_count:
+    weight: 9
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_instance_type:
+    weight: 2
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_kernel_id:
+    weight: 4
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_ram:
+    weight: 5
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_security_group:
+    weight: 11
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_ssh_key:
+    weight: 7
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_ssh_username:
+    weight: 10
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_user_data:
+    weight: 8
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  name:
+    label: above
+    type: string
+    weight: -4
+    region: content
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  user_id:
+    label: hidden
+    type: author
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

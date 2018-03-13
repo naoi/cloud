@@ -16,12 +16,10 @@
 // created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\ImageInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the Image entity.
@@ -60,14 +58,8 @@ use Drupal\aws_cloud\Aws\Ec2\ImageInterface;
  *   field_ui_base_route = "aws_cloud_image.settings"
  * )
  */
-class Image extends EC2ContentEntityBase implements ImageInterface {
+class Image extends CloudContentEntityBase implements ImageInterface {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function cloud_context() {
-    return $this->get('cloud_context')->value;
-  }
 
   /**
    * {@inheritdoc}
@@ -212,20 +204,6 @@ class Image extends EC2ContentEntityBase implements ImageInterface {
   /**
    * {@inheritdoc}
    */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function refreshed() {
     return $this->get('refreshed')->value;
   }
@@ -235,35 +213,6 @@ class Image extends EC2ContentEntityBase implements ImageInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('user_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($uid) {
-    $this->set('user_id', $uid);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
   }
 
   /**

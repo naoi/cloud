@@ -1,57 +1,77 @@
 <?php
 
-// Updated by yas 2015/06/08
-// updated by yas 2015/06/01
-// updated by yas 2015/05/31
-// created by yas 2015/05/30.
 namespace Drupal\cloud_server_template\Entity;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\RevisionableContentEntityBase;
+use Drupal\Core\Entity\RevisionableInterface;
+use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\cloud_server_template\CloudServerTemplateInterface;
 use Drupal\user\UserInterface;
 
 /**
- * Defines the CloudServerTemplate entity.
+ * Defines the Cloud Server Template entity.
  *
  * @ingroup cloud_server_template
  *
  * @ContentEntityType(
  *   id = "cloud_server_template",
- *   label = @Translation("server template"),
+ *   label = @Translation("Cloud Server Template"),
+ *   bundle_label = @Translation("Cloud Server Template type"),
  *   handlers = {
+ *     "storage" = "Drupal\cloud_server_template\CloudServerTemplateStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\cloud_server_template\Controller\CloudServerTemplateListBuilder",
- *     "views_data"   = "Drupal\cloud_server_template\Entity\CloudServerTemplateViewsData",
+ *     "views_data" = "Drupal\cloud_server_template\Entity\CloudServerTemplateViewsData",
+ *     "translation" = "Drupal\cloud_server_template\CloudServerTemplateTranslationHandler",
  *
  *     "form" = {
- *       "default" = "Drupal\cloud_server_template\Form\CloudServerTemplateEditForm"  ,
- *       "add"     = "Drupal\cloud_server_template\Form\CloudServerTemplateEditForm"  ,
- *       "edit"    = "Drupal\cloud_server_template\Form\CloudServerTemplateEditForm"  ,
- *       "delete"  = "Drupal\cloud_server_template\Form\CloudServerTemplateDeleteForm",
+ *       "default" = "Drupal\cloud_server_template\Form\CloudServerTemplateForm",
+ *       "add" = "Drupal\cloud_server_template\Form\CloudServerTemplateForm",
+ *       "edit" = "Drupal\cloud_server_template\Form\CloudServerTemplateForm",
+ *       "delete" = "Drupal\cloud_server_template\Form\CloudServerTemplateDeleteForm",
  *     },
  *     "access" = "Drupal\cloud_server_template\Controller\CloudServerTemplateAccessControlHandler",
+ *     "route_provider" = {
+ *       "html" = "Drupal\cloud_server_template\Routing\CloudServerTemplateHtmlRouteProvider",
+ *     },
  *   },
  *   base_table = "cloud_server_template",
- *   admin_permission = "administer cloud server templates",
- *   fieldable = TRUE,
+ *   data_table = "cloud_server_template_field_data",
+ *   revision_table = "cloud_server_template_revision",
+ *   revision_data_table = "cloud_server_template_field_revision",
+ *   translatable = TRUE,
+ *   admin_permission = "administer cloud server template entities",
  *   entity_keys = {
- *     "id"    = "id",
+ *     "id" = "id",
+ *     "revision" = "vid",
+ *     "bundle" = "type",
  *     "label" = "name",
- *     "uuid"  = "uuid"
+ *     "uuid" = "uuid",
+ *     "uid" = "user_id",
+ *     "langcode" = "langcode",
+ *     "status" = "status",
  *   },
  *   links = {
- *     "canonical"   = "/entity.cloud_server_template.canonical"  ,
- *     "edit-form"   = "/entity.cloud_server_template.edit_form"  ,
- *     "delete-form" = "/entity.cloud_server_template.delete_form",
- *     "collection"  = "/entity.cloud_server_template.collection"
+ *     "canonical" = "/clouds/design/server_template/{cloud_server_template}",
+ *     "add-form" = "/clouds/design/server_template/add/{cloud_context}/{cloud_server_template_type}",
+ *     "edit-form" = "/clouds/design/server_template/{cloud_server_template}/edit",
+ *     "delete-form" = "/clouds/design/server_template/{cloud_server_template}/delete",
+ *     "version-history" = "/clouds/design/server_template/{cloud_server_template}/revisions",
+ *     "revision" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/view",
+ *     "revision_revert" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/revert",
+ *     "revision_delete" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/delete",
+ *     "translation_revert" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/revert/{langcode}",
+ *     "collection" = "/clouds/design/server_template",
  *   },
- *   field_ui_base_route = "cloud_server_template.settings"
+ *   bundle_entity_type = "cloud_server_template_type",
+ *   field_ui_base_route = "entity.cloud_server_template_type.edit_form"
  * )
  */
-class CloudServerTemplate extends ContentEntityBase implements CloudServerTemplateInterface {
+class CloudServerTemplate extends RevisionableContentEntityBase implements CloudServerTemplateInterface {
+
+  use EntityChangedTrait;
 
   /**
    * {@inheritdoc}
@@ -66,85 +86,72 @@ class CloudServerTemplate extends ContentEntityBase implements CloudServerTempla
   /**
    * {@inheritdoc}
    */
-  public function cloud_context() {
-    return $this->get('cloud_context')->value;
+  protected function urlRouteParameters($rel) {
+    $uri_route_parameters = parent::urlRouteParameters($rel);
+
+    if ($rel === 'revision_revert' && $this instanceof RevisionableInterface) {
+      $uri_route_parameters[$this->getEntityTypeId() . '_revision'] = $this->getRevisionId();
+    }
+    elseif ($rel === 'revision_delete' && $this instanceof RevisionableInterface) {
+      $uri_route_parameters[$this->getEntityTypeId() . '_revision'] = $this->getRevisionId();
+    }
+
+    // add in cloud context
+    $uri_route_parameters['cloud_context'] = $this->cloud_context();
+
+    return $uri_route_parameters;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function instance_type() {
-    return $this->get('instance_type')->value;
+  public function preSave(EntityStorageInterface $storage) {
+    parent::preSave($storage);
+
+    foreach (array_keys($this->getTranslationLanguages()) as $langcode) {
+      $translation = $this->getTranslation($langcode);
+
+      // If no owner has been set explicitly, make the anonymous user the owner.
+      if (!$translation->getOwner()) {
+        $translation->setOwnerId(0);
+      }
+    }
+
+    // If no revision author has been set explicitly, make the cloud_server_template owner the
+    // revision author.
+    if (!$this->getRevisionUser()) {
+      $this->setRevisionUserId($this->getOwnerId());
+    }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function description() {
-    return $this->get('description')->value;
+  public function getName() {
+    return $this->get('name')->value;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function image_id() {
-    return $this->get('image_id')->value;
+  public function setName($name) {
+    $this->set('name', $name);
+    return $this;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function kernel_id() {
-    return $this->get('kernel_id')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function ramdisk_id() {
-    return $this->get('ramdisk_id')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function group_id() {
-    return $this->get('group_id')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function ssh_key_id() {
-    return $this->get('ssh_key_id')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function user_data() {
-    return $this->get('user_data')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function instance_count() {
-    return $this->get('instance_count')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function created() {
+  public function getCreatedTime() {
     return $this->get('created')->value;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function changed() {
-    return $this->get('changed')->value;
+  public function setCreatedTime($timestamp) {
+    $this->set('created', $timestamp);
+    return $this;
   }
 
   /**
@@ -164,14 +171,6 @@ class CloudServerTemplate extends ContentEntityBase implements CloudServerTempla
   /**
    * {@inheritdoc}
    */
-  public function setCloudContext($cloud_context = 'default_cloud_context') {
-    $this->set('cloud_context', $cloud_context);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function setOwnerId($uid) {
     $this->set('user_id', $uid);
     return $this;
@@ -186,115 +185,54 @@ class CloudServerTemplate extends ContentEntityBase implements CloudServerTempla
   }
 
   /**
-   * The comment language code.
+   * {@inheritdoc}
    */
-  public function langcode() {
-    return $this->get('langcode');
+  public function isPublished() {
+    return (bool) $this->getEntityKey('status');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPublished($published) {
+    $this->set('status', $published ? TRUE : FALSE);
+    return $this;
+  }
+
+  // TODO: these have to come out somehow or get abstracted
+
+  /**
+   * {@inheritdoc}
+   */
+  public function cloud_context() {
+    return $this->get('cloud_context')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setCloudContext($cloud_context) {
+    $this->set('cloud_context', $cloud_context);
+    return $this;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
-
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('ID'))
-      ->setDescription(t('The ID of the cloud server templates entity.'))
-      ->setReadOnly(TRUE);
-
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the cloud server templates entity.'))
-      ->setReadOnly(TRUE);
-
-    $fields['cloud_context'] = BaseFieldDefinition::create('string')
-      ->setRequired(TRUE)
-      ->setLabel(t('Cloud Provider Machine Name'))
-      ->setDescription(t('A unique machine name for the cloud provider.'));
-    // Don't set up the default value for cloud_context here!
-    $fields['name'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Name'))
-      ->setDescription(t('The name of the cloud server templates entity.'))
-      ->setSettings([
-        'default_value' => '',
-        'max_length' => 255,
-        'text_processing' => 0,
-      ])
-      ->setDisplayOptions('view', [
-        'label' => 'above',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-    /*
-      ->setDisplayOptions('form', array(
-        'type' => 'string_textfield',
-        'weight' => -6,
-      ))
-     */
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE)
-      ->setRequired(TRUE);
-
-    $fields['description'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Description'))
-      ->setDescription(t('Cloud server template description.'));
-
-    $fields['instance_type'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Instance Type'))
-      ->setDescription(t('Instance Type.'))
-      ->setRequired(TRUE);
-
-    $fields['image_id'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Image ID'))
-      ->setDescription(t('Image ID.'))
-      ->setRequired(TRUE);
-
-    $fields['kernel_id'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Kernel ID'))
-      ->setDescription(t('Kernel ID.'));
-
-    $fields['ramdisk_id'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Ramdisk ID'))
-      ->setDescription(t('Ramdisk ID.'));
-
-    $fields['group_id'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Placement'))
-      ->setDescription(t('Group ID.'));
-
-    $fields['user_data'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('User Data'))
-      ->setDescription(t('User Data.'));
-
-    $fields['instance_count'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Count'))
-      ->setDescription(t('Instance Count.'))
-      ->setDefaultValue(1);
-
-    $fields['ssh_key_id'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('SSH Key'))
-      ->setDescription(t('SSH Key Name.'))
-      ->setRequired(TRUE);
-
-    $fields['created'] = BaseFieldDefinition::create('created')
-      ->setLabel(t('Created'))
-      ->setDescription(t('The time that the entity was created.'));
-
-    $fields['changed'] = BaseFieldDefinition::create('changed')
-      ->setLabel(t('Changed'))
-      ->setDescription(t('The time that the entity was last edited.'));
+    $fields = parent::baseFieldDefinitions($entity_type);
 
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
-      ->setDescription(t('The user ID of the CloudServerTemplate entity author.'))
+      ->setDescription(t('The user ID of author of the Server Template.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
       ->setTranslatable(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',
-        'weight' => 0,
+        'weight' => 11,
       ])
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
@@ -309,9 +247,63 @@ class CloudServerTemplate extends ContentEntityBase implements CloudServerTempla
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['langcode'] = BaseFieldDefinition::create('language')
-      ->setLabel(t('Language code'))
-      ->setDescription(t('The language code of CloudServerTemplate entity.'));
+    $fields['name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Name'))
+      ->setDescription(t('The name of the server template.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'max_length' => 50,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -4,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE)
+      ->setRequired(TRUE);
+
+    # TODO: make this an entity reference to config entity?  For now, leave as string
+    $fields['cloud_context'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Cloud Provider Machine Name'))
+      ->setRequired(TRUE)
+      ->setDescription(t('A unique machine name for the cloud provider.'))
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -3,
+      ]);
+
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Publishing status'))
+      ->setDescription(t('A boolean indicating whether the Cloud Server Template is published.'))
+      ->setRevisionable(TRUE)
+      ->setDefaultValue(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+        'weight' => 100,
+      ]);
+
+    $fields['created'] = BaseFieldDefinition::create('created')
+      ->setLabel(t('Created'))
+      ->setDescription(t('The time that the entity was created.'));
+
+    $fields['changed'] = BaseFieldDefinition::create('changed')
+      ->setLabel(t('Changed'))
+      ->setDescription(t('The time that the entity was last edited.'));
+
+    $fields['revision_translation_affected'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Revision translation affected'))
+      ->setDescription(t('Indicates if the last edit of a translation belongs to current revision.'))
+      ->setReadOnly(TRUE)
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE);
 
     return $fields;
   }

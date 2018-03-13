@@ -35,14 +35,19 @@ function cloud_server_template_help($route_name, RouteMatchInterface $route_matc
  */
 function cloud_server_template_theme() {
   $theme = [];
-
-  $theme['cloud_server_template'] = array(
+  $theme['cloud_server_template'] = [
     'render element' => 'elements',
     'file' => 'cloud_server_template.page.inc',
     'template' => 'cloud_server_template',
-  );
+  ];
+  $theme['cloud_server_template_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'cloud_server_template.page.inc',
+  ];
   return $theme;
 }
+
 
 // /**
 //  * Implements hook_menu().
@@ -321,3 +326,20 @@ function cloud_server_template_theme() {
 // function cloud_server_template_design($op, $cloud_context = '', $params = array() ) {
 //   return drupal_goto('design/server_template');
 // }
+
+
+/**
+* Implements hook_theme_suggestions_HOOK().
+*/
+function cloud_server_template_theme_suggestions_cloud_server_template(array $variables) {
+  $suggestions = [];
+  $entity = $variables['elements']['#cloud_server_template'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'cloud_server_template__' . $sanitized_view_mode;
+  $suggestions[] = 'cloud_server_template__' . $entity->bundle();
+  $suggestions[] = 'cloud_server_template__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'cloud_server_template__' . $entity->id();
+  $suggestions[] = 'cloud_server_template__' . $entity->id() . '__' . $sanitized_view_mode;
+  return $suggestions;
+}

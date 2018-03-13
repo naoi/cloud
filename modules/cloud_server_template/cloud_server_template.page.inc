@@ -4,13 +4,13 @@
  * @file
  * Contains cloud_server_template.page.inc.
  *
- * CloudServerTemplate page callback file for the cloud_server_template entity.
+ * Page callback for Cloud Server Template entities.
  */
 
 use Drupal\Core\Render\Element;
 
 /**
- * Prepares variables for cloud_server_template templates.
+ * Prepares variables for Cloud Server Template templates.
  *
  * Default template: cloud_server_template.html.twig.
  *

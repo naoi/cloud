@@ -1,15 +1,13 @@
 <?php
 
-// Created by yas 2015/05/30.
 namespace Drupal\cloud_server_template\Entity;
 
 use Drupal\views\EntityViewsData;
-use Drupal\views\EntityViewsDataInterface;
 
 /**
- * Provides the views data for the CloudServerTemplate entity type.
+ * Provides Views data for Cloud Server Template entities.
  */
-class CloudServerTemplateViewsData extends EntityViewsData implements EntityViewsDataInterface {
+class CloudServerTemplateViewsData extends EntityViewsData {
 
   /**
    * {@inheritdoc}
@@ -17,11 +15,8 @@ class CloudServerTemplateViewsData extends EntityViewsData implements EntityView
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['cloud_server_template']['table']['base'] = [
-      'field' => 'id',
-      'title' => t('Cloud Server Template'),
-      'help'  => t('The cloud_server_template entity ID.'),
-    ];
+    // Additional information for Views integration, such as table joins, can be
+    // put here.
 
     return $data;
   }

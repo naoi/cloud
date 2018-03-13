@@ -15,12 +15,10 @@
 // Created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\ElasticIpInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the ElasticIp entity.
@@ -59,7 +57,7 @@ use Drupal\aws_cloud\Aws\Ec2\ElasticIpInterface;
  *   field_ui_base_route = "aws_cloud_elastic_ip.settings"
  * )
  */
-class ElasticIp extends EC2ContentEntityBase implements ElasticIpInterface {
+class ElasticIp extends CloudContentEntityBase implements ElasticIpInterface {
 
   /**
    * {@inheritdoc}
@@ -138,19 +136,6 @@ class ElasticIp extends EC2ContentEntityBase implements ElasticIpInterface {
     return $this->get('network_interface_owner')->value;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
-  }
 
   /**
    * {@inheritdoc}
@@ -164,34 +149,6 @@ class ElasticIp extends EC2ContentEntityBase implements ElasticIpInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('owner_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($owner_id) {
-    return $this->set('owner_id', $owner_id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
   }
 
   /**

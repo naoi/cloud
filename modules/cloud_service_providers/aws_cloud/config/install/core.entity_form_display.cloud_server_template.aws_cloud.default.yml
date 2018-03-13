@@ -1,0 +1,138 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - cloud_server_template.cloud_server_template_type.aws_cloud
+    - field.field.cloud_server_template.aws_cloud.field_availability_zone
+    - field.field.cloud_server_template.aws_cloud.field_description
+    - field.field.cloud_server_template.aws_cloud.field_group_id
+    - field.field.cloud_server_template.aws_cloud.field_image_id
+    - field.field.cloud_server_template.aws_cloud.field_instance_count
+    - field.field.cloud_server_template.aws_cloud.field_instance_type
+    - field.field.cloud_server_template.aws_cloud.field_kernel_id
+    - field.field.cloud_server_template.aws_cloud.field_ram
+    - field.field.cloud_server_template.aws_cloud.field_security_group
+    - field.field.cloud_server_template.aws_cloud.field_ssh_key
+    - field.field.cloud_server_template.aws_cloud.field_ssh_username
+    - field.field.cloud_server_template.aws_cloud.field_user_data
+id: cloud_server_template.aws_cloud.default
+targetEntityType: cloud_server_template
+bundle: aws_cloud
+mode: default
+content:
+  field_availability_zone:
+    weight: 11
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_description:
+    weight: 1
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_group_id:
+    weight: 6
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_image_id:
+    weight: 4
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_instance_count:
+    weight: 12
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_instance_type:
+    weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_kernel_id:
+    weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_ram:
+    weight: 5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_security_group:
+    weight: 10
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_ssh_key:
+    weight: 7
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_ssh_username:
+    weight: 9
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_user_data:
+    weight: 8
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  user_id:
+    type: entity_reference_autocomplete
+    weight: 13
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    region: content
+    third_party_settings: {  }
+hidden: {  }

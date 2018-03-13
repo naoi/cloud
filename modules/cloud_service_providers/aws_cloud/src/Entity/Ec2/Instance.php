@@ -18,10 +18,10 @@
 // Created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\InstanceInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the Instance entity.
@@ -61,7 +61,7 @@ use Drupal\aws_cloud\Aws\Ec2\InstanceInterface;
  *   field_ui_base_route = "aws_cloud_instance.settings"
  * )
  */
-class Instance extends EC2ContentEntityBase implements InstanceInterface {
+class Instance extends CloudContentEntityBase implements InstanceInterface {
 
   /**
    * {@inheritdoc}
@@ -462,22 +462,8 @@ class Instance extends EC2ContentEntityBase implements InstanceInterface {
   /**
    * {@inheritdoc}
    */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function setCreated($created = '' /* Y/m/d H:i:s */) {
     return $this->set('created', strtotime($created));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
   }
 
   /**
@@ -492,35 +478,6 @@ class Instance extends EC2ContentEntityBase implements InstanceInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('user_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($uid) {
-    return $this->set('user_id', $uid);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    $this->set('user_id', $account->id());
-    return $this;
   }
 
   /**

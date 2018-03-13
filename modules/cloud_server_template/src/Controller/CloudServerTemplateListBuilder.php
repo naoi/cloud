@@ -8,9 +8,10 @@
 namespace Drupal\cloud_server_template\Controller;
 
 use Drupal\cloud\Controller\CloudContentListBuilder;
-// Use Drupal\Core\Entity\EntityListBuilder; // Using CloudEntityListBuilder instead of EntityListBuilder.
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Url;
+use Drupal\Core\Link;
+
+// Use Drupal\Core\Entity\EntityListBuilder; // Using CloudEntityListBuilder instead of EntityListBuilder.
 
 /**
  * Provides a list controller for CloudServerTemplate entity.
@@ -29,11 +30,6 @@ class CloudServerTemplateListBuilder extends CloudContentListBuilder {
       // the query calls for ordering. TableSort uses the field information
       // to know what database column to sort by.
       ['data' => t('Name'), 'specifier' => 'name'],
-      ['data' => t('Description'), 'specifier' => 'description'],
-      ['data' => t('Instance Type'), 'specifier' => 'instance_type'],
-      ['data' => t('Count'), 'specifier' => 'instance_count'],
-      ['data' => t('Date Created'), 'specifier' => 'created'],
-      ['data' => t('Date Updated'), 'specifier' => 'changed', 'sort' => 'DESC'],
     ];
 
     return $header + parent::buildHeader();
@@ -44,24 +40,11 @@ class CloudServerTemplateListBuilder extends CloudContentListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
 
-    // For debug
-    //  $row['id'] = $entity->id();
-    //  $row['uuid'] = $entity->uuid();
-    $row['name'] = \Drupal::l(
-      $this->getLabel($entity),
-      new Url(
-        'entity.cloud_server_template.canonical', [
-          'cloud_server_template' => $entity->id(),
-    // Need to add.
-          'cloud_context' => $entity->cloud_context(),
-        ]
-      )
+    $row['name'] = Link::createFromRoute(
+      $entity->label(),
+      'entity.cloud_server_template.canonical',
+      ['cloud_server_template' => $entity->id()]
     );
-    $row['description'] = $entity->description();
-    $row['instance_type'] = $entity->instance_type();
-    $row['instance_count'] = $entity->instance_count();
-    $row['created'] = date('Y/m/d H:i', $entity->created());
-    $row['changed'] = date('Y/m/d H:i', $entity->changed());
 
     return $row + parent::buildRow($entity);
   }

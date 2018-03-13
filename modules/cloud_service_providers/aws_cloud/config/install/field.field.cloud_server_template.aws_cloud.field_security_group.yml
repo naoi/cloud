@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - cloud_server_template.cloud_server_template_type.aws_cloud
+    - field.storage.cloud_server_template.field_security_group
+id: cloud_server_template.aws_cloud.field_security_group
+field_name: field_security_group
+entity_type: cloud_server_template
+bundle: aws_cloud
+label: 'Security Groups'
+description: 'Configure the security groups for this instance.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:aws_cloud_security_group'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: group_name
+      direction: ASC
+    auto_create: false
+field_type: entity_reference

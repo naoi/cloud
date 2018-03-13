@@ -16,10 +16,10 @@
 // Created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\NetworkInterfaceInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the NetworkInterface entity.
@@ -58,7 +58,7 @@ use Drupal\aws_cloud\Aws\Ec2\NetworkInterfaceInterface;
  *   field_ui_base_route = "aws_cloud_network_interface.settings"
  * )
  */
-class NetworkInterface extends EC2ContentEntityBase implements NetworkInterfaceInterface {
+class NetworkInterface extends CloudContentEntityBase implements NetworkInterfaceInterface {
 
   /**
    * {@inheritdoc}
@@ -252,35 +252,6 @@ class NetworkInterface extends EC2ContentEntityBase implements NetworkInterfaceI
   /**
    * {@inheritdoc}
    */
-  public function getOwnerId() {
-    return $this->get('owner_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($owner_id) {
-    $this->set('owner_id', $owner_id);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
   }
@@ -290,20 +261,6 @@ class NetworkInterface extends EC2ContentEntityBase implements NetworkInterfaceI
    */
   public function refreshed() {
     return $this->get('refreshed')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
   }
 
   /**

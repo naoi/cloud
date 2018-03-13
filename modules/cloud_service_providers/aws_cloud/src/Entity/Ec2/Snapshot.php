@@ -16,10 +16,10 @@
 // created by yas 2016/04/28.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\SnapshotInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the Snapshot entity.
@@ -59,7 +59,7 @@ use Drupal\aws_cloud\Aws\Ec2\SnapshotInterface;
  *   field_ui_base_route = "aws_cloud.snapshot.settings"
  * )
  */
-class Snapshot extends EC2ContentEntityBase implements SnapshotInterface {
+class Snapshot extends CloudContentEntityBase implements SnapshotInterface {
 
   /**
    * {@inheritdoc}
@@ -183,20 +183,6 @@ class Snapshot extends EC2ContentEntityBase implements SnapshotInterface {
   /**
    * {@inheritdoc}
    */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function refreshed() {
     return $this->get('refreshed')->value;
   }
@@ -206,34 +192,6 @@ class Snapshot extends EC2ContentEntityBase implements SnapshotInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('owner_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($owner_id) {
-    return $this->set('owner_id', $owner_id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
   }
 
   /**

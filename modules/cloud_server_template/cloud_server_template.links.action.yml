@@ -1,9 +1,9 @@
 entity.cloud_server_template.add_form:
   route_name: entity.cloud_server_template.add_form
   title: 'Add Server Template'
+  class: 'Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateLocalAction'
   appears_on:
-    - entity.cloud_server_template.collection
-#   - entity.cloud_server_template.canonical
+    - entity.cloud_server_template.collection.list_all.context
 
 entity.cloud_server_template.collection:
   route_name: entity.cloud_server_template.collection
@@ -11,4 +11,20 @@ entity.cloud_server_template.collection:
   appears_on:
     - entity.cloud_server_template.add_form
     - entity.cloud_server_template.edit_form
-    - entity.cloud_server_template.delete_form
+    - entity.cloud_server_template.delete_formentity.cloud_server_template_type.add_form:
+  route_name: entity.cloud_server_template_type.add_form
+  title: 'Add Cloud Server Template Type'
+  appears_on:
+    - entity.cloud_server_template_type.collection
+
+entity.cloud_server_template.add_form:
+  route_name: entity.cloud_server_template.add_page
+  title: 'Add Cloud Server Template'
+  appears_on:
+    - entity.cloud_server_template.collection
+entity.cloud_server_template_type.add_form:
+  route_name: entity.cloud_server_template_type.add_form
+  title: 'Add Cloud Server Template type'
+  appears_on:
+    - entity.cloud_server_template_type.collection
+

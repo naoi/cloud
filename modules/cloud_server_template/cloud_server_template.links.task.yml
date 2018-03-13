@@ -6,29 +6,54 @@
 #  base_route: 'cloud_server_template.settings'
 #  title: 'Settings'
 
-entity.cloud_server_template.canonical:
-  route_name: 'entity.cloud_server_template.canonical'
-  base_route: 'entity.cloud_server_template.canonical'
-  title: 'View'
-
-entity.cloud_server_template.edit_form:
-  route_name: 'entity.cloud_server_template.edit_form'
-  base_route: 'entity.cloud_server_template.canonical'
-  title: 'Edit'
-
-entity.cloud_server_template.delete_form:
-  route_name: 'entity.cloud_server_template.delete_form'
-  base_route: 'entity.cloud_server_template.canonical'
-  title: 'Delete'
-
-cloud_server_template.local_tasks.cloud_context.list_all:
-  route_name: 'entity.cloud_server_template.collection.list_all'
-  base_route: 'cloud_server_template.local_tasks.cloud_context.list_all'
-  title: 'All'
-  weight: -1
+#entity.cloud_server_template.canonical:
+#  route_name: 'entity.cloud_server_template.canonical'
+#  base_route: 'entity.cloud_server_template.canonical'
+#  title: 'View'
+#
+#entity.cloud_server_template.edit_form:
+#  route_name: 'entity.cloud_server_template.edit_form'
+#  base_route: 'entity.cloud_server_template.canonical'
+#  title: 'Edit'
+#
+#entity.cloud_server_template.delete_form:
+#  route_name: 'entity.cloud_server_template.delete_form'
+#  base_route: 'entity.cloud_server_template.canonical'
+#  title: 'Delete'
+#
+#cloud_server_template.local_tasks.cloud_context.list_all:
+#  route_name: 'entity.cloud_server_template.collection.list_all'
+#  base_route: 'cloud_server_template.local_tasks.cloud_context.list_all'
+#  title: 'All'
+#  weight: -1
 
 cloud_server_template.local_tasks.cloud_context:
   deriver: 'Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateLocalTasks'
 # route_name: 'entity.aws_cloud_instance.collection'
 # class: 'Drupal\aws_cloud\Plugin\Menu\AwsCloudTab'
   weight: 10
+# Cloud Server Template routing definition
+
+#TODO: figure out why cloud_context is not working in this task.yaml file
+entity.cloud_server_template.canonical:
+  deriver: 'Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateLocalTasks'
+  route_name: entity.cloud_server_template.canonical
+  base_route: entity.cloud_server_template.canonical
+  title: 'View'
+
+entity.cloud_server_template.edit_form:
+  route_name: entity.cloud_server_template.edit_form
+  base_route: entity.cloud_server_template.canonical
+  title: 'Edit'
+#
+#entity.cloud_server_template.version_history:
+#  route_name: entity.cloud_server_template.version_history
+#  base_route: entity.cloud_server_template.canonical
+#  title: 'Revisions'
+#
+#entity.cloud_server_template.delete_form:
+#  route_name:  entity.cloud_server_template.delete_form
+#  base_route:  entity.cloud_server_template.canonical
+#  title: Delete
+#  weight: 10
+

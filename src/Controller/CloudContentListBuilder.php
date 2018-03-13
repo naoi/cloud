@@ -14,30 +14,25 @@ use Drupal\Core\Entity\EntityInterface;
 class CloudContentListBuilder extends EntityListBuilder {
 
   /**
-   *
+   * Method takes cloud_context into the querying.
    */
   public function render() {
 
-    $header        = $this->buildHeader();
-    $storage       = $this->getStorage();
-    $query         = $storage->getQuery();
-    // $order         = tablesort_get_order($header);
-    //  $sort          = strtoupper(tablesort_get_sort($header));
-    // $query->execute() below only returns Entity IDs.
-    $key           = [];
+    $header = $this->buildHeader();
+    $storage = $this->getStorage();
+    $query = $storage->getQuery();
+
     // Get cloud_context from a path.
     $cloud_context = \Drupal::routeMatch()->getParameter('cloud_context');
 
     if (isset($cloud_context)) {
       $keys = $query->tableSort($header)
-      // ->sort('instance_type', 'ASC')
-                    ->condition('cloud_context', $cloud_context)
-                    ->execute();
+        ->condition('cloud_context', $cloud_context)
+        ->execute();
     }
     else {
       $keys = $query->tableSort($header)
-      // ->sort('instance_type', 'ASC')
-                    ->execute();
+        ->execute();
     }
 
     $entities = $storage->loadMultiple($keys);
@@ -52,10 +47,10 @@ class CloudContentListBuilder extends EntityListBuilder {
     ];
 
     $build['tablesort_table'] = [
-      '#theme'  => 'table',
+      '#theme' => 'table',
       '#header' => $header,
-      '#rows'   => $rows,
-      '#empty'  => $this->t('There is no @label yet.', [
+      '#rows' => $rows,
+      '#empty' => $this->t('There is no @label yet.', [
         '@label' => $this->entityType->getLabel(),
       ]),
     ];
