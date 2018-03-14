@@ -47,9 +47,10 @@ class CloudServerTemplateMenuLinks extends DeriverBase implements ContainerDeriv
     foreach ($this->config_storage->loadMultiple() as $cloud_context => $entity) {
       $id = 'entity.cloud_server_template.local_tasks.' . $cloud_context;
       $this->derivatives[$id] = $base_plugin_definition;
+      $this->derivatives[$id]['id'] = $id;
       $this->derivatives[$id]['title'] = $entity->label() . ' Server Templates';
       $this->derivatives[$id]['route_name'] = 'entity.cloud_server_template.collection.list_all.context';
-      $this->derivatives[$id]['parent'] = 'cloud_server_template.menu';
+      $this->derivatives[$id]['parent'] = 'entity.cloud_server_template.collection';
       $this->derivatives[$id]['route_parameters'] = ['cloud_context' => $cloud_context];
     }
     return $this->derivatives;

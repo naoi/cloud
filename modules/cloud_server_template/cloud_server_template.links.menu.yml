@@ -18,12 +18,12 @@ cloud_server_template.menu:
 
 # TODO: need to add +Add template link
 # Cloud Server Template menu items definition
-#entity.cloud_server_template.collection:
-#  title: 'Cloud Server Template list'
-#  route_name: entity.cloud_server_template.collection
-#  description: 'List Server Templates'
-#  parent: system.admin_structure
-#  weight: 100
+entity.cloud_server_template.collection:
+  title: 'Cloud Server Template list'
+  route_name: entity.cloud_server_template.collection
+  description: 'List Server Templates'
+  parent: cloud_server_template.menu
+  weight: 100
 
 
 # Cloud Server Template type menu items definition
