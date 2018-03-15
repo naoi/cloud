@@ -24,7 +24,7 @@ mode: default
 content:
   field_availability_zone:
     weight: 12
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -32,14 +32,14 @@ content:
     region: content
   field_description:
     weight: 1
-    label: above
+    label: inline
     settings: {  }
     third_party_settings: {  }
     type: basic_string
     region: content
   field_group_id:
     weight: 6
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -47,7 +47,7 @@ content:
     region: content
   field_image_id:
     weight: 3
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
@@ -55,7 +55,7 @@ content:
     region: content
   field_instance_count:
     weight: 9
-    label: above
+    label: inline
     settings:
       thousand_separator: ''
       prefix_suffix: true
@@ -64,7 +64,7 @@ content:
     region: content
   field_instance_type:
     weight: 2
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -72,7 +72,7 @@ content:
     region: content
   field_kernel_id:
     weight: 4
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -80,7 +80,7 @@ content:
     region: content
   field_ram:
     weight: 5
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -88,7 +88,7 @@ content:
     region: content
   field_security_group:
     weight: 11
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
@@ -96,7 +96,7 @@ content:
     region: content
   field_ssh_key:
     weight: 7
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
@@ -104,7 +104,7 @@ content:
     region: content
   field_ssh_username:
     weight: 10
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -118,7 +118,7 @@ content:
     type: basic_string
     region: content
   name:
-    label: above
+    label: hidden
     type: string
     weight: -4
     region: content
@@ -126,7 +126,7 @@ content:
       link_to_entity: false
     third_party_settings: {  }
   user_id:
-    label: hidden
+    label: inline
     type: author
     weight: 0
     region: content

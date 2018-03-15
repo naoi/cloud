@@ -19,7 +19,7 @@ class CloudServerTemplateCloudContextBundleDeriver extends DeriverBase implement
   /**
    * Constructs new CloudServerTemplateCloudContextBundleDeriver.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $cloud_context
+   * @param \Drupal\Core\Entity\EntityStorageInterface $config_storage
    *   The config storage.
    */
   public function __construct(EntityStorageInterface $config_storage) {
