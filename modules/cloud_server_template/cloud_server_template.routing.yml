@@ -1,9 +1,8 @@
 # Updated by yas 2016/06/23.
 
-# CloudServerTemplate routing definition
+# Cloud Server Template entity view route
 entity.cloud_server_template.canonical:
-  #path: '/clouds/design/server_template/{cloud_context}/{cloud_server_template}'
-  path: '/cloud/design/server_template/{cloud_server_template}'
+  path: '/clouds/design/server_template/{cloud_server_template}'
   defaults:
     _entity_view: 'cloud_server_template'
     _title: 'Server Template Content'
@@ -21,21 +20,23 @@ entity.cloud_server_template.canonical:
 #    _permission: 'list cloud server template'
 #
 entity.cloud_server_template.collection.list_all:
-  path: '/clouds/design/server_template'
+  path: '/clouds/design/server_template/list'
   defaults:
     _entity_list: 'cloud_server_template'
     _title: 'Server Template List'
   requirements:
     _permission: 'list cloud server template'
 
+# Cloud Server Template list by cloud_context route
 entity.cloud_server_template.collection.list_all.context:
-  path: '/clouds/design/server_template/{cloud_context}'
+  path: '/clouds/design/server_template/list/{cloud_context}'
   defaults:
     _entity_list: 'cloud_server_template'
     _title: 'Server Template List'
   requirements:
     _permission: 'list cloud server template'
 
+# Cloud Server Template Type Form
 entity.cloud_server_template.add_form:
   path: '/clouds/design/server_template/add/{cloud_context}/{cloud_server_template_type}'
   defaults:
@@ -50,37 +51,3 @@ entity.cloud_server_template.add_form:
       cloud_server_template_type:
         type: 'entity:cloud_server_template_type'
         converter: 'paramconverter.entity'
-
-#entity.cloud_server_template.edit_form:
-#  path: '/clouds/design/server_template/{cloud_context}/{cloud_server_template}/edit'
-#  defaults:
-#    _entity_form: cloud_server_template.edit
-#    entity_type_id: 'cloud_server_template'
-#    _title: 'Edit Server Template'
-#    bundle_parameter: 'cloud_server_template_type'
-#  requirements:
-#    _entity_access: 'cloud_server_template.edit'
-#    _permission: 'edit cloud server template'
-#  options:
-#    parameters:
-#      cloud_server_template_type:
-#        type: 'entity:cloud_server_template_type'
-#        converter: 'paramconverter.entity'
-#
-#entity.cloud_server_template.delete_form:
-#  path: '/clouds/design/server_template/{cloud_context}/{cloud_server_template}/delete'
-#  defaults:
-#    _entity_form: cloud_server_template.delete
-#    _title: 'Delete Server Template'
-#  requirements:
-#    _entity_access: 'cloud_server_template.delete'
-#    _permission: 'delete cloud server template'
-#
-#cloud_server_template.settings:
-#  path: '/clouds/design/structure/server_template'
-#  defaults:
-#   _form: '\Drupal\cloud_server_template\Entity\Form\CloudServerTemplateSettingsForm'
-#   _title: 'Server Template Settings'
-#  requirements:
-#    _permission: 'administer cloud server template'
-

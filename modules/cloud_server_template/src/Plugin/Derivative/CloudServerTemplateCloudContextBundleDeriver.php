@@ -7,7 +7,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class CloudServerTemplateMenuLinks extends DeriverBase implements ContainerDeriverInterface {
+class CloudServerTemplateCloudContextBundleDeriver extends DeriverBase implements ContainerDeriverInterface {
+
   /**
    * The config storage.
    *
@@ -16,7 +17,7 @@ class CloudServerTemplateMenuLinks extends DeriverBase implements ContainerDeriv
   protected $config_storage;
 
   /**
-   * Constructs new AwsCloudLocalTasks.
+   * Constructs new CloudServerTemplateCloudContextBundleDeriver.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $cloud_context
    *   The config storage.
@@ -38,13 +39,13 @@ class CloudServerTemplateMenuLinks extends DeriverBase implements ContainerDeriv
    * {@inheritdoc}
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
-    foreach ($this->config_storage->loadMultiple() as $cloud_context => $entity) {
-      $id = 'entity.cloud_server_template.local_tasks.' . $cloud_context;
-      $this->derivatives[$id] = $base_plugin_definition;
-      $this->derivatives[$id]['title'] = $entity->label();
-      $this->derivatives[$id]['route_name'] = 'entity.cloud_server_template.collection.list_all.context';
-      $this->derivatives[$id]['parent'] = 'entity.cloud_server_template.collection';
-      $this->derivatives[$id]['route_parameters'] = ['cloud_context' => $cloud_context];
+    // TODO: inject cloud_context via dependency injection
+    //$cloud_contexts = \Drupal::entityTypeManager()->getListBuilder('cloud_context')->load();
+    foreach ($this->config_storage->loadMultiple() as $cloud_context => $context) {
+    //foreach ($cloud_contexts as $context) {
+      $this->derivatives[$context->id()] = $base_plugin_definition;
+      // supply the cloud_context.
+      $this->derivatives[$context->id()]['cloud_context'] = $context->id();
     }
     return $this->derivatives;
   }

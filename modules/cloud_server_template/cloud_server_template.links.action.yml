@@ -1,3 +1,4 @@
+# Defined class is responsible for adding cloud_context into add form link
 entity.cloud_server_template.add_form:
   route_name: entity.cloud_server_template.add_form
   title: 'Add Server Template'
@@ -22,6 +23,7 @@ entity.cloud_server_template.add_form:
   title: 'Add Cloud Server Template'
   appears_on:
     - entity.cloud_server_template.collection
+
 entity.cloud_server_template_type.add_form:
   route_name: entity.cloud_server_template_type.add_form
   title: 'Add Cloud Server Template type'

@@ -11,7 +11,6 @@ use Drupal\cloud\Controller\CloudContentListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Link;
 
-// Use Drupal\Core\Entity\EntityListBuilder; // Using CloudEntityListBuilder instead of EntityListBuilder.
 
 /**
  * Provides a list controller for CloudServerTemplate entity.

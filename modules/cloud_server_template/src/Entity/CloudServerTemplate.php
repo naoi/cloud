@@ -63,7 +63,7 @@ use Drupal\user\UserInterface;
  *     "revision_revert" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/revert",
  *     "revision_delete" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/delete",
  *     "translation_revert" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/revert/{langcode}",
- *     "collection" = "/clouds/design/server_template",
+ *     "collection" = "/clouds/design/server_template/list",
  *   },
  *   bundle_entity_type = "cloud_server_template_type",
  *   field_ui_base_route = "entity.cloud_server_template_type.edit_form"
@@ -198,8 +198,6 @@ class CloudServerTemplate extends RevisionableContentEntityBase implements Cloud
     $this->set('status', $published ? TRUE : FALSE);
     return $this;
   }
-
-  // TODO: these have to come out somehow or get abstracted
 
   /**
    * {@inheritdoc}

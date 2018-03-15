@@ -4,5 +4,5 @@ aws_cloud.cloud_server_template:
   id: aws_cloud
   entity_type: cloud_server_template
   entity_bundle: aws_cloud
-  deriver: 'Drupal\aws_cloud\Plugin\Derivative\CloudServerTemplateDeriver'
+  deriver: 'Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateCloudContextBundleDeriver'
   class: 'Drupal\aws_cloud\Plugin\AwsCloudServerTemplatePlugin'
