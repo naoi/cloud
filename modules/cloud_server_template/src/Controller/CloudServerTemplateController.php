@@ -2,18 +2,57 @@
 
 namespace Drupal\cloud_server_template\Controller;
 
+use Drupal\cloud_server_template\Entity\CloudServerTemplateInterface;
+use Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginManagerInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Url;
-use Drupal\cloud_server_template\Entity\CloudServerTemplateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class CloudServerTemplateController.
  *
  *  Returns responses for Cloud Server Template routes.
  */
-class CloudServerTemplateController extends ControllerBase implements ContainerInjectionInterface {
+class CloudServerTemplateController extends ControllerBase implements ContainerInjectionInterface, CloudServerTemplateControllerInterface {
+
+  /**
+   * The ServerTemplatePluginManager
+   * @var \Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginManager
+   */
+  protected $serverTemplatePluginManager;
+
+  /**
+   * The route match.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
+   * Constructs an OperationsController object.
+   *
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The route match
+   * @param \Drupal\cloud_server_template\Controller\CloudServerTemplatePluginManagerInterface $server_template_plugin_manager
+   *   The server template plugin manager
+   */
+  public function __construct(RouteMatchInterface $route_match, CloudServerTemplatePluginManagerInterface $server_template_plugin_manager) {
+    $this->routeMatch = $route_match;
+    $this->serverTemplatePluginManager = $server_template_plugin_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('current_route_match'),
+      $container->get('plugin.manager.cloud_server_template_plugin')
+    );
+  }
 
   /**
    * Displays a Cloud Server Template  revision.
@@ -160,4 +199,16 @@ class CloudServerTemplateController extends ControllerBase implements ContainerI
     return $build;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function launch(CloudServerTemplateInterface $cloud_server_template) {
+    /* @var \Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginInterface $plugin */
+    $plugin = $this->serverTemplatePluginManager->loadPluginVariant($cloud_server_template->cloud_context());
+    $plugin->launch($cloud_server_template);
+    $build = [
+      '#markup' => t('Hi from plugin ') . $plugin->getEntityBundleName(),
+    ];
+    return $build;
+  }
 }

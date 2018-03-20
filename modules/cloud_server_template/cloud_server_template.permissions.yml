@@ -50,3 +50,7 @@ revert all cloud server template revisions:
 delete all cloud server template revisions:
   title: 'Delete all revisions'
   description: 'Role requires permission to <em>view Cloud Server Template revisions</em> and <em>delete rights</em> for cloud server template entities in question or <em>administer cloud server template entities</em>.'
+
+launch server template:
+  title: 'Launch server template'
+  description: 'Allow user to launch server templates'

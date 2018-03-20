@@ -51,3 +51,18 @@ entity.cloud_server_template.add_form:
       cloud_server_template_type:
         type: 'entity:cloud_server_template_type'
         converter: 'paramconverter.entity'
+
+entity.cloud_server_template.launch:
+  path: '/clouds/design/server_template/{cloud_server_template}/launch'
+  defaults:
+    _controller: '\Drupal\cloud_server_template\Controller\CloudServerTemplateController::launch'
+    _title: 'Launch'
+    entity_id: 'cloud_server_template'
+  requirements:
+    _permission: 'launch server template'
+#  options:
+#    parameters:
+#      cloud_server_template_type:
+#        type: 'entity:cloud_server_template_type'
+#        converter: 'paramconverter.entity'
+

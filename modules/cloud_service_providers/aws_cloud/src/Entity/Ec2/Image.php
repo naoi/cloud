@@ -46,7 +46,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   fieldable = TRUE,
  *   entity_keys = {
  *     "id"    = "id",
- *     "label" = "name",
+ *     "label" = "ami_name",
  *     "uuid"  = "uuid"
  *   },
  *   links = {
@@ -423,7 +423,7 @@ class Image extends CloudContentEntityBase implements ImageInterface {
       ])
       ->setReadOnly(TRUE);
 
-    $fields['block_devices'] = BaseFieldDefinition::create('string')
+    $fields['block_devices'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Block Devices'))
       ->setDescription(t("Comma separated list of volumes associated with this AMI. Indicates if it's the root device, provides device name, the snapshot ID, capacity of volume in GiB when launched, and whether that volume should be deleted on instance termination."))
       ->setDisplayOptions('view', [

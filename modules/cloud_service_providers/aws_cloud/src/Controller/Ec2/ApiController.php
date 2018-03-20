@@ -140,6 +140,8 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
               'State'              => ['Name' => 'running'],
               // Or paravirtual.
               'VirtualizationType' => 'hvm',
+              // instance count
+
             ],
           ],
         ],
@@ -519,6 +521,11 @@ exit;
                    '@status_code'  => $e->getStatusCode(),
                  ]);
       drupal_set_message($message, $status);
+
+      $message = $this->t('Message: @msg', ['@msg' => $e->getAwsErrorMessage()]);
+
+      drupal_set_message($message, $status);
+
     }
 
     return NULL;

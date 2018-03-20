@@ -22,5 +22,10 @@ entity.cloud_server_template.version_history:
   base_route: entity.cloud_server_template.canonical
   title: 'Revisions'
 
+entity.cloud_server_template.launch:
+  route_name: entity.cloud_server_template.launch
+  base_route: entity.cloud_server_template.canonical
+  title: 'Launch'
+
 
 

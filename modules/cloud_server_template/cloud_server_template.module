@@ -12,6 +12,7 @@
 \Drupal::moduleHandler()->loadInclude('cloud_server_template', 'inc', 'cloud_server_template.db'       );
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Implements hook_help().
@@ -46,6 +47,21 @@ function cloud_server_template_theme() {
     'file' => 'cloud_server_template.page.inc',
   ];
   return $theme;
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function cloud_server_template_entity_operation(EntityInterface $entity) {
+  $operations = [];
+  if ($entity->getEntityTypeId() == 'cloud_server_template' && $entity->hasLinkTemplate('launch')) {
+    $operations['launch'] = [
+      'title' => t('Launch'),
+      'url' => $entity->toUrl('launch'),
+      'weight' => 100,
+    ];
+  }
+  return $operations;
 }
 
 

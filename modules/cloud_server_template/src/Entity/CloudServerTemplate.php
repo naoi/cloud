@@ -64,6 +64,7 @@ use Drupal\user\UserInterface;
  *     "revision_delete" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/delete",
  *     "translation_revert" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/revert/{langcode}",
  *     "collection" = "/clouds/design/server_template/list",
+ *     "launch" = "/clouds/design/server_template/{cloud_server_template}/launch",
  *   },
  *   bundle_entity_type = "cloud_server_template_type",
  *   field_ui_base_route = "entity.cloud_server_template_type.edit_form"
