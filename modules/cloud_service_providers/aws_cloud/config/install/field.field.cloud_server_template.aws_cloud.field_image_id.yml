@@ -9,8 +9,8 @@ field_name: field_image_id
 entity_type: cloud_server_template
 bundle: aws_cloud
 label: 'Image Id'
-description: ''
-required: false
+description: 'The ID of the AMI.  An AMI is required to launch an instance and must be specified here or in a launch template.'
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
@@ -19,7 +19,7 @@ settings:
   handler_settings:
     target_bundles: null
     sort:
-      field: name
+      field: ami_name
       direction: ASC
     auto_create: false
 field_type: entity_reference

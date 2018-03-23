@@ -19,12 +19,6 @@ class KeyPairViewsData extends EntityViewsData implements EntityViewsDataInterfa
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['aws_cloud_key_pair']['table']['base'] = [
-      'field' => 'id',
-      'title' => t('AWS Cloud KeyPair'),
-      'help'  => t('The AWC Cloud KeyPair entity ID.'),
-    ];
-
     return $data;
   }
 

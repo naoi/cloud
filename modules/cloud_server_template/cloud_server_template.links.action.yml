@@ -12,7 +12,9 @@ entity.cloud_server_template.collection:
   appears_on:
     - entity.cloud_server_template.add_form
     - entity.cloud_server_template.edit_form
-    - entity.cloud_server_template.delete_formentity.cloud_server_template_type.add_form:
+    - entity.cloud_server_template.delete_form
+
+entity.cloud_server_template_type.add_form:
   route_name: entity.cloud_server_template_type.add_form
   title: 'Add Cloud Server Template Type'
   appears_on:

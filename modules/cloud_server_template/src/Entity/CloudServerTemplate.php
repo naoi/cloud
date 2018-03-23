@@ -56,8 +56,8 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "canonical" = "/clouds/design/server_template/{cloud_server_template}",
  *     "add-form" = "/clouds/design/server_template/add/{cloud_context}/{cloud_server_template_type}",
- *     "edit-form" = "/clouds/design/server_template/{cloud_server_template}/edit",
- *     "delete-form" = "/clouds/design/server_template/{cloud_server_template}/delete",
+ *     "edit-form" = "/clouds/design/server_template/edit/{cloud_context}/{cloud_server_template}",
+ *     "delete-form" = "/clouds/design/server_template/delete/{cloud_context}/{cloud_server_template}",
  *     "version-history" = "/clouds/design/server_template/{cloud_server_template}/revisions",
  *     "revision" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/view",
  *     "revision_revert" = "/clouds/design/server_template/{cloud_server_template}/revisions/{cloud_server_template_revision}/revert",

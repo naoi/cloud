@@ -9,7 +9,7 @@ field_name: field_user_data
 entity_type: cloud_server_template
 bundle: aws_cloud
 label: 'User Data'
-description: ''
+description: 'The user data to make available to the instance.'
 required: false
 translatable: false
 default_value: {  }

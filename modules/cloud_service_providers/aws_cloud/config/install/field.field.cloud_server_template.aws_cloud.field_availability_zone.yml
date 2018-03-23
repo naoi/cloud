@@ -4,15 +4,17 @@ dependencies:
   config:
     - cloud_server_template.cloud_server_template_type.aws_cloud
     - field.storage.cloud_server_template.field_availability_zone
+  module:
+    - options
 id: cloud_server_template.aws_cloud.field_availability_zone
 field_name: field_availability_zone
 entity_type: cloud_server_template
 bundle: aws_cloud
 label: 'Availability Zone'
-description: 'Configure the availability zone for this instance.  If blank, the system will choose the closest zone.'
+description: 'The Availability Zone for the Dedicated Hosts.'
 required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: string
+field_type: list_string

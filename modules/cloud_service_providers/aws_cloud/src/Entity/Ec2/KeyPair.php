@@ -30,6 +30,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder"              ,
  *     "list_builder" = "Drupal\aws_cloud\Controller\Ec2\KeyPairListBuilder",
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data"   = "Drupal\aws_cloud\Entity\Ec2\KeyPairViewsData"      ,
  *     "form" = {
  *       "default"    = "Drupal\aws_cloud\Form\Ec2\KeyPairEditForm"  ,

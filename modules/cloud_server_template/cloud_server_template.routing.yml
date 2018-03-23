@@ -9,7 +9,7 @@ entity.cloud_server_template.canonical:
   requirements:
     _entity_access: 'cloud_server_template.view'
     _permission: 'view cloud server template'
-#
+
 #entity.cloud_server_template.collection:
 #  path: '/clouds/design/server_template/{cloud_context}'
 ##  path: '/clouds/design/server_template'
@@ -60,9 +60,5 @@ entity.cloud_server_template.launch:
     entity_id: 'cloud_server_template'
   requirements:
     _permission: 'launch server template'
-#  options:
-#    parameters:
-#      cloud_server_template_type:
-#        type: 'entity:cloud_server_template_type'
-#        converter: 'paramconverter.entity'
+
 

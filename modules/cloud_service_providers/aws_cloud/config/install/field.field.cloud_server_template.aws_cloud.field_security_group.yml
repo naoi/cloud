@@ -9,8 +9,8 @@ field_name: field_security_group
 entity_type: cloud_server_template
 bundle: aws_cloud
 label: 'Security Groups'
-description: 'Configure the security groups for this instance.'
-required: true
+description: 'Configure the security groups for this instance.  The default assignment will be made if this field is blank.'
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''

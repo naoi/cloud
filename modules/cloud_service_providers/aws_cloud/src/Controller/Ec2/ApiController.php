@@ -29,33 +29,27 @@
 // Created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Controller\Ec2;
 
-use Aws\MockHandler;
-use Aws\Middleware;
-use Aws\Result;
-use Aws\ResultInterface;
-use Aws\Ec2\Exception\Ec2Exception;
-use Aws\Exception\UnresolvedApiException;
 use Aws\Ec2\Ec2Client;
-
-use Drupal\Core\Entity\Query\QueryFactory;
-use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Site\Settings;
-use Drupal\Component\Utility\Random;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Aws\Ec2\Exception\Ec2Exception;
+use Aws\MockHandler;
+use Aws\Result;
 use Drupal\aws_cloud\Aws\Config\ConfigInterface;
 use Drupal\aws_cloud\Aws\Ec2\ApiControllerInterface;
 use Drupal\aws_cloud\Entity\Config\Config;
-use Drupal\aws_cloud\Entity\Ec2\Instance;
-use Drupal\aws_cloud\Entity\Ec2\Image;
-use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
-use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
 use Drupal\aws_cloud\Entity\Ec2\ElasticIp;
+use Drupal\aws_cloud\Entity\Ec2\Image;
+use Drupal\aws_cloud\Entity\Ec2\Instance;
 use Drupal\aws_cloud\Entity\Ec2\KeyPair;
-use Drupal\aws_cloud\Entity\Ec2\Volume;
+use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
+use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
 use Drupal\aws_cloud\Entity\Ec2\Snapshot;
+use Drupal\aws_cloud\Entity\Ec2\Volume;
+use Drupal\Component\Utility\Random;
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-\Drupal::moduleHandler()->loadInclude('cloud', 'inc', 'cloud.constants');
+//\Drupal::moduleHandler()->loadInclude('cloud', 'inc', 'cloud.constants');
 
 /**
  * {@inheritdoc}
@@ -1525,16 +1519,28 @@ exit;
     $params['RamdiskId'] ?: $instance->ramdisk_id();
     $params['UserData' ] ?: $instance->user_data() ;
 
-    $result = [];
-    try {
-
-      $result = $this->execute($instance->cloud_context(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
+//    $result = [];
+//    try {
+//
+//      $result = $this->execute($instance->cloud_context(), $operation, $params);
+//    }
+//    catch (Ec2Exception $e) {
+//
+//    }
+    $result = $this->launchUsingParams($instance->cloud_context(), $params);
     return $result;
+  }
+
+  public function launchUsingParams($cloud_context, $params = []) {
+    if (count($params) == 0) {
+      return NULL;
+    }
+    try {
+      $results = $this->execute($cloud_context, 'RunInstances', $params);
+    } catch (Ec2Exception $e) {
+
+    }
+    return $results;
   }
 
   /**

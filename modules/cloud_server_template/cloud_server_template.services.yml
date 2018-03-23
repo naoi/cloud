@@ -3,3 +3,4 @@ services:
   plugin.manager.cloud_server_template_plugin:
     class: Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginManager
     arguments: ['@module_handler', '@cache.discovery']
+

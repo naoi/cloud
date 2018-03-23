@@ -9,17 +9,16 @@ field_name: field_ssh_key
 entity_type: cloud_server_template
 bundle: aws_cloud
 label: 'SSH Key'
-description: ''
+description: 'The name of the key pair.  If you do not specify a key pair, you can''t connect to the instance unless you choose an AMI that is configured to allow users another way to log in.'
 required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:aws_cloud_key_pair'
+  handler: views
   handler_settings:
-    target_bundles: null
-    sort:
-      field: key_pair_name
-      direction: ASC
-    auto_create: false
+    view:
+      view_name: aws_cloud_key_pairs
+      display_name: entity_reference_1
+      arguments: {  }
 field_type: entity_reference

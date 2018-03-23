@@ -47,6 +47,13 @@ class AwsCloudAdminSettings extends ConfigFormBase {
       '#description' => t('This enables you to test the AWS Cloud module settings without accessing AWS.'),
     ];
 
+    $form['aws_cloud_instance_types'] = [
+      '#type' => 'textarea',
+      '#title' => t('AWS Instance Types'),
+      '#default_value' => $config->get('aws_cloud_instance_types'),
+      '#description' => t('This is a list of AWS instance types. Enter them one per line'),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 

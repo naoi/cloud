@@ -3,15 +3,15 @@ status: true
 dependencies:
   module:
     - cloud_server_template
+    - options
 id: cloud_server_template.field_instance_type
 field_name: field_instance_type
 entity_type: cloud_server_template
-type: string
+type: list_string
 settings:
-  max_length: 255
-  is_ascii: false
-  case_sensitive: false
-module: core
+  allowed_values: {  }
+  allowed_values_function: aws_cloud_instance_type_allowed_values_function
+module: options
 locked: false
 cardinality: 1
 translatable: true

@@ -9,7 +9,7 @@ use Drupal\views\EntityViewsData;
 use Drupal\views\EntityViewsDataInterface;
 
 /**
- * Provides the views data for the CloudScripting entity type.
+ * Provides the views data for the NetworkInterface entity type.
  */
 class NetworkInterfaceViewsData extends EntityViewsData implements EntityViewsDataInterface {
 
@@ -18,12 +18,6 @@ class NetworkInterfaceViewsData extends EntityViewsData implements EntityViewsDa
    */
   public function getViewsData() {
     $data = parent::getViewsData();
-
-    $data['aws_cloud_network_interface']['table']['base'] = [
-      'field' => 'id',
-      'title' => t('AWS Cloud Network Interface'),
-      'help'  => t('The AWC Cloud Network Interface entity ID.'),
-    ];
 
     return $data;
   }

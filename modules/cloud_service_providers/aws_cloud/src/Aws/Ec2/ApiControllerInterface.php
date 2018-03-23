@@ -19,7 +19,6 @@ use Drupal\aws_cloud\Entity\Ec2\KeyPair;
 use Drupal\aws_cloud\Entity\Ec2\Volume;
 use Drupal\aws_cloud\Entity\Ec2\Snapshot;
 
-\Drupal::moduleHandler()->loadInclude('cloud', 'inc', 'cloud.constants');
 
 /**
  * {@inheritdoc}
@@ -45,6 +44,11 @@ interface ApiControllerInterface {
    * ;@inheritdoc}.
    */
   public function launchInstance(Instance $instance);
+
+  /**
+   * Launch an instance using a param array
+   */
+  public function launchUsingParams($cloud_context, $params = []);
 
   /**
    * ;@inheritdoc}.
