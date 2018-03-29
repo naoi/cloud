@@ -20,7 +20,7 @@ function cloud_server_template_help($route_name, RouteMatchInterface $route_matc
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('Cloud Server Template') . '</p>';
-      $output = '<p>' . t('The cloud_server_template module creates a user interface for users to manage clouds. Users can create server templates.') . '</p>';
+      $output .= '<p>' . t('The cloud_server_template module creates a user interface for users to manage clouds. Users can create server templates.') . '</p>';
       return $output;
 
     default:
@@ -47,6 +47,8 @@ function cloud_server_template_theme() {
 
 /**
  * Implements hook_entity_operation().
+ *
+ * @params \Drupal\Core\Entity\EntityInterface $entity
  */
 function cloud_server_template_entity_operation(EntityInterface $entity) {
   $operations = [];

@@ -205,10 +205,9 @@ class CloudServerTemplateController extends ControllerBase implements ContainerI
   public function launch(CloudServerTemplateInterface $cloud_server_template) {
     /* @var \Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginInterface $plugin */
     $plugin = $this->serverTemplatePluginManager->loadPluginVariant($cloud_server_template->cloud_context());
-    $plugin->launch($cloud_server_template);
-    $build = [
-      '#markup' => t('Hi from plugin ') . $plugin->getEntityBundleName(),
-    ];
-    return $build;
+
+    // The plugin method returns an associative array with a route and parameters.
+    $redirect_route = $plugin->launch($cloud_server_template);
+    return $this->redirect($redirect_route['route_name'], isset($redirect_route['params']) ? $redirect_route['params']: []);
   }
 }

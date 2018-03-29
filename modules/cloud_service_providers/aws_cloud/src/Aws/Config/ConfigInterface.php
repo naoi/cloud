@@ -13,15 +13,6 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 interface ConfigInterface extends ConfigEntityInterface {
 
   /**
-   * The bundle name implemented by the aws_cloud module.
-   * Return the entity_bundle to any modules accessing this
-   * config entity.  There might be a better way to pass the
-   * entity bundle information, but for now, just return it
-   * in the config interface
-   */
-  public function entity_bundle();
-
-  /**
    * The Cloud Context.
    */
   public function cloud_context();

@@ -6,8 +6,11 @@ use Drupal\aws_cloud\Controller\Ec2\ApiController;
 use Drupal\cloud_server_template\Entity\CloudServerTemplateInterface;
 use Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginInterface;
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemplatePluginInterface {
+class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemplatePluginInterface, ContainerFactoryPluginInterface {
 
   /**
    * @var \Drupal\aws_cloud\Controller\Ec2\ApiController;
@@ -15,32 +18,36 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
   protected $apiController;
 
   /**
-   * Set to TRUE to use the DryRun api parameter.
-   * @var bool
-   */
-  private $dryRun = TRUE;
-
-  /**
    * Constructs a Drupal\aws_cloud\Plugin\AwsCloudServerTemplatePlugin object.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, QueryFactory $entity_query) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     // setup the ApiController class
-    $this->apiController = new ApiController(\Drupal::service('entity.query'));
+    $this->apiController = new ApiController($entity_query);
   }
 
   /**
-   * Returns the entity bundle
-   * @return string
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity.query')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function getEntityBundleName() {
     return $this->pluginDefinition['entity_bundle'];
   }
 
   /**
-   * Method is responsible for launching an instance in AWS given the cloud
-   * server template parameters.
+   * {@inheritdoc}
    */
   public function launch(CloudServerTemplateInterface $cloud_server_template) {
 
@@ -81,11 +88,24 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
       $params['SubnetId'] = $cloud_server_template->get('field_network')->entity->subnet_id();
     }
 
-    // TODO: check for results and inform the user.
+    // Let other modules alter the parameters before sending to AWS
+    $params = \Drupal::moduleHandler()->invokeAll('aws_cloud_parameter_alter', [$params, $cloud_server_template->cloud_context()]);
+
     if ($this->apiController->launchUsingParams($cloud_server_template->cloud_context(), $params) != null) {
-     drupal_set_message('Launched!');
+      drupal_set_message('Instance launched. Please update list to see your new instance(s).');
+      $return_route = [
+        'route_name' => 'entity.aws_cloud_instance.collection',
+        'params' => ['cloud_context' => $cloud_server_template->cloud_context()],
+      ];
+    }
+    else {
+      $return_route = [
+        'route_name' => 'entity.cloud_server_template.canonical',
+        'params' => ['cloud_server_template' => $cloud_server_template->id()],
+      ];
     }
 
+    return $return_route;
   }
 
 }

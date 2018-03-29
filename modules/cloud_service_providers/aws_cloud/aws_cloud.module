@@ -31,6 +31,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\aws_cloud\Controller\Ec2\ApiController;
 use Drupal\aws_cloud\Entity\Config\Config;
+use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
  * Implements hook_libraries_info()
@@ -133,12 +134,23 @@ function aws_cloud_availbility_zone_allowed_values_function(FieldStorageConfig $
 }
 
 /**
+ * Implements hook_entity_bundle_field_info_alter().
+ */
+function aws_cloud_entity_type_alter(array &$entity_types) {
+  /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  // Add aws constraint to cloud_server_template.
+  // This constraint will perform AWS specific validations
+  $entity_types['cloud_server_template']->addConstraint('AWSConstraint');
+}
+
+/**
  * Implementation of hook_cron().
  */
 function aws_cloud_cron() {
 //  $clouds = aws_cloud_get_all_clouds();
 //  foreach ($clouds as $cloud) {
-//    aws_cloud_fetch_data($cloud['cloud_name']); // This will fetch Cloud related information
+//    aws_cloud_fetch_data
+//($cloud['cloud_name']); // This will fetch Cloud related information
 //    // load the bundle code and run it
 //     module_load_include('inc', 'aws_cloud', 'includes/aws_cloud.bundle_instance');
 //     aws_cloud_process_bundle_instance();

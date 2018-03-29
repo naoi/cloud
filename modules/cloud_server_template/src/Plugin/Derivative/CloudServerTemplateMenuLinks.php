@@ -18,7 +18,7 @@ class CloudServerTemplateMenuLinks extends DeriverBase implements ContainerDeriv
   /**
    * Constructs new AwsCloudLocalTasks.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $cloud_context
+   * @param \Drupal\Core\Entity\EntityStorageInterface $config_storage
    *   The config storage.
    */
   public function __construct(EntityStorageInterface $config_storage) {
