@@ -111,7 +111,8 @@ function aws_cloud_instance_type_allowed_values_function(FieldStorageConfig $def
  * @see options_allowed_values()
  */
 function aws_cloud_availbility_zone_allowed_values_function(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
-  $apiController = new ApiController(\Drupal::service('entity.query'));
+  //$apiController = new ApiController(\Drupal::service('entity.query'));
+  $apiController = ApiController::create(\Drupal::getContainer());
   $availability_zones = [];
 
   if ($entity->bundle() == 'aws_cloud') {

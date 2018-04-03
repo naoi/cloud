@@ -44,10 +44,12 @@ use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
 use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
 use Drupal\aws_cloud\Entity\Ec2\Snapshot;
 use Drupal\aws_cloud\Entity\Ec2\Volume;
+use Drupal\aws_cloud\Service\AwsEc2ServiceException;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
 
 //\Drupal::moduleHandler()->loadInclude('cloud', 'inc', 'cloud.constants');
 
@@ -74,16 +76,17 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
   private $now;
 
   /**
-   * {@inheritdoc}
+   * @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
    */
-//  private $ec2_clients = array();
+  private $awsEc2Service;
 
   /**
    * This function and the next are part of the dependency injection pattern.
    */
-  public function __construct(QueryFactory $entity_query) {
+  public function __construct(QueryFactory $entity_query, AwsEc2ServiceInterface $aws_ec2_service) {
     $this->entity_query = $entity_query;
     $this->now = (new \DateTime())->getTimestamp();
+    $this->awsEc2Service = $aws_ec2_service;
   }
 
   /**
@@ -93,7 +96,8 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     return new static(
       // User the $container to get a query factory object.
       // This object let us create query objects.
-      $container->get('entity.query')
+      $container->get('entity.query'),
+      $container->get('aws_cloud.ec2')
     );
   }
 
@@ -530,129 +534,13 @@ exit;
    */
   public function updateInstanceList(ConfigInterface $cloud_context) {
 
-    $entity_type = 'aws_cloud_instance';
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateInstances();
 
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-    foreach ($entity_ids as $entity_id) {
-      $entity = Instance::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objets.
-    $operation = 'DescribeInstances';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      // 'Filters' => array(
-      //   array(
-      //     'Name' => '<string>',
-      //     'Values' => array('<string>', ...),
-      //   ),
-      //   // ...
-      // ),
-      // 'InstanceIds' => array('<string>', ...),
-      // 'MaxResults' => <integer>,
-      // 'NextToken' => '<string>',
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $reservations = $result['Reservations'];
-    foreach ($reservations as $reservation) {
-      $instances      = $reservation['Instances'];
-      $owner          = $reservation['OwnerId'];
-      $reservation_id = $reservation['ReservationId'];
-      foreach ($instances as $instance) {
-        $instanceName = '';
-        foreach ($instance['Tags'] as $tag) {
-          if ($tag['Key'] == 'Name') {
-            $instanceName = $tag['Value'];
-          }
-        }
-        $security_groups = [];
-        foreach ($instance['SecurityGroups'] as $security_group) {
-          $security_groups[] = $security_group['GroupName'];
-        }
-
-        $entity_id = array_shift($this->entity_query->get($entity_type)
-                       ->condition('instance_id', $instance['InstanceId'])
-                       ->execute());
-
-        // Skip if $entity already exists, by updating 'refreshed' time.
-        if (!empty($entity_id)) {
-          $entity = Instance::load($entity_id);
-          $entity->setInstanceState($instance['State']['Name']);
-          $entity->setElasticIp($instance['elastic_ip']);
-          $entity->setRefreshed($this->now);
-
-          continue;
-        }
-
-        $entity = Instance::create([
-        // $cloud_context,.
-          'cloud_context'           => $cloud_context->id(),
-          'name'                    => !empty($instanceName) ? $instanceName : $instance['InstanceId'],
-          'owner'                   => $owner,
-          'security_groups'         => implode(', ', $security_groups),
-          'instance_id'             => $instance['InstanceId'],
-          'instance_type'           => $instance['InstanceType'],
-          'availability_zone'       => $instance['Placement']['AvailabilityZone'],
-          'tenancy'                 => $instance['Placement']['tenancy'],
-          'instance_state'          => $instance['State']['Name'],
-          'public_dns'              => $instance['PublicDnsName'],
-          'public_ip'               => $instance['PublicIpAddress'],
-       // 'elastic_ip'              => $instance['elastic_ip'],.
-          'private_dns'             => $instance['PrivateDnsName'],
-          'private_ips'             => $instance['PrivateIpAddress'],
-       // 'private_secondary_ip'    => $instance['private_secondary_ip'],.
-          'key_pair_name'           => $instance['KeyName'],
-          'is_monitoring'           => $instance['Monitoring']['State'],
-       // 'launched'                => $instance['launched'],.
-          'vpc_id'                  => $instance['VpcId'],
-          'subnet_id'               => $instance['SubnetId'],
-       // 'network_interfaces'      => $instance['NetworkInterfaces'],.
-          'source_dest_check'       => $instance['SourceDestCheck'],
-          'ebs_optimized'           => $instance['EbsOptimized'],
-          'root_device_type'        => $instance['RootDeviceType'],
-          'root_device'             => $instance['RootDeviceName'],
-          'image_id'                => $instance['ImageId'],
-          'placement_group'         => $instance['Placement']['GroupName'],
-          'virtualization'          => $instance['VirtualizationType'],
-          'reservation'             => $instance['ReservationId'],
-          'ami_launch_index'        => $instance['AmiLaunchIndex'],
-          'host_id'                 => $instance['host_id'],
-          'affinity'                => $instance['affinity'],
-          'state_transition_reason' => $instance['StateTransitionReason'],
-          'instance_lock'           => FALSE,
-       // 'block_devices'           => $instance['BlockDeviceMappings'   ],
-       // 'scheduled_events'        => $instance['scheduled_events'      ],
-       // 'platform'                => $instance['platform'              ],
-       // 'iam_role'                => $instance['iam_role'              ],
-       // 'termination_protection'  => $instance['termination_protection'],
-       // 'lifecycle'               => $instance['lifecycle'             ],
-       // 'monitoring'              => $instance['Monitoring'            ]['State'],
-       // 'alarm_status'            => $instance['alarm_status'          ],
-       // 'kernel_id'               => $instance['kernel_id'             ],
-       // 'ramdisk_id'              => $instance['ramdisk_id'            ],.
-          'created'                 => strtotime($instance['LaunchTime']->__toString()),
-          'changed'                 => $this->now,
-          'refreshed'               => $this->now,
-        ]);
-        $entity->save();
-      }
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_instance.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -663,91 +551,13 @@ exit;
    */
   public function updateImageList(ConfigInterface $cloud_context) {
 
-    $entity_type = 'aws_cloud_image';
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateImages();
 
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity_id) {
-      $entity = Image::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objects.
-    $operation = 'DescribeImages';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      // 'ExecutableUsers' => ['<string>', ...],
-      // 'Filters' => array(
-      //   (
-      //     'Name' => '<string>',
-      //     'Values' => array('<string>', ...),
-      //   ),
-      //   // ...
-      // ),
-      // 'ImageIds' => array('<string>', ...),
-      // 'Owners' => array('<string>', ...),
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $images = $result['Images'];
-    foreach ($images as $image) {
-      $block_devices = [];
-      foreach ($image['BlockDeviceMappings'] as $block_device) {
-        $block_devices[] = $block_device['DeviceName'];
-      }
-
-      $entity_id = array_shift($this->entity_query->get($entity_type)
-                     ->condition('image_id', $image['ImageId'])
-                     ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = Image::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = Image::create([
-      // $cloud_context,.
-        'cloud_context'       => $cloud_context->id(),
-        'image_id'            => $image['ImageId'],
-        'owner'               => $image['OwnerId'],
-        'architecture'        => $image['Architecture'],
-        'virtualization_type' => $image['VirtualizationType'],
-        'root_device_type'    => $image['RootDeviceType'],
-        'root_device_name'    => $image['RootDeviceName'],
-        'ami_name'            => $image['Name'],
-        'kernel_id'           => $image['KernelId'],
-        'ramdisk_id'          => $image['RamdiskId'],
-        'image_type'          => $image['ImageType'],
-        'product_code'        => $image['product_code'],
-        'source'              => $image['ImageLocation'],
-        'state_reason'        => $image['StateReason']['Message'],
-        'platform'            => $image['Platform'],
-        'description'         => $image['Description'],
-        'visibility'          => $image['Public'],
-        'block_devices'       => implode(', ', $block_devices),
-        'created'             => strtotime($image['CreationDate']),
-        'changed'             => $this->now,
-        'refreshed'           => $this->now,
-      ]);
-      $entity->save();
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_image.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -757,76 +567,13 @@ exit;
    * {@inheritdoc}
    */
   public function updateSecurityGroupList(ConfigInterface $cloud_context) {
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateSecurityGroups();
 
-    $entity_type = 'aws_cloud_security_group';
-
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity_id) {
-      $entity = SecurityGroup::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2, Fetch objects.
-    $operation = 'DescribeSecurityGroups';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      // 'Filters' => array(
-      //   array(
-      //     'Name' => '<string>',
-      //     'Values' => array('<string>', ...),
-      //   ),
-      //   // ...
-      // ),
-      // 'GroupIds' => array('<string>', ...),
-      // 'GroupNames' => array('<string>', ...),
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects
-    $security_groups = $result['SecurityGroups'];
-    foreach ($security_groups as $security_group) {
-
-      $entity_id = array_shift($this->entity_query->get($entity_type)
-                     ->condition('group_id', $security_group['GroupId'])
-                     ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = SecurityGroup::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = SecurityGroup::create([
-      // $cloud_context,.
-        'cloud_context'     => $cloud_context->id(),
-        'name'              => !empty($security_group['GroupName']) ? $security_group['GroupName'] : $security_group['GroupId'],
-        'group_id'          => $security_group['GroupId'],
-        'group_name'        => $security_group['GroupName'],
-        'group_description' => $security_group['Description'],
-        'vpc_id'            => $security_group['VpcId'],
-        'owner_id'          => $security_group['OwnerId'],
-        'created'           => $this->now,
-        'changed'           => $this->now,
-        'refreshed'         => $this->now,
-      ]);
-      $entity->save();
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_security_group.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -836,102 +583,13 @@ exit;
    * {@inheritdoc}
    */
   public function updateNetworkInterfaceList(ConfigInterface $cloud_context) {
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateNetworkInterfaces();
 
-    $entity_type = 'aws_cloud_network_interface';
-
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get('aws_cloud_network_interface')
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity_id) {
-      $entity = NetworkInterface::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objects.
-    $operation = 'DescribeNetworkInterfaces';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      // 'Filters' => array(
-      //   array(
-      //     'Name' => '<string>',
-      //     'Values' => ['<string>', ...],
-      //   ),
-      //     // ...
-      // ),
-      // 'NetworkInterfaceIds' => ['<string>', ...],
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $network_interfaces = $result['NetworkInterfaces'];
-    foreach ($network_interfaces as $network_interface) {
-      $private_ip_addresses = [];
-      foreach ($network_interface['PrivateIpAddresses'] as $private_ip_address) {
-        $private_ip_addresses[] = $private_ip_address['PrivateIpAddress'];
-      }
-
-      $security_groups = [];
-      foreach ($network_interface['Groups'] as $security_group) {
-        $security_groups[] = $security_group['GroupName'];
-      }
-
-      $entity_id = array_shift(
-                     $this->entity_query->get($entity_type)
-                       ->condition('network_interface_id', $network_interface['NetworkInterfaceId'])
-                       ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = NetworkInterface::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = NetworkInterface::create([
-      // $cloud_context,.
-        'cloud_context'         => $cloud_context->id(),
-        'name'                  => $network_interface['NetworkInterfaceId'],
-        'network_interface_id'  => $network_interface['NetworkInterfaceId'],
-        'vpc_id'                => $network_interface['VpcId'],
-        'mac_address'           => $network_interface['MacAddress'],
-        'security_groups'       => implode(', ', $security_groups),
-        'status'                => $network_interface['Status'],
-        'private_dns'           => $network_interface['PrivateDnsName'],
-        'primary_private_ip'    => $network_interface['PrivateIpAddress'],
-        'secondary_private_ips' => implode(', ', $private_ip_addresses),
-        'attachment_id'         => $network_interface['Attachment']['AttachmentId'],
-        'attachment_owner'      => $network_interface['Attachment']['InstanceOwnerId'],
-        'attachment_status'     => $network_interface['Attachment']['Status'],
-        'owner_id'              => $network_interface['OwnerId'],
-        'association_id'        => $network_interface['Association']['AssociationId'],
-        'subnet_id'             => $network_interface['SubnetId'],
-        'description'           => $network_interface['Description'],
-        'public_ips'            => $network_interface['Association']['PublicIp'],
-        'source_dest_check'     => $network_interface['SourceDestCheck'],
-        'instance_id'           => $network_interface['Attachment']['InstanceId'],
-        'device_index'          => $network_interface['Attachment']['DeviceIndex'],
-        'delete_on_termination' => $network_interface['Attachment']['DeleteOnTermination'],
-        'allocation_id'         => $network_interface['Association']['AllocationId'],
-        'owner'                 => $network_interface['Attachment']['InstanceOwnerId'],
-        'created'               => $this->now,
-        'changed'               => $this->now,
-        'refreshed'             => $this->now,
-      ]);
-      $entity->save();
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_network_interface.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -942,80 +600,13 @@ exit;
    */
   public function updateElasticIpList(ConfigInterface $cloud_context) {
 
-    $entity_type = 'aws_cloud_elastic_ip';
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateElasticIp();
 
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity_id) {
-      $entity = ElasticIp::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objects.
-    $operation = 'DescribeAddresses';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      // 'AllocationIds' => array('<string>', ...),
-      // 'Filters' => array(
-      //  array(
-      //      'Name' => '<string>',
-      //      'Values' => array('<string>', ...),
-      //  ),
-      //  // ...
-      // ),
-      // 'PublicIps' => ['<string>', ...],
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $elastic_ips = $result['Addresses'];
-    foreach ($elastic_ips as $elastic_ip) {
-
-      $entity_id = array_shift(
-                     $this->entity_query->get($entity_type)
-                          ->condition('public_ip', $elastic_ip['PublicIp'])
-                          ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = ElasticIp::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = ElasticIp::create([
-      // $cloud_context,.
-        'cloud_context'           => $cloud_context->id(),
-        'name'                    => $elastic_ip['PublicIp'],
-        'public_ip'               => $elastic_ip['PublicIp'],
-        'instance_id'             => !empty($elastic_ip['InstanceId']) ? $elastic_ip['InstanceId'] : '',
-        'network_interface_id'    => !empty($elastic_ip['NetworkInterfaceId']) ? $elastic_ip['NetworkInterfaceId'] : '',
-        'private_ip_address'      => !empty($elastic_ip['PrivateIpAddress']) ? $elastic_ip['PrivateIpAddress'] : '',
-        'network_interface_owner' => !empty($elastic_ip['NetworkInterfaceOwnerId']) ? $elastic_ip['NetworkInterfaceOwnerId'] : '',
-        'allocation_id'           => !empty($elastic_ip['AllocationId']) ? $elastic_ip['AllocationId'] : '',
-        'association_id'          => !empty($elastic_ip['AssociationId']) ? $elastic_ip['AssociationId'] : '',
-        'domain'                  => !empty($elastic_ip['Domain']) ? $elastic_ip['Domain'] : '',
-        'created'                 => $this->now,
-        'changed'                 => $this->now,
-        'refreshed'               => $this->now,
-      ]);
-      $entity->save();
-    }
-
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_elastic_ip.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -1026,69 +617,13 @@ exit;
    */
   public function updateKeyPairList(ConfigInterface $cloud_context) {
 
-    $entity_type = 'aws_cloud_key_pair';
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateKeyPairs();
 
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity_id) {
-      $entity = KeyPair::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objects.
-    $operation = 'DescribeKeyPairs';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      // 'Filters' => array(
-      //   array(
-      //     'Name' => '<string>',
-      //     'Values' => array('<string>', ...),
-      //   ),
-      //   // ...
-      // ),
-      // 'KeyNames' => array('<string>', ...),
-    ];
-    $result = [];
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $key_pairs = $result['KeyPairs'];
-    foreach ($key_pairs as $key_pair) {
-
-      $entity_id = array_shift($this->entity_query->get($entity_type)
-                     ->condition('key_pair_name', $key_pair['KeyName'])
-                     ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = KeyPair::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = KeyPair::create([
-      // $cloud_context,.
-        'cloud_context'   => $cloud_context->id(),
-        'key_pair_name'   => $key_pair['KeyName'],
-        'key_fingerprint' => $key_pair['KeyFingerprint'],
-        'created'         => $this->now,
-        'changed'         => $this->now,
-        'refreshed'       => $this->now,
-      ]);
-      $entity->save();
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_key_pair.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -1099,86 +634,13 @@ exit;
    */
   public function updateVolumeList(ConfigInterface $cloud_context) {
 
-    $entity_type = 'aws_cloud_volume';
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateVolumes();
 
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity_id) {
-      $entity = Volume::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objects.
-    $operation = 'DescribeVolumes';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false,
-      //  'Filters' => array(
-      //      array(
-      //          'Name' => '<string>',
-      //          'Values' => array('<string>', ...),
-      //      ),
-      //      // ...
-      //  ),
-      //  'MaxResults' => <integer>,
-      //  'NextToken' => '<string>',
-      //  'VolumeIds' => array('<string>', ...),
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $volumes = $result['Volumes'];
-    foreach ($volumes as $volume) {
-      $attachments = [];
-      foreach ($volume['Attachments'] as $attachment) {
-        $attachments[] = $attachment['InstanceId'];
-      }
-
-      $entity_id = array_shift($this->entity_query->get($entity_type)
-                     ->condition('volume_id', $volume['VolumeId'])
-                     ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = Volume::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = Volume::create([
-      // $cloud_context,.
-        'cloud_context'          => $cloud_context->id(),
-        'name'                   => $volume['VolumeId'],
-        'volume_id'              => $volume['VolumeId'],
-        'size'                   => $volume['Size'],
-        'state'                  => $volume['State'],
-        'volume_status'          => $volume['VirtualizationType'],
-        'attachment_information' => implode(', ', $attachments),
-        'volume_type'            => $volume['VolumeType'],
-        'iops'                   => $volume['Iops'],
-        'snapshot'               => $volume['SnapshotId'],
-        'availability_zone'      => $volume['AvailabilityZone'],
-        'encrypted'              => $volume['Encrypted'],
-        'kms_key_id'             => $volume['KmsKeyId'],
-        'created'                => strtotime($volume['CreateTime']),
-        'changed'                => $this->now,
-        'refreshed'              => $this->now,
-      ]);
-      $entity->save();
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_volume.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -1189,83 +651,13 @@ exit;
    */
   public function updateSnapshotList(ConfigInterface $cloud_context) {
 
-    $entity_type = 'aws_cloud_snapshot';
+    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $updated = $this->awsEc2Service->updateSnapshots();
 
-    // 1. Clean-up outdated objects.
-    $entity_ids = $this->entity_query->get($entity_type)
-                       ->condition('refreshed', $this->now, '<')
-                       ->execute();
-
-    foreach ($entity_ids as $entity) {
-      $entity = Snapshot::load($entity_id);
-      $entity->delete();
+    if ($updated == FALSE) {
+      // @todo setup messenger class and write the error out
     }
 
-    // 2. Fetch objects.
-    $operation = 'DescribeSnapshots';
-    $params = [
-      'DryRun' => $this->is_dryrun, // true || false
-      // 'Filters' => array(
-      //     array(
-      //         'Name' => '<string>',
-      //         'Values' => array('<string>', ...),
-      //     ),
-      //     ...
-      // ),
-      // 'MaxResults' => <integer>,
-      // 'NextToken' => '<string>',
-      // 'OwnerIds' => array('<string>', ...),
-      // 'RestorableByUserIds' => array('<string>', ...),
-      // 'SnapshotIds' => array('<string>', ...),
-    ];
-    $result = [];
-
-    try{
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    // 3. Add objects.
-    $snapshots = $result['Snapshots'];
-    foreach ($snapshots as $snapshot) {
-
-      $entity_id = array_shift($this->entity_query->get($entity_type)
-                     ->condition('snapshot_id', $snapshot['SnapshotId'])
-                     ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = Snapshot::load($entity_id);
-        $entity->setRefreshed($this->now);
-
-        continue;
-      }
-
-      $entity = Snapshot::create([
-      // $cloud_context,.
-        'cloud_context' => $cloud_context->id(),
-        'snapshot_id'   => $snapshot['SnapshotId'],
-        'size'          => $snapshot['VolumeSize'],
-        'description'   => $snapshot['Description'],
-        'status'        => $snapshot['State'],
-        'volume_id'     => $snapshot['VolumeId'],
-        'progress'      => $snapshot['Progress'],
-        'encrypted'     => $snapshot['Encrypted'],
-        'kms_key_id'    => $snapshot['KmsKeyId'],
-        'owner_id'      => $snapshot['OwnerId'],
-        'owner_aliases' => $snapshot['OwnerAlias'],
-        'state_message' => $snapshot['StateMessage'],
-        'created'       => strtotime($snapshot['StartTime']),
-        'changed'       => $this->now,
-        'refreshed'     => $this->now,
-      ]);
-      $entity->save();
-    }
-
-    // 4. Redirect to list objects.
     return $this->redirect('entity.aws_cloud_snapshot.collection', [
       'cloud_context' => $cloud_context->id(),
     ]);
@@ -1275,24 +667,9 @@ exit;
    * {@inheritdoc}
    */
   public function terminateInstance(Instance $instance) {
-
-    $operation = 'TerminateInstances';
-    $params = [
-        'DryRun'      => $this->is_dryrun,
-      // @FIXME
-        'InstanceIds' => [$instance->instance_id()],
-      ];
-    $result = [];
-
-    try {
-
-      $result = $this->execute($instance->cloud_context(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return $result;
+    return $this->awsEc2Service->terminateInstance([
+      'InstanceIds' => [$instance->instance_id()],
+    ]);
   }
 
   /**

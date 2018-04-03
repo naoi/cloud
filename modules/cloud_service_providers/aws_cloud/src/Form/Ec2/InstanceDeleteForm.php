@@ -45,7 +45,10 @@ class InstanceDeleteForm extends CloudContentDeleteForm {
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
 
     $entity = $this->entity;
-    $apiController = new ApiController($this->query_factory);
+
+    /* @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface $aws_service */
+    $aws_service = \Drupal::service('aws_cloud.ec2');
+    $aws_service->setCloudContext($entity->cloud_context());
 
     $status  = 'error';
     $message = $this->t('The @type "@label" couldn\'t terminate.', [
@@ -53,7 +56,11 @@ class InstanceDeleteForm extends CloudContentDeleteForm {
                   '@label' => $entity->label(),
                ]);
 
-    $result = $apiController->terminateInstance($entity);
+
+    $result = $aws_service->terminateInstance([
+      'InstanceIds' => [$entity->instance_id()]
+    ]);
+
     if(isset($result['TerminatingInstances'][0]['InstanceId'])) {
 
       $status  = 'status';
@@ -67,7 +74,7 @@ class InstanceDeleteForm extends CloudContentDeleteForm {
 
     drupal_set_message($message, $status);
 
-    $apiController->updateInstanceList(Config::load($entity->cloud_context()));
+    $aws_service->updateInstances();
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 }
