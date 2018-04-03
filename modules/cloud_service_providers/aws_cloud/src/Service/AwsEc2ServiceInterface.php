@@ -98,6 +98,17 @@ interface AwsEc2ServiceInterface {
   public function describeVolumes($params = []);
 
   /**
+   * Calls the Ec2 API endpoint DescribeAvailabilityZones.
+   * are returned.
+   *
+   * @param array $params
+   *  Parameters array to send to API
+   * @return Array of zones or NULL if there is an error
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function describeAvailabilityZones($params = []);
+
+  /**
    * Calls the Ec2 API endpoint TerminateInstances.
    * are returned.
    *
@@ -256,4 +267,11 @@ interface AwsEc2ServiceInterface {
    *    indicates success so failure
    */
   public function updateSnapshots();
+
+  /**
+   * Method gets all the availability zones in a particular cloud context.
+   * @return array
+   */
+  public function getAvailabilityZones();
+
 }

@@ -18,16 +18,12 @@
 
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentDeleteForm;
-use Drupal\aws_cloud\Entity\Config\Config;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-
 /**
  * Provides a form for deleting a Instance entity.
  *
  * @ingroup aws_cloud
  */
-class InstanceDeleteForm extends CloudContentDeleteForm {
+class InstanceDeleteForm extends AwsDeleteForm {
 
   // delegate parent class - CloudContentDeleteFrom
 
@@ -45,36 +41,31 @@ class InstanceDeleteForm extends CloudContentDeleteForm {
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
 
     $entity = $this->entity;
+    $this->awsEc2Service->setCloudContext($entity->cloud_context());
 
-    /* @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface $aws_service */
-    $aws_service = \Drupal::service('aws_cloud.ec2');
-    $aws_service->setCloudContext($entity->cloud_context());
-
-    $status  = 'error';
-    $message = $this->t('The @type "@label" couldn\'t terminate.', [
-                  '@type'  => $entity->getEntityType()->getLabel(),
-                  '@label' => $entity->label(),
-               ]);
-
-
-    $result = $aws_service->terminateInstance([
+    $result = $this->awsEc2Service->terminateInstance([
       'InstanceIds' => [$entity->instance_id()]
     ]);
 
     if(isset($result['TerminatingInstances'][0]['InstanceId'])) {
 
-      $status  = 'status';
       $message = $this->t('The @type "@label" has been terminated.', [
                            '@type'  => $entity->getEntityType()->getLabel(),
                            '@label' => $entity->label(),
                         ]);
 
       $entity->delete();
+      $this->messenger->addMessage($message);
+    }
+    else {
+      $message = $this->t('The @type "@label" couldn\'t terminate.', [
+        '@type'  => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
     }
 
-    drupal_set_message($message, $status);
-
-    $aws_service->updateInstances();
+    $this->awsEc2Service->updateInstances();
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 }

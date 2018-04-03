@@ -676,7 +676,7 @@ exit;
    * {@inheritdoc}
    */
   public function deregisterImage(Image $image) {
-
+    // @TODO: add support for this function
     $operation = 'DeregisterImage';
     $params = [
       'DryRun'  => $this->is_dryrun,
@@ -701,147 +701,54 @@ exit;
    * {@inheritdoc}
    */
   public function deleteSecurityGroup(SecurityGroup $security_group) {
-
-    $operation = 'DeleteSecurityGroup';
-    $params = [
-      'DryRun'    => $this->is_dryrun,
-      'GroupName' => $security_group->group_name(),
+    return $this->awsEc2Service->deleteSecurityGroup([
       'GroupId'   => $security_group->group_id(),
-    ];
-    $result = [];
-
-    try {
-
-      $this->execute($security_group->cloud_context(), $operation, $params);
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function deleteNetworkInterface(NetworkInterface $network_interface) {
-
-    $operation = 'DeleteNetworkInterface';
-    $params = [
-      'DryRun'             => $this->is_dryrun,
+    return $this->awsEc2Service->deleteNetworkInterface([
       'NetworkInterfaceId' => $network_interface->network_interface_id(),
-    ];
-    $result = [];
-
-    try {
-
-      $this->execute($network_interface->cloud_context(), $operation, $params);
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function deleteElasticIp(ElasticIp $elastic_ip) {
-
-
-    $operation = 'ReleaseAddress';
-    $params = [
-      'DryRun'       => $this->is_dryrun,
-      'PublicIp'     => $elastic_ip->public_ip(),
+    return $this->awsEc2Service->releaseAddress([
       'AllocationId' => $elastic_ip->allocation_id(),
-    ];
-
-    try {
-
-      $this->execute($elastic_ip->cloud_context(), $operation, $params);
-
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
    * @inheritdoc}
    */
   public function deleteKeyPair(KeyPair $key_pair) {
-
-    $operation = 'DeleteKeyPair';
-    $params = [
-      'DryRun'  => $this->is_dryrun,
+    return $this->awsEc2Service->deleteKeyPair([
       'KeyName' => $key_pair->key_pair_name(),
-    ];
-
-    try {
-
-      $this->execute($key_pair->cloud_context(), $operation, $params);
-
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
    * @inheritdoc}
    */
   public function deleteVolume(Volume $volume) {
-
-    $operation = 'DeleteVolume';
-    $params = [
-      'DryRun'   => $this->is_dryrun,
+    return $this->awsEc2Service->deleteVolume([
       'VolumeId' => $volume->volume_id(),
-    ];
-
-    try {
-
-      $this->execute($volume->cloud_context(), $operation, $params);
-
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
    * @inheritdoc}
    */
   public function deleteSnapshot(Snapshot $snapshot) {
-
-    $operation = 'DeleteSnapshot';
-    $params = [
-      'DryRun'     => $this->is_dryrun,
+    return $this->awsEc2Service->deleteSnapshot([
       'SnapshotId' => $snapshot->snapshot_id(),
-    ];
-
-    try {
-
-      $this->execute($snapshot->cloud_context(), $operation, $params);
-
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
@@ -912,12 +819,7 @@ exit;
     if (count($params) == 0) {
       return NULL;
     }
-    try {
-      $results = $this->execute($cloud_context, 'RunInstances', $params);
-    } catch (Ec2Exception $e) {
-
-    }
-    return $results;
+    return $this->awsEc2Service->runInstances($params);
   }
 
   /**
@@ -1116,26 +1018,7 @@ exit;
    * @inheritdoc}
    */
   public function getAvailabilityZones(ConfigInterface $cloud_context) {
-
-   $operation = 'DescribeAvailabilityZones';
-   $params = [
-      'DryRun'      => $this->is_dryrun,
-    ];
-    $result = [];
-
-    try {
-
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    $availability_zones = [];
-    foreach (array_column($result['AvailabilityZones'], 'ZoneName') as $key => $availability_zone)
-      $availability_zones[$availability_zone] = $availability_zone;
-
-    return $availability_zones;
+    return $this->awsEc2Service->getAvailabilityZones();
   }
 
   /**

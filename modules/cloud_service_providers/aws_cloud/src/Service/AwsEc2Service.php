@@ -4,13 +4,14 @@ namespace Drupal\aws_cloud\Service;
 
 use Aws\Ec2\Ec2Client;
 use Aws\Ec2\Exception\Ec2Exception;
-use Drupal\aws_cloud\Entity\Ec2\Instance;
+use Drupal\aws_cloud\Entity\Ec2\ElasticIp;
 use Drupal\aws_cloud\Entity\Ec2\Image;
+use Drupal\aws_cloud\Entity\Ec2\Instance;
+use Drupal\aws_cloud\Entity\Ec2\KeyPair;
 use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
 use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
-use Drupal\aws_cloud\Entity\Ec2\ElasticIp;
-use Drupal\aws_cloud\Entity\Ec2\KeyPair;
 use Drupal\aws_cloud\Entity\Ec2\Volume;
+use Drupal\aws_cloud\Entity\Ec2\Snapshot;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
@@ -283,6 +284,15 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   public function describeVolumes($params = []) {
     $params += $this->getDefaultParameters();
     $results = $this->execute('DescribeVolumes', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function describeAvailabilityZones($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('DescribeAvailabilityZones', $params);
     return $results;
   }
 
@@ -826,6 +836,19 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     return $updated;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getAvailabilityZones() {
+    $zones = [];
+    $results = $this->describeAvailabilityZones();
+    if ($results != NULL) {
+      foreach (array_column($results['AvailabilityZones'], 'ZoneName') as $key => $availability_zone) {
+        $availability_zones[$availability_zone] = $availability_zone;
+      }
+    }
+    return $zones;
+  }
   /**
    * Helper method to get the current timestamp
    * @return int

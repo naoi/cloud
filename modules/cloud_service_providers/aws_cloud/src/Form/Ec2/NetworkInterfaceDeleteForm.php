@@ -15,17 +15,12 @@
 
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentDeleteForm;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-
 /**
  * Provides a form for deleting a NetworkInterface entity.
  *
  * @ingroup aws_cloud
  */
-class NetworkInterfaceDeleteForm extends CloudContentDeleteForm {
-
-  // delegate parent class - CloudContentDeleteFrom
+class NetworkInterfaceDeleteForm extends AwsDeleteForm {
 
   /**
    * {@inheritdoc}
@@ -33,25 +28,27 @@ class NetworkInterfaceDeleteForm extends CloudContentDeleteForm {
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
 
     $entity = $this->entity;
-    $apiController = new ApiController($this->query_factory);
+    $this->awsEc2Service->setCloudContext($entity->cloud_context());
 
-    $status  = 'error';
-    $message = $this->t('The @type "@label" couldn\'t delete.', [
-                  '@type'  => $entity->getEntityType()->getLabel(),
-                  '@label' => $entity->label(),
-               ]);
-    if($apiController->deleteNetworkInterface($entity)) {
+    if($this->awsEc2Service->deleteNetworkInterface([
+      'NetworkInterfaceId' => $entity->network_interface_id()
+    ]) != NULL) {
 
-      $status  = 'status';
       $message = $this->t('The @type "@label" has been deleted.', [
                     '@type'  => $entity->getEntityType()->getLabel(),
                     '@label' => $entity->label(),
                  ]);
 
       $entity->delete();
+      $this->messenger->addMessage($message);
     }
-
-    drupal_set_message($message, $status);
+    else {
+      $message = $this->t('The @type "@label" couldn\'t delete.', [
+        '@type'  => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
+    }
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

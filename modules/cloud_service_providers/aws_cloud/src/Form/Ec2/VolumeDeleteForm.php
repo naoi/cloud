@@ -23,9 +23,7 @@ use Drupal\aws_cloud\Controller\Ec2\ApiController;
  *
  * @ingroup aws_cloud
  */
-class VolumeDeleteForm extends CloudContentDeleteForm {
-
-  // delegate parent class - CloudContentDeleteFrom
+class VolumeDeleteForm extends AwsDeleteForm {
 
   /**
    * {@inheritdoc}
@@ -33,25 +31,27 @@ class VolumeDeleteForm extends CloudContentDeleteForm {
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
 
     $entity = $this->entity;
-    $apiController = new ApiController($this->query_factory);
+    $this->awsEc2Service->setCloudContext($entity->cloud_context());
 
-    $status  = 'error';
-    $message = $this->t('The @type "@label" couldn\'t delete.', [
-                 '@type'  => $entity->getEntityType()->getLabel(),
-                 '@label' => $entity->label(),
-               ]);
-    if($apiController->deleteVolume($entity)) {
+    if($this->awsEc2Service->deleteVolume([
+        'VolumeId' => $entity->volume_id(),
+    ]) != NULL) {
 
-      $status  = 'status';
       $message = $this->t('The @type "@label" has been deleted.', [
                    '@type'  => $entity->getEntityType()->getLabel(),
                    '@label' => $entity->label(),
                  ]);
 
       $entity->delete();
+      $this->messenger->addMessage($message);
     }
-
-    drupal_set_message($message, $status);
+    else {
+      $message = $this->t('The @type "@label" couldn\'t delete.', [
+        '@type'  => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
+    }
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
