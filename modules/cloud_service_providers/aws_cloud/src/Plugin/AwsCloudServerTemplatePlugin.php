@@ -58,7 +58,9 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
     $params['MinCount'] = $cloud_server_template->get('field_min_count')->value;
     $params['Monitoring']['Enabled'] = $cloud_server_template->get('field_monitoring')->value == "0" ? FALSE: TRUE;
     $params['InstanceType'] = $cloud_server_template->get('field_instance_type')->value;
-    $params['KeyName'] = $cloud_server_template->get('field_ssh_key')->entity->get('key_pair_name')->value;
+    if (isset($cloud_server_template->get('field_ssh_key')->entity)) {
+      $params['KeyName'] = $cloud_server_template->get('field_ssh_key')->entity->get('key_pair_name')->value;
+    }
 
     if ($cloud_server_template->get('field_image_id')->entity->get('root_device_type') == 'ebs') {
       $params['InstanceInitiatedShutdownBehavior'] = $cloud_server_template->get('field_instance_shutdown_behavior')->value;
@@ -80,7 +82,9 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
 
     $params['SecurityGroup'] = [];
     foreach ($cloud_server_template->get('field_security_group') as $group) {
-      $params['SecurityGroup'][] = $group->entity->get('group_name')->value;
+      if (isset($group->entity)) {
+        $params['SecurityGroup'][] = $group->entity->get('group_name')->value;
+      }
     }
 
     // set the subnet id - This is required for t2.* instances
