@@ -63,6 +63,13 @@ entity.aws_cloud_image.add_form:
   appears_on:
     - entity.aws_cloud_image.collection
 
+entity.aws_cloud_image.import:
+  route_name: entity.aws_cloud_image.import
+  title: 'Import AWS Cloud Image'
+  appears_on:
+    - entity.aws_cloud_image.collection
+
+
 entity.aws_cloud_image.collection:
   route_name: entity.aws_cloud_image.collection
   title: 'List AWS Cloud Images'

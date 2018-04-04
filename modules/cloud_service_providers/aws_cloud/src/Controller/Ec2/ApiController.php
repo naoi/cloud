@@ -658,6 +658,68 @@ exit;
     ]);
   }
 
+  public function importImages(ConfigInterface $cloud_context, $params) {
+    $entity_type = 'aws_cloud_image';
+    $operation = 'DescribeImages';
+
+    $result = [];
+    try{
+      $result = $this->execute($cloud_context->id(), $operation, $params);
+    }
+    catch (Ec2Exception $e) {
+
+    }
+    // 3. Add objects.
+    $images = $result['Images'];
+    foreach ($images as $image) {
+      $block_devices = [];
+      foreach ($image['BlockDeviceMappings'] as $block_device) {
+        $block_devices[] = $block_device['DeviceName'];
+      }
+
+      $entity_id = array_shift($this->entity_query->get($entity_type)
+        ->condition('image_id', $image['ImageId'])
+        ->execute());
+
+      // Skip if $entity already exists, by updating 'refreshed' time.
+      if (!empty($entity_id)) {
+        $entity = Image::load($entity_id);
+        $entity->setRefreshed($this->now);
+        $entity->save();
+        continue;
+      }
+
+      $entity = Image::create([
+        // $cloud_context,.
+        'cloud_context'       => $cloud_context->id(),
+        'image_id'            => $image['ImageId'],
+        'owner'               => $image['OwnerId'],
+        'architecture'        => $image['Architecture'],
+        'virtualization_type' => $image['VirtualizationType'],
+        'root_device_type'    => $image['RootDeviceType'],
+        'root_device_name'    => $image['RootDeviceName'],
+        'ami_name'            => $image['Name'],
+        'kernel_id'           => $image['KernelId'],
+        'ramdisk_id'          => $image['RamdiskId'],
+        'image_type'          => $image['ImageType'],
+        'product_code'        => $image['product_code'],
+        'source'              => $image['ImageLocation'],
+        'state_reason'        => $image['StateReason']['Message'],
+        'platform'            => $image['Platform'],
+        'description'         => $image['Description'],
+        'visibility'          => $image['Public'],
+        'block_devices'       => implode(', ', $block_devices),
+        'created'             => strtotime($image['CreationDate']),
+        'changed'             => $this->now,
+        'refreshed'           => $this->now,
+      ]);
+      $entity->save();
+    }
+    // return the number of images imported
+    return count($images);
+  }
+
+
   /**
    * {@inheritdoc}
    */

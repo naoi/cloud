@@ -256,6 +256,14 @@ entity.aws_cloud_image.delete_form:
   requirements:
     _permission: 'delete aws cloud image'
 
+entity.aws_cloud_image.import:
+  path: '/clouds/aws_cloud/{cloud_context}/image/import'
+  defaults:
+    _form: '\Drupal\aws_cloud\Form\Ec2\ImageImportForm'
+    _title: 'Import Images'
+  requirements:
+    _permission: 'list aws cloud image'
+
 
 ##############################
 # AWS Cloud Network Interfaces
