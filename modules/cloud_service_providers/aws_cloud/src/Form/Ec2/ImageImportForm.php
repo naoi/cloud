@@ -126,7 +126,7 @@ class ImageImportForm extends FormBase {
     }
 
     $this->messenger->addMessage($this->t('Imported @count images', ['@count' => $image_count]));
-    return $form_state->setRedirect('entity.aws_cloud_image.collection', [
+    return $form_state->setRedirect('view.images.page_1', [
       'cloud_context' => $cloud_context,
     ]);
   }
