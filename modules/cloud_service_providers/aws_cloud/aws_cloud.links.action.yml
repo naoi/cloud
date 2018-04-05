@@ -71,7 +71,7 @@ entity.aws_cloud_image.import:
 
 
 entity.aws_cloud_image.collection:
-  route_name: entity.aws_cloud_image.collection
+  route_name: view.images.page_1
   title: 'List AWS Cloud Images'
   appears_on:
     - entity.aws_cloud_image.add_form
