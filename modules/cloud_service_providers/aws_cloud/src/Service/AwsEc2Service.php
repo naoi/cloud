@@ -458,16 +458,19 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   /**
    * {@inheritdoc}
    */
-  public function updateImages() {
+  public function updateImages($params = [], $clear = TRUE) {
     $timestamp = $this->getTimestamp();
 
     $updated = FALSE;
     $entity_type = 'aws_cloud_image';
 
     // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
+    // clear can be passed into this function
+    if ($clear == TRUE) {
+      $this->clearEntities($entity_type, $timestamp);
+    }
 
-    $result = $this->describeImages();
+    $result = $this->describeImages($params);
     if ($result != NULL) {
       $images = $result['Images'];
       foreach ($images as $image) {
@@ -512,7 +515,7 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         ]);
         $entity->save();
       }
-      $updated = TRUE;
+      $updated = count($image);
     }
     return $updated;
   }

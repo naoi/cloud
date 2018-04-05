@@ -209,10 +209,15 @@ interface AwsEc2ServiceInterface {
    * Update the Ec2 Images.  Delete old Images entities, query the api
    * for updated entities and store them as Images entities.
    *
-   *  @return boolean
-   *    indicates success so failure
+   * @params array $params
+   *   Optional parameters array
+   * @params boolean $clear
+   *   TRUE to delete images entities before importing
+   *  @return boolean | int
+   *    FALSE if nothing is updated.  Number of images imported returned as
+   *    integer if successful
    */
-  public function updateImages();
+  public function updateImages($params = [], $clear = TRUE);
 
   /**
    * Update the Ec2 Security Groups.  Delete old Security Groups entities,

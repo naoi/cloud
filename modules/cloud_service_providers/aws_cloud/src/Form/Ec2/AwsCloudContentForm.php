@@ -9,7 +9,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Messenger\Messenger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class AwsCloudContentForm extends CloudContentForm{
+class AwsCloudContentForm extends CloudContentForm {
 
   /**
    * @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
@@ -27,7 +27,7 @@ class AwsCloudContentForm extends CloudContentForm{
    * AwsDeleteForm constructor.
    * @param \Drupal\Core\Entity\Query\QueryFactory $query_factory
    * @param \Drupal\Core\Entity\EntityManagerInterface $manager
-   * @param \Drupal\aws_cloud\Form\Ec2\AwsEc2ServiceInterface $aws_ec2_service
+   * @param \Drupal\aws_cloud\Service\AwsEc2ServiceInterface $aws_ec2_service
    * @param \Drupal\Core\Messenger\Messenger $messenger
    */
   public function __construct(QueryFactory $query_factory, EntityManagerInterface $manager, AwsEc2ServiceInterface $aws_ec2_service, Messenger $messenger) {
