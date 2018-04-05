@@ -216,14 +216,6 @@ entity.aws_cloud_image.canonical:
     _entity_access: 'aws_cloud_image.view'
     _permission: 'view aws cloud image'
 
-entity.aws_cloud_image.collection:
-  path: '/clouds/aws_cloud/{cloud_context}/image'
-  defaults:
-    _entity_list: 'aws_cloud_image'
-    _title: 'AWS Cloud Image'
-  requirements:
-    _permission: 'list aws cloud image'
-
 entity.aws_cloud_image.add_form:
   path: '/clouds/aws_cloud/{cloud_context}/image/add'
   defaults:

@@ -37,7 +37,7 @@ aws_cloud.local_tasks.instance:
 
 aws_cloud.local_tasks.image:
   title: 'Images'
-  route_name: 'entity.aws_cloud_image.collection'
+  route_name: 'view.images.page_1'
   base_route: 'aws_cloud.local_tasks.cloud_context'
 # parent_id: 'aws_cloud.local_tasks.cloud_context.list_all'
   weight: 10
