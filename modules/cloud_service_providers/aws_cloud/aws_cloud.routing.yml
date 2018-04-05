@@ -216,14 +216,6 @@ entity.aws_cloud_image.canonical:
     _entity_access: 'aws_cloud_image.view'
     _permission: 'view aws cloud image'
 
-entity.aws_cloud_image.collection:
-  path: '/clouds/aws_cloud/{cloud_context}/image'
-  defaults:
-    _entity_list: 'aws_cloud_image'
-    _title: 'AWS Cloud Image'
-  requirements:
-    _permission: 'list aws cloud image'
-
 entity.aws_cloud_image.add_form:
   path: '/clouds/aws_cloud/{cloud_context}/image/add'
   defaults:
@@ -255,6 +247,14 @@ entity.aws_cloud_image.delete_form:
     _title: 'Delete AWS Cloud Image'
   requirements:
     _permission: 'delete aws cloud image'
+
+entity.aws_cloud_image.import:
+  path: '/clouds/aws_cloud/{cloud_context}/image/import'
+  defaults:
+    _form: '\Drupal\aws_cloud\Form\Ec2\ImageImportForm'
+    _title: 'Import Images'
+  requirements:
+    _permission: 'list aws cloud image'
 
 
 ##############################
