@@ -50,7 +50,7 @@ class CloudController {
 
     return [
       '#type' => 'markup',
-      '#markup' => t('THIS IS A DEBUG MESSAGE - Cloud::getCloudServerTemplateList()'),
+      '#markup' => t(''),
     ];
 
 /**
