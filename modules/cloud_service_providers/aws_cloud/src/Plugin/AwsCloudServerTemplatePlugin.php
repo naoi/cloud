@@ -93,7 +93,7 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
     }
 
     // Let other modules alter the parameters before sending to AWS
-    $params = \Drupal::moduleHandler()->invokeAll('aws_cloud_parameter_alter', [$params, $cloud_server_template->cloud_context()]);
+    //$params = \Drupal::moduleHandler()->invokeAll('aws_cloud_parameter_alter', [$params, $cloud_server_template->cloud_context()]);
 
     if ($this->apiController->launchUsingParams($cloud_server_template->cloud_context(), $params) != null) {
       drupal_set_message('Instance launched. Please update list to see your new instance(s).');

@@ -249,7 +249,7 @@ entity.aws_cloud_image.delete_form:
     _permission: 'delete aws cloud image'
 
 entity.aws_cloud_image.import:
-  path: '/clouds/aws_cloud/{cloud_context}/image/import'
+  path: '/cloud/aws_cloud/{cloud_context}/images/import'
   defaults:
     _form: '\Drupal\aws_cloud\Form\Ec2\ImageImportForm'
     _title: 'Import Images'
