@@ -274,6 +274,15 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   /**
    * {@inheritdoc}
    */
+  public function createSecurityGroup($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateSecurityGroup', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function deregisterImage($params = []) {
     $params += $this->getDefaultParameters();
     $results = $this->execute('DeregisterImage', $params);
@@ -359,6 +368,15 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   public function describeAvailabilityZones($params = []) {
     $params += $this->getDefaultParameters();
     $results = $this->execute('DescribeAvailabilityZones', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function describeVpcs($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('DescribeVpcs', $params);
     return $results;
   }
 
@@ -903,6 +921,18 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     }
 
     return $updated;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getVpcs() {
+    $vpcs = [];
+    $results = $this->describeVpcs();
+    foreach (array_column($results['Vpcs'], 'VpcId') as $key => $vpc) {
+      $vpcs[$vpc] = $results['Vpcs'][$key]['CidrBlock'] . " ($vpc)";
+    }
+    return $vpcs;
   }
 
   /**

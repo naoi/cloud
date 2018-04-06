@@ -71,6 +71,15 @@ interface AwsEc2ServiceInterface {
   public function createSnapshot($params = []);
 
   /**
+   * Calls the Ec2 API endpoint Create Security Group.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createSecurityGroup($params = []);
+
+  /**
    * Calls the Ec2 API endpoint DeregisterImage.
    *
    * @param array $params
@@ -172,6 +181,17 @@ interface AwsEc2ServiceInterface {
    * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
    */
   public function describeAvailabilityZones($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint DescribeVpcs.
+   * are returned.
+   *
+   * @param array $params
+   *  Parameters array to send to API
+   * @return Array of VPCs or NULL if there is an error
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function describeVpcs($params = []);
 
   /**
    * Calls the Ec2 API endpoint TerminateInstances.
@@ -343,5 +363,11 @@ interface AwsEc2ServiceInterface {
    * @return array
    */
   public function getAvailabilityZones();
+
+  /**
+   * Method gets all the VPCs in a particular cloud context.
+   * @return array
+   */
+  public function getVpcs();
 
 }

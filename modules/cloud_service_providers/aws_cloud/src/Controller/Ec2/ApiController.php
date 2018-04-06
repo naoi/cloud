@@ -44,14 +44,12 @@ use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
 use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
 use Drupal\aws_cloud\Entity\Ec2\Snapshot;
 use Drupal\aws_cloud\Entity\Ec2\Volume;
-use Drupal\aws_cloud\Service\AwsEc2ServiceException;
+use Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
 
-//\Drupal::moduleHandler()->loadInclude('cloud', 'inc', 'cloud.constants');
 
 /**
  * {@inheritdoc}
