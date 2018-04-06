@@ -10,15 +10,6 @@ entity.cloud_server_template.canonical:
     _entity_access: 'cloud_server_template.view'
     _permission: 'view cloud server template'
 
-#entity.cloud_server_template.collection:
-#  path: '/clouds/design/server_template/{cloud_context}'
-##  path: '/clouds/design/server_template'
-#  defaults:
-#    _entity_list: 'cloud_server_template'
-#    _title: 'Server Template List'
-#  requirements:
-#    _permission: 'list cloud server template'
-#
 entity.cloud_server_template.collection.list_all:
   path: '/clouds/design/server_template/list'
   defaults:
