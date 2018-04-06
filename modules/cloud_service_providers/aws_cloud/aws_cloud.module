@@ -26,12 +26,10 @@
 //\Drupal::moduleHandler()->loadInclude('aws_cloud', 'inc', 'includes/aws_cloud.user_keys.db'      );
 //\Drupal::moduleHandler()->loadInclude('aws_cloud', 'inc', 'includes/aws_cloud.data'              );
 
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
 use Drupal\aws_cloud\Entity\Config\Config;
-use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Implements hook_libraries_info()
@@ -111,8 +109,9 @@ function aws_cloud_instance_type_allowed_values_function(FieldStorageConfig $def
  * @see options_allowed_values()
  */
 function aws_cloud_availbility_zone_allowed_values_function(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
-  //$apiController = new ApiController(\Drupal::service('entity.query'));
-  $apiController = ApiController::create(\Drupal::getContainer());
+
+  /* @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface $awsEc2Service */
+  $awsEc2Service = \Drupal::service('aws_cloud.ec2');
   $availability_zones = [];
 
   if ($entity->bundle() == 'aws_cloud') {
@@ -123,12 +122,8 @@ function aws_cloud_availbility_zone_allowed_values_function(FieldStorageConfig $
     else {
       $cloud_context = $entity->cloud_context();
     }
-    // load the cloud config object
-    $cloud_config = Config::load($cloud_context);
-
-    if (isset($cloud_config)) {
-      $availability_zones = $apiController->getAvailabilityZones($cloud_config);
-    }
+    $awsEc2Service->setCloudContext($cloud_context);
+    $availability_zones = $awsEc2Service->getAvailabilityZones();
   }
 
   return $availability_zones;

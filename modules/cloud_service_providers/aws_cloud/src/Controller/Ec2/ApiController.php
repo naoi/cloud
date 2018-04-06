@@ -546,68 +546,6 @@ exit;
     ]);
   }
 
-  public function importImages(ConfigInterface $cloud_context, $params) {
-    $entity_type = 'aws_cloud_image';
-    $operation = 'DescribeImages';
-
-    $result = [];
-    try{
-      $result = $this->execute($cloud_context->id(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-    // 3. Add objects.
-    $images = $result['Images'];
-    foreach ($images as $image) {
-      $block_devices = [];
-      foreach ($image['BlockDeviceMappings'] as $block_device) {
-        $block_devices[] = $block_device['DeviceName'];
-      }
-
-      $entity_id = array_shift($this->entity_query->get($entity_type)
-        ->condition('image_id', $image['ImageId'])
-        ->execute());
-
-      // Skip if $entity already exists, by updating 'refreshed' time.
-      if (!empty($entity_id)) {
-        $entity = Image::load($entity_id);
-        $entity->setRefreshed($this->now);
-        $entity->save();
-        continue;
-      }
-
-      $entity = Image::create([
-        // $cloud_context,.
-        'cloud_context'       => $cloud_context->id(),
-        'image_id'            => $image['ImageId'],
-        'owner'               => $image['OwnerId'],
-        'architecture'        => $image['Architecture'],
-        'virtualization_type' => $image['VirtualizationType'],
-        'root_device_type'    => $image['RootDeviceType'],
-        'root_device_name'    => $image['RootDeviceName'],
-        'ami_name'            => $image['Name'],
-        'kernel_id'           => $image['KernelId'],
-        'ramdisk_id'          => $image['RamdiskId'],
-        'image_type'          => $image['ImageType'],
-        'product_code'        => $image['product_code'],
-        'source'              => $image['ImageLocation'],
-        'state_reason'        => $image['StateReason']['Message'],
-        'platform'            => $image['Platform'],
-        'description'         => $image['Description'],
-        'visibility'          => $image['Public'],
-        'block_devices'       => implode(', ', $block_devices),
-        'created'             => strtotime($image['CreationDate']),
-        'changed'             => $this->now,
-        'refreshed'           => $this->now,
-      ]);
-      $entity->save();
-    }
-    // return the number of images imported
-    return count($images);
-  }
-
-
   /**
    * {@inheritdoc}
    */
@@ -620,7 +558,7 @@ exit;
       // @todo setup messenger class and write the error out
     }
 
-    return $this->redirect('entity.aws_cloud_image.collection', [
+    return $this->redirect('view.images.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -738,25 +676,9 @@ exit;
    * {@inheritdoc}
    */
   public function deregisterImage(Image $image) {
-    // @TODO: add support for this function
-    $operation = 'DeregisterImage';
-    $params = [
-      'DryRun'  => $this->is_dryrun,
+    return $this->awsEc2Service->deregisterImage([
       'ImageId' => $image->image_id(),
-    ];
-
-    try {
-
-
-      $this->execute($image->cloud_context(), $operation, $params);
-
-      return TRUE;
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return FALSE;
+    ]);
   }
 
   /**
@@ -821,7 +743,6 @@ exit;
     $key_name       = preg_replace('/ \([^\)]*\)$/', '', $instance->key_pair_name());
     $security_group = preg_replace('/ \([^\)]*\)$/', '', $instance->security_groups()); // @TODO: To Array
 
-    $operation = 'RunInstances';
     $params = [
       // The following parameters are required.
       'DryRun'         => $this->is_dryrun,
@@ -829,31 +750,6 @@ exit;
       'MaxCount'       => $instance->max_count(),
       'MinCount'       => $instance->min_count(),
       'InstanceType'   => $instance->instance_type(),
-      // The following parameters are optional.
-      /*
-      'NetworkInterfaces' => array(
-        array(
-          // 'NetworkInterfaceId' => 'string',
-          // 'DeviceIndex' => integer,
-          // 'SubnetId' => 'string',
-          // 'Description' => 'string',
-          // 'PrivateIpAddress' => 'string',
-          // 'Groups' => array('string', ... ),
-          // 'DeleteOnTermination' => true || false,
-          'PrivateIpAddresses' => array(
-            array(
-              // PrivateIpAddress is required
-              'PrivateIpAddress' => '10.0.0.100',
-              'Primary' => true, // true || false,
-            ),
-            // ... repeated
-          ),
-          // 'SecondaryPrivateIpAddressCount' => integer,
-          // 'AssociatePublicIpAddress' => true || false,
-        ),
-        // ... repeated
-      ),
-      */
       'Monitoring'     => ['Enabled' => $instance->is_monitoring() ? true : false],
       'KeyName'        => $key_name,
       'Placement'      => ['AvailabilityZone' => $instance->availability_zone()],
@@ -865,14 +761,6 @@ exit;
     $params['RamdiskId'] ?: $instance->ramdisk_id();
     $params['UserData' ] ?: $instance->user_data() ;
 
-//    $result = [];
-//    try {
-//
-//      $result = $this->execute($instance->cloud_context(), $operation, $params);
-//    }
-//    catch (Ec2Exception $e) {
-//
-//    }
     $result = $this->launchUsingParams($instance->cloud_context(), $params);
     return $result;
   }
@@ -888,27 +776,12 @@ exit;
    * {@inheritdoc}
    */
   public function createImage(Image $image) {
-
-    $operation = 'CreateImage';
-    $params = [
+    return $this->awsEc2Service->createImage([
       'DryRun'      => $this->is_dryrun,
-    // InstanceId is required.
       'InstanceId'  => $image->instance_id(),
-    // Name is required.
       'Name'        => $image->label(),
       'Description' => $image->description(),
-    ];
-    $result = [];
-
-    try {
-
-      $result = $this->execute($image->cloud_context(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return $result;
+    ]);
   }
 
   /**
@@ -978,48 +851,18 @@ exit;
    * {@inheritdoc}
    */
   public function createElasticIp(ElasticIp $elastic_ip) {
-
-    $operation = 'AllocateAddress';
-    $params = [
-      'DryRun' => $this->is_dryrun,
-    // Domain is optional (standard | vpc).
+    return $this->awsEc2Service->allocateAddress([
       'Domain' => $elastic_ip->domain(),
-    ];
-    $result = [];
-
-    try {
-
-      $result = $this->execute($elastic_ip->cloud_context(), $operation, $params);
-    }
-    catch (Exception $e) {
-
-    }
-
-    return $result;
+    ]);
   }
 
   /**
    * @inheritdoc}
    */
   public function createKeyPair(KeyPair $key_pair) {
-
-    $operation = 'CreateKeyPair';
-    $params = [
-      'DryRun'  => $this->is_dryrun,
-    // KeyName is required.
+    return $this->awsEc2Service->createKeyPair([
       'KeyName' => $key_pair->key_pair_name(),
-    ];
-    $result = [];
-
-    try {
-
-      $result = $this->execute($key_pair->cloud_context(), $operation, $params);
-    }
-    catch (Ec2Exception $e) {
-
-    }
-
-    return $result;
+    ]);
   }
 
   /**

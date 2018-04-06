@@ -25,12 +25,15 @@ class ElasticIpDeleteForm extends AwsDeleteForm {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-
+    /* @var \Drupal\aws_cloud\Entity\Ec2\ElasticIp $entity */
     $entity = $this->entity;
     $this->awsEc2Service->setCloudContext($entity->cloud_context());
 
+    $allocation_id = $entity->allocation_id();
+    $public_ip = $entity->public_ip();
     if ($this->awsEc2Service->releaseAddress([
-        'AllocationId' => $entity->allocation_id(),
+        'AllocationId' => isset($allocation_id) ? $entity->allocation_id() : '',
+        'PublicIp' => isset($public_ip) ? $entity->public_ip() : '',
       ]) != NULL
     ) {
 

@@ -15,6 +15,71 @@ interface AwsEc2ServiceInterface {
   public function setCloudContext($cloud_context);
 
   /**
+   * Calls the Ec2 API endpoint AllocateAddress.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @return Array of ElasticIps or NULL if there is an error
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function allocateAddress($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint CreateImage.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @return Array of CreateImage or NULL if there is an error
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createImage($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint Create Key Pair.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createKeyPair($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint Create Network Interface.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createNetworkInterface($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint Create Volume.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createVolume($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint Create Snapshot.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createSnapshot($params = []);
+
+  /**
+   * Calls the Ec2 API endpoint DeregisterImage.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function deregisterImage($params = []);
+
+  /**
    * Calls the Ec2 API endpoint DescribeInstances.
    *
    * @param array $params

@@ -15,9 +15,6 @@
 
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentDeleteForm;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-
 /**
  * Provides a form for deleting a Snapshot entity.
  *
@@ -48,7 +45,7 @@ class SnapshotDeleteForm extends AwsDeleteForm {
     else {
       $message = $this->t('The @type "@label" couldn\'t delete.', [
         '@type'  => $entity->getEntityType()->getLabel(),
-        '@label' => $entity-> label(),
+        '@label' => $entity->snapshot_id(),
       ]);
       $this->messenger->addError($message);
     }

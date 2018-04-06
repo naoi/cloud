@@ -198,6 +198,9 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
       $this->messenger->addError($this->t('Message: @msg', ['@msg' => $e->getAwsErrorMessage()]));
 
     }
+    catch (\InvalidArgumentException $e) {
+      $this->messenger->addError($e->getMessage());
+    }
     return $results;
   }
 
@@ -212,6 +215,69 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
       throw new AwsEc2ServiceException("Cloud Context not set.  Cannot load cloud configuration");
     }
     return $this->config_storage->load($this->cloud_context);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function allocateAddress($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('AllocateAddress', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createImage($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateImage', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createKeyPair($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateKeyPair', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createNetworkInterface($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateNetworkInterface', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createVolume($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateVolume', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createSnapshot($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateSnapshot', $params);
+    return $results;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function deregisterImage($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('DeregisterImage', $params);
+    return $results;
   }
 
   /**
@@ -515,7 +581,7 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         ]);
         $entity->save();
       }
-      $updated = count($image);
+      $updated = count($images);
     }
     return $updated;
   }
@@ -847,11 +913,12 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $results = $this->describeAvailabilityZones();
     if ($results != NULL) {
       foreach (array_column($results['AvailabilityZones'], 'ZoneName') as $key => $availability_zone) {
-        $availability_zones[$availability_zone] = $availability_zone;
+        $zones[$availability_zone] = $availability_zone;
       }
     }
     return $zones;
   }
+
   /**
    * Helper method to get the current timestamp
    * @return int

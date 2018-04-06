@@ -287,7 +287,6 @@ class InstanceLaunchForm extends AwsCloudContentForm {
     $params['KernelId' ] ?: $instance->kernel_id() ;
     $params['RamdiskId'] ?: $instance->ramdisk_id();
     $params['UserData' ] ?: $instance->user_data() ;
-
     return $this->awsEc2Service->runInstances($params);
   }
 }
