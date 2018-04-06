@@ -108,7 +108,7 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
     }
 
     // Let other modules alter the parameters before sending to AWS
-    $params = \Drupal::moduleHandler()->invokeAll('aws_cloud_parameter_alter', [$params, $cloud_server_template->cloud_context()]);
+    //$params = \Drupal::moduleHandler()->invokeAll('aws_cloud_parameter_alter', [$params, $cloud_server_template->cloud_context()]);
 
     $this->awsEc2Service->setCloudContext($cloud_server_template->cloud_context());
 
