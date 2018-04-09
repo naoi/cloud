@@ -124,12 +124,21 @@ function aws_cloud_entity_type_alter(array &$entity_types) {
  * Implementation of hook_cron().
  */
 function aws_cloud_cron() {
-//  $clouds = aws_cloud_get_all_clouds();
-//  foreach ($clouds as $cloud) {
-//    aws_cloud_fetch_data
-//($cloud['cloud_name']); // This will fetch Cloud related information
-//    // load the bundle code and run it
-//     module_load_include('inc', 'aws_cloud', 'includes/aws_cloud.bundle_instance');
-//     aws_cloud_process_bundle_instance();
-//  }
+  /* @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface $aws_ec2_service */
+  $aws_ec2_service = \Drupal::service('aws_cloud.ec2');
+  $clouds = \Drupal::entityQuery('cloud_context')->execute();
+  foreach ($clouds as $cloud_id) {
+    // update the following entities
+    $aws_ec2_service->setCloudContext($cloud_id);
+    $aws_ec2_service->updateInstances();
+    $aws_ec2_service->updateSecurityGroups();
+    $aws_ec2_service->updateKeyPairs();
+    $aws_ec2_service->updateElasticIp();
+    $aws_ec2_service->updateNetworkInterfaces();
+    $aws_ec2_service->updateSnapshots();
+    $aws_ec2_service->updateVolumes();
+
+    // @todo: re-enabled instance bundling
+  }
+
 }
