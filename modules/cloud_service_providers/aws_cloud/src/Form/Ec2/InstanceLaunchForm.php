@@ -15,46 +15,43 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
+use Drupal\aws_cloud\Entity\Config\Config;
+use Drupal\aws_cloud\Form\Ec2\Instance;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-use Drupal\aws_cloud\Entity\Config\Config;
 
 /**
  * Form controller for the Instance entity launch form.
  *
  * @ingroup aws_cloud
  */
-class InstanceLaunchForm extends CloudContentForm {
+class InstanceLaunchForm extends AwsCloudContentForm {
 
-  private $apiController = NULL;
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
    *
    * @param array $form
    * @param FormStateInterface $form_state
-   * @param $cloud_context A cloud_context string value from URL "path".
+   * @param string $cloud_context
+   *  A cloud_context string value from URL "path".
+   * @return array form
    */
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
 
     $cloudContext = Config::load($cloud_context);
-    if(isset($cloudContext)) {
 
+    if(isset($cloudContext)) {
       $cloud_type = $cloudContext->cloud_type();
-      $this->apiController = new ApiController($this->query_factory);
+      $this->awsEc2Service->setCloudContext($cloud_type);
     }
     else {
-
-      $status  = 'error';
-      $message = $this->t("Not found: AWS Cloud provider '@cloud_context'", [
+      $this->messenger->addError($this->t("Not found: AWS Cloud provider '@cloud_context'", [
         '@cloud_context'  => $cloud_context,
-      ]);
-      drupal_set_message($message, $status);
+      ]));
     }
 
-    /* @var $entity \Drupal\aws_cloud\Entity\Ec2\Instance\Entity\Instance */
+    /* @var $entity \Drupal\aws_cloud\Entity\Ec2\Instance */
     $form = parent::buildForm($form, $form_state);
     $entity = $this->entity;
 
@@ -92,8 +89,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->label(),
       '#required'      => TRUE,
       '#weight'        => -5,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['image_id'] = [
@@ -103,8 +98,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->image_id(),
       '#weight'        => -5,
       '#required'      => TRUE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['min_count'] = [
@@ -128,7 +121,6 @@ class InstanceLaunchForm extends CloudContentForm {
     ];
 
     $form['key_pair_name'] = [
-      // '#type'          => 'textfield',
       '#type'          => 'entity_autocomplete',
       '#target_type'   => 'aws_cloud_key_pair',
       '#title'         => $this->t('Key Pair Name'),
@@ -136,8 +128,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->key_pair_name(),
       '#weight'        => -5,
       '#required'      => TRUE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['is_monitoring'] = [
@@ -147,11 +137,9 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => 0,
       '#weight'        => -5,
       '#required'      => TRUE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
-    $availability_zones = $this->apiController->getAvailabilityZones($cloudContext);
+    $availability_zones = $this->awsEc2Service->getAvailabilityZones();
     $form['availability_zone'] = [
       '#type'          => 'select',
       '#title'         => $this->t('Availability Zone'),
@@ -160,12 +148,9 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => array_shift($availability_zones),
       '#weight'        => -5,
       '#required'      => TRUE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['security_groups'] = [
-//    '#type'          => 'textfield',
       '#type'          => 'entity_autocomplete',
       '#target_type'   => 'aws_cloud_security_group',
       '#title'         => $this->t('Security Groups'),
@@ -173,8 +158,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->security_groups(),
       '#weight'        => -5,
       '#required'      => FALSE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['instance_type'] = [
@@ -184,8 +167,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->instance_type(),
       '#weight'        => -5,
       '#required'      => FALSE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['kernel_id'] = [
@@ -195,8 +176,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->kernel_id(),
       '#weight'        => -5,
       '#required'      => FALSE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['ramdisk_id'] = [
@@ -206,8 +185,6 @@ class InstanceLaunchForm extends CloudContentForm {
       '#default_value' => $entity->ramdisk_id(),
       '#weight'        => -5,
       '#required'      => FALSE,
-    // '#attributes'    => array('readonly' => 'readonly'),
-    //    '#disabled'      => TRUE,.
     ];
 
     $form['user_data'] = [
@@ -247,13 +224,7 @@ class InstanceLaunchForm extends CloudContentForm {
 
     $entity = $this->entity;
     $entity->setParams($form);
-    $result = $this->apiController->launchInstance($entity);
-
-    $status  = 'error';
-    $message = $this->t('The @type "@label" failed to launch.', [
-      '@type'  => $entity->getEntityType()->getLabel(),
-      '@label' => $entity->label(),
-    ]);
+    $result = $this->launchInstance($entity);
 
     if (isset($result['Instances'][0]['InstanceId'])
     && ($entity->setInstanceId($result['Instances'][0]['InstanceId']))
@@ -268,7 +239,6 @@ class InstanceLaunchForm extends CloudContentForm {
         $instance_ids[] = $instance['InstanceId'];
       }
 
-      $status  = 'status';
       $message = $this->t('The @type "@label (@instance_id)" request has been initiated. '
                            . 'This may take some time. Use Refresh to update the status.', [
                              '@type'        => $entity->getEntityType()->getLabel(),
@@ -276,12 +246,47 @@ class InstanceLaunchForm extends CloudContentForm {
                              '@instance_id' => implode(', ', $instance_ids),
                            ]);
 
+      $this->messenger->addMessage($message);
       $form_state->setRedirectUrl($entity
                  ->urlInfo('collection')
                  ->setRouteParameter('cloud_context', $entity->cloud_context()));
     }
+    else {
+      $message = $this->t('The @type "@label" failed to launch.', [
+        '@type'  => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
 
-    drupal_set_message($message, $status);
+      $this->messenger->addError($message);
+    }
+
   }
 
+  /**
+   * Helper method to launch instance
+   * @param \Drupal\aws_cloud\Form\Ec2\Instance $instance
+   * @return array Results array
+   */
+  private function launchInstance(Instance $instance) {
+    $key_name       = preg_replace('/ \([^\)]*\)$/', '', $instance->key_pair_name());
+    $security_group = preg_replace('/ \([^\)]*\)$/', '', $instance->security_groups()); // @TODO: To Array
+
+    $params = [
+      // The following parameters are required.
+      'ImageId'        => $instance->image_id(), // e.g.ami-8936e0e9 | ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20160830 (ami-8936e0e9)
+      'MaxCount'       => $instance->max_count(),
+      'MinCount'       => $instance->min_count(),
+      'InstanceType'   => $instance->instance_type(),
+      'Monitoring'     => ['Enabled' => $instance->is_monitoring() ? true : false],
+      'KeyName'        => $key_name,
+      'Placement'      => ['AvailabilityZone' => $instance->availability_zone()],
+      'SecurityGroups' => [$security_group], // @TODO: To Array
+    ];
+
+    // The following parameters are optional.
+    $params['KernelId' ] ?: $instance->kernel_id() ;
+    $params['RamdiskId'] ?: $instance->ramdisk_id();
+    $params['UserData' ] ?: $instance->user_data() ;
+    return $this->awsEc2Service->runInstances($params);
+  }
 }

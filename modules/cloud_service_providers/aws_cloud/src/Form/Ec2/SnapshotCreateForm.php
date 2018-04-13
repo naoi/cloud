@@ -9,17 +9,15 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
 
 /**
  * Form controller for the Snapshot entity create form.
  *
  * @ingroup aws_cloud
  */
-class SnapshotCreateForm extends CloudContentForm {
+class SnapshotCreateForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
@@ -27,7 +25,7 @@ class SnapshotCreateForm extends CloudContentForm {
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
     /* @var $entity \Drupal\aws_cloud\Entity\Ec2\Snapshot */
     $form = parent::buildForm($form, $form_state);
-
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $entity = $this->entity;
 
     $form['cloud_context'] = [
@@ -92,13 +90,9 @@ class SnapshotCreateForm extends CloudContentForm {
 
     $entity = $this->entity;
 
-    $apiController = new ApiController($this->query_factory);
-    $result = $apiController->createSnapshot($entity);
-
-    $status  = 'error';
-    $message = $this->t('The @label "%label" couldn\'t create.', [
-      '@label' => $entity->getEntityType()->getLabel(),
-      '%label' => $entity->label(),
+    $result = $this->awsEc2Service->createSnapshot([
+      'VolumeId'    => $entity->volume_id(),
+      'Description' => $entity->description(),
     ]);
 
     if (isset($result['SnapshotId'])
@@ -108,19 +102,24 @@ class SnapshotCreateForm extends CloudContentForm {
     && ($entity->setEncrypted($result['Encrypted']))
     && ($entity->save())) {
 
-      $status  = 'status';
       $message = $this->t('The @label "%label (@snapshot_id)" has been created.', [
         '@label'       => $entity->getEntityType()->getLabel(),
         '%label'       => $entity->label(),
         '@snapshot_id' => $result['SnapshotId'],
       ]);
 
-      $form_state->setRedirectUrl($entity
-                 ->urlInfo('collection')
-                 ->setRouteParameter('cloud_context', $entity->cloud_context()));
+      $this->messenger->addMessage($message);
+      $form_state->setRedirect('entity.aws_cloud_snapshot.collection', ['cloud_context' => $entity->cloud_context()]);
+    }
+    else {
+      $message = $this->t('The @label "%label" couldn\'t create.', [
+        '@label' => $entity->getEntityType()->getLabel(),
+        '%label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
     }
 
-    drupal_set_message($message, $status);
+
   }
 
 }

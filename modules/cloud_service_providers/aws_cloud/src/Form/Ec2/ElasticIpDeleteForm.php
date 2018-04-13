@@ -14,43 +14,44 @@
 
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentDeleteForm;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-
 /**
  * Provides a form for deleting a ElasticIp entity.
  *
  * @ingroup aws_cloud
  */
-class ElasticIpDeleteForm extends CloudContentDeleteForm {
-
-  // delegate parent class - CloudContentDeleteFrom
+class ElasticIpDeleteForm extends AwsDeleteForm {
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-
+    /* @var \Drupal\aws_cloud\Entity\Ec2\ElasticIp $entity */
     $entity = $this->entity;
-    $apiController = new ApiController($this->query_factory);
+    $this->awsEc2Service->setCloudContext($entity->cloud_context());
 
-    $status  = 'error';
-    $message = $this->t('The @type "@label" couldn\'t delete.', [
-                  '@type'  => $entity->getEntityType()->getLabel(),
-                  '@label' => $entity->label(),
-               ]);
-   if($apiController->deleteElasticIp($entity)) {
+    $allocation_id = $entity->allocation_id();
+    $public_ip = $entity->public_ip();
+    if ($this->awsEc2Service->releaseAddress([
+        'AllocationId' => isset($allocation_id) ? $entity->allocation_id() : '',
+        'PublicIp' => isset($public_ip) ? $entity->public_ip() : '',
+      ]) != NULL
+    ) {
 
-      $status  = 'status';
       $message = $this->t('The @type "@label" has been deleted.', [
-                   '@type'  => $entity->getEntityType()->getLabel(),
-                   '@label' => $entity->label(),
-                 ]);
+        '@type' => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
 
       $entity->delete();
+      $this->messenger->addMessage($message);
     }
-
-    drupal_set_message($message, $status);
+    else {
+      $message = $this->t('The @type "@label" couldn\'t delete.', [
+        '@type' => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
+    }
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

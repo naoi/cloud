@@ -25,158 +25,70 @@ use Drupal\aws_cloud\Entity\Ec2\Snapshot;
  */
 interface ApiControllerInterface {
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container);
 
   /**
-   * {@inheritdoc}
-   */
-  public function getEc2Client(string $cloud_context);
-
-  /**
-   * ;@inheritdoc}.
-   */
-  public function getMockhandlerResult($params = []);
-
-  /**
-   * ;@inheritdoc}.
-   */
-  public function launchInstance(Instance $instance);
-
-  /**
-   * Launch an instance using a param array
-   */
-  public function launchUsingParams($cloud_context, $params = []);
-
-  /**
-   * ;@inheritdoc}.
-   */
-  public function createImage(Image $image);
-
-  /**
-   * ;@inheritdoc}.
-   */
-  public function createSecurityGroup(SecurityGroup $security_group);
-
-  /**
-   * ;@inheritdoc}.
-   */
-  public function createNetworkInterface(NetworkInterface $network_interface);
-
-  /**
-   * ;@inheritdoc}.
-   */
-  public function createElasticIp(ElasticIp $elastic_ip);
-
-  /**
-   * @inheritdoc}
-   */
-  public function createKeyPair(KeyPair $key_pair);
-
-  /**
-   * @inheritdoc}
-   */
-  public function createVolume(Volume $volume);
-
-  /**
-   * @inheritdoc}
-   */
-  public function createSnapshot(Snapshot $snapshot);
-
-  /**
-   * {@inheritdoc}
+   * Update all instances in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateInstanceList(ConfigInterface $cloud_context);
 
   /**
-   * {@inheritdoc}
+   * Update all images in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateImageList(ConfigInterface $cloud_context);
 
   /**
-   * {@inheritdoc}
+   * Update all security groups in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateSecurityGroupList(ConfigInterface $cloud_context);
 
   /**
-   * {@inheritdoc}
+   * Update all network interfaces in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateNetworkInterfaceList(ConfigInterface $cloud_context);
 
   /**
-   * {@inheritdoc}
+   * Update all elastic ips in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateElasticIpList(ConfigInterface $cloud_context);
 
   /**
-   * @inheritdoc}
+   * Update all key pairs in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateKeyPairList(ConfigInterface $cloud_context);
 
   /**
-   * @inheritdoc}
+   * Update all volumes in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateVolumeList(ConfigInterface $cloud_context);
 
   /**
-   * @inheritdoc}
+   * Update all snapshots in particular cloud region
+   *
+   * @param \Drupal\aws_cloud\Aws\Config\ConfigInterface $cloud_context
+   * @return mixed
    */
   public function updateSnapshotList(ConfigInterface $cloud_context);
 
-  /**
-   * {@inheritdoc}
-   */
-  public function terminateInstance(Instance $instance);
 
-  /**
-   * {@inheritdoc}
-   */
-  public function deregisterImage(Image $image);
-
-  /**
-   * {@inheritdoc}
-   */
-  public function deleteSecurityGroup(SecurityGroup $security_group);
-
-  /**
-   * {@inheritdoc}
-   */
-  public function deleteNetworkInterface(NetworkInterface $network_interface);
-
-  /**
-   * {@inheritdoc}
-   */
-  public function deleteElasticIp(ElasticIp $elastic_ip);
-
-  /**
-   * @inheritdoc}
-   */
-  public function deleteKeyPair(KeyPair $key_pair);
-
-  /**
-   * @inheritdoc}
-   */
-  public function deleteVolume(Volume $volume);
-
-  /**
-   * @inheritdoc}
-   */
-  public function deleteSnapshot(Snapshot $snapshot);
-
-  /**
-   * @inheritdoc}
-   */
-  public function getAvailabilityZones(ConfigInterface $cloud_context);
-
-  /**
-   * @inheritdoc}
-   */
-  public function getVpcs(ConfigInterface $cloud_context);
-
-  /**
-   * @inheritdoc}
-   */
-  public function execute(string $cloud_context = '', string $command = '', array $params = []);
 }

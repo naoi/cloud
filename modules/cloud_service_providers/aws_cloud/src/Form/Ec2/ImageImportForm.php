@@ -2,40 +2,34 @@
 
 namespace Drupal\aws_cloud\Form\Ec2;
 
+use Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Messenger\Messenger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-use Drupal\aws_cloud\Entity\Config\Config;
-use Drupal\Core\Messenger\MessengerInterface;
+
 
 class ImageImportForm extends FormBase {
 
   /**
-   * The renderer.
-   *
-   * @var \Drupal\Core\Render\RendererInterface
+   * @var \Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
    */
-  protected $renderer;
+  protected $awsEc2Service;
 
   /**
-   * The messenger service.
+   * The Messenger service.
    *
-   * @var \Drupal\Core\Messenger\MessengerInterface
+   * @var \Drupal\Core\Messenger\Messenger
    */
   protected $messenger;
 
   /**
-   * Constructs a new UserLoginForm.
-   *
-   * @param \Drupal\Core\Render\RendererInterface $renderer
-   *   The renderer.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   The messenger service.
+   * AwsDeleteForm constructor.
+   * @param \Drupal\aws_cloud\Service\AwsEc2ServiceInterface $aws_ec2_service
+   * @param \Drupal\Core\Messenger\Messenger $messenger
    */
-  public function __construct(RendererInterface $renderer, MessengerInterface $messenger) {
-    $this->renderer = $renderer;
+  public function __construct(AwsEc2ServiceInterface $aws_ec2_service, Messenger $messenger) {
+    $this->awsEc2Service = $aws_ec2_service;
     $this->messenger = $messenger;
   }
 
@@ -44,7 +38,7 @@ class ImageImportForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('renderer'),
+      $container->get('aws_cloud.ec2'),
       $container->get('messenger')
     );
   }
@@ -117,15 +111,14 @@ class ImageImportForm extends FormBase {
     }
 
     $cloud_context = $form_state->getValue('cloud_context');
-    // @TODO: the APIController call needs to be refactored
-    $image_count = 0;
 
     if (count($params)) {
-      $apiController = ApiController::create(\Drupal::getContainer());
-      $image_count = $apiController->importImages(Config::load($cloud_context), $params);
+      $this->awsEc2Service->setCloudContext($cloud_context);
+      if (($image_count = $this->awsEc2Service->updateImages($params, FALSE)) !== FALSE) {
+        $this->messenger->addMessage($this->t('Imported @count images', ['@count' => $image_count]));
+      }
     }
 
-    $this->messenger->addMessage($this->t('Imported @count images', ['@count' => $image_count]));
     return $form_state->setRedirect('view.images.page_1', [
       'cloud_context' => $cloud_context,
     ]);

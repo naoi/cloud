@@ -197,6 +197,13 @@ class Image extends CloudContentEntityBase implements ImageInterface {
   /**
    * {@inheritdoc}
    */
+  public function name() {
+    return $this->get('name')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function visibility() {
     return $this->get('visibility')->value;
   }
@@ -213,6 +220,13 @@ class Image extends CloudContentEntityBase implements ImageInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setName($name) {
+    return $this->set('name', $name);
   }
 
   /**
