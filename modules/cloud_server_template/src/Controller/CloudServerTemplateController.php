@@ -30,7 +30,7 @@ class CloudServerTemplateController extends ControllerBase {
 
     return [
       '#type' => 'markup',
-      '#markup' => t('THIS IS A DEBUG MESSAGE at CloudServerTemplateController::getCloudServerTemplateList()'),
+      '#markup' => t(''),
     ];
 
 /**
