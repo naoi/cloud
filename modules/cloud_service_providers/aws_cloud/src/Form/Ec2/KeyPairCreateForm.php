@@ -93,7 +93,7 @@ class KeyPairCreateForm extends AwsCloudContentForm {
       $this->messenger->addError($message);
     }
 
-    $form_state->setRedirect('entity.key_pair.collection', ['cloud_context' => $entity->cloud_context()]);
+    $form_state->setRedirect('view.aws_cloud_key_pairs.page_1', ['cloud_context' => $entity->cloud_context()]);
 
   }
 

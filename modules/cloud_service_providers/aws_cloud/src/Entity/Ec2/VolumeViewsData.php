@@ -19,12 +19,6 @@ class VolumeViewsData extends EntityViewsData implements EntityViewsDataInterfac
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['aws_cloud_volume']['table']['base'] = [
-      'field' => 'id',
-      'title' => t('AWS Cloud Volume'),
-      'help'  => t('The AWC Cloud Volume entity ID.'),
-    ];
-
     return $data;
   }
 

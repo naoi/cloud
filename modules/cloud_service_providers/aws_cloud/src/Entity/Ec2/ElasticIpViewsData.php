@@ -19,12 +19,6 @@ class ElasticIpViewsData extends EntityViewsData implements EntityViewsDataInter
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['aws_cloud_elastic_ip']['table']['base'] = [
-      'field' => 'id',
-      'title' => t('AWS Cloud Elastic IP'),
-      'help'  => t('The AWC Cloud Elastic IP entity ID.'),
-    ];
-
     return $data;
   }
 

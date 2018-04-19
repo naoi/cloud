@@ -51,6 +51,6 @@ class ImageDeleteForm extends AwsDeleteForm {
       $this->messenger->addError($message);
     }
 
-    $form_state->setRedirect('view.images.page_1', ['cloud_context' => $entity->cloud_context()]);
+    $form_state->setRedirect('view.aws_images.page_1', ['cloud_context' => $entity->cloud_context()]);
   }
 }

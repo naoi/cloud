@@ -66,7 +66,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update instances.'));
     }
 
-    return $this->redirect('entity.aws_cloud_instance.collection', [
+    return $this->redirect('view.aws_instances.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -85,7 +85,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     else {
       $this->messageUser($this->t('Unable to update images.'));
     }
-    return $this->redirect('view.images.page_1', [
+    return $this->redirect('view.aws_images.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -103,7 +103,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     else {
       $this->messageUser($this->t('Unable to update security groups.'));
     }
-    return $this->redirect('entity.aws_cloud_security_group.collection', [
+    return $this->redirect('view.aws_security_group.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -122,7 +122,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update network interfaces.'));
     }
 
-    return $this->redirect('entity.aws_cloud_network_interface.collection', [
+    return $this->redirect('view.aws_network_interfaces.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -162,7 +162,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update key pairs.'));
     }
 
-    return $this->redirect('entity.aws_cloud_key_pair.collection', [
+    return $this->redirect('view.aws_cloud_key_pairs.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -182,7 +182,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update volumes.'));
     }
 
-    return $this->redirect('entity.aws_cloud_volume.collection', [
+    return $this->redirect('view.aws_volume.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }
@@ -202,7 +202,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update snapshots.'), 'error');
     }
 
-    return $this->redirect('entity.aws_cloud_snapshot.collection', [
+    return $this->redirect('view.aws_snapshot.page_1', [
       'cloud_context' => $cloud_context->id(),
     ]);
   }

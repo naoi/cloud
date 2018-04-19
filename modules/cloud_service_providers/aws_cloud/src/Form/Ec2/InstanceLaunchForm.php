@@ -43,7 +43,7 @@ class InstanceLaunchForm extends AwsCloudContentForm {
 
     if(isset($cloudContext)) {
       $cloud_type = $cloudContext->cloud_type();
-      $this->awsEc2Service->setCloudContext($cloud_type);
+      $this->awsEc2Service->setCloudContext($cloudContext->cloud_context());
     }
     else {
       $this->messenger->addError($this->t("Not found: AWS Cloud provider '@cloud_context'", [

@@ -167,7 +167,7 @@ class VolumeCreateForm extends AwsCloudContentForm {
         '@volume_id' => $entity->volume_id(),
       ]);
       $this->messenger->addMessage($message);
-      $form_state->setRedirect('entity.volume.collection', ['cloud_context' => $entity->cloud_context()]);
+      $form_state->setRedirect('view.aws_volume.page_1', ['cloud_context' => $entity->cloud_context()]);
     }
     else {
       $message = $this->t('The @label "%label" couldn\'t create.', [

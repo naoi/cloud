@@ -29,13 +29,13 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   id = "aws_cloud_security_group",
  *   label = @Translation("AWS Cloud Security Group"),
  *   handlers = {
- *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder"                    ,
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\aws_cloud\Controller\Ec2\SecurityGroupListBuilder",
- *     "views_data"   = "Drupal\aws_cloud\Entity\Ec2\SecurityGroupViewsData"      ,
+ *     "views_data"   = "Drupal\views\EntityViewsData",
  *     "form" = {
- *       "default"    = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm"  ,
+ *       "default"    = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm",
  *       "add"        = "Drupal\aws_cloud\Form\Ec2\SecurityGroupCreateForm",
- *       "edit"       = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm"  ,
+ *       "edit"       = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm",
  *       "delete"     = "Drupal\aws_cloud\Form\Ec2\SecurityGroupDeleteForm",
  *     },
  *     "access"       = "Drupal\aws_cloud\Controller\Ec2\SecurityGroupAccessControlHandler",
@@ -49,8 +49,8 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "uuid"  = "uuid"
  *   },
  *   links = {
- *     "canonical"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}"  ,
- *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/edit"  ,
+ *     "canonical"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}",
+ *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/edit",
  *     "delete-form" = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/delete",
  *     "collection"  = "/clouds/aws_cloud/{cloud_context}/security_group"
  *   },

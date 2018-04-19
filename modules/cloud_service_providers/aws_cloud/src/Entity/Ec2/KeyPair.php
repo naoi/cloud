@@ -50,7 +50,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   },
  *   links = {
  *     "canonical"   = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}"  ,
- *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}"  ,
+ *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/edit"  ,
  *     "delete-form" = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/delete",
  *     "collection"  = "/clouds/aws_cloud/{cloud_context}/key_pair"
  *   },

@@ -106,7 +106,7 @@ class ImageCreateForm extends AwsCloudContentForm {
       ]);
 
       $this->messenger->addMessage($message);
-      $form_state->setRedirect('view.images.page_1', ['cloud_context' => $entity->cloud_context()]);
+      $form_state->setRedirect('view.aws_images.page_1', ['cloud_context' => $entity->cloud_context()]);
     }
     else {
       $message = $this->t('The @label "%label" couldn\'t create.', [

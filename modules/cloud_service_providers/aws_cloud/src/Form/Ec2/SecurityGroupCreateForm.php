@@ -120,7 +120,7 @@ class SecurityGroupCreateForm extends AwsCloudContentForm {
         '@group_name' => $entity->group_name(),
       ]);
 
-      $form_state->setRedirect('entity.aws_cloud_security_group.collection', ['cloud_context' => $entity->cloud_context()]);
+      $form_state->setRedirect('view.aws_security_group.page_1', ['cloud_context' => $entity->cloud_context()]);
       $this->messenger->addMessage($message);
     }
     else {

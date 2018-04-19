@@ -154,7 +154,7 @@ class NetworkInterfaceCreateForm extends AwsCloudContentForm {
         '@network_interface_id' => $result['NetworkInterfaceId'],
       ]);
       $this->messenger->addMessage($message);
-      $form_state->setRedirect('entity.aws_cloud_network_interface.collection', ['cloud_context' => $entity->cloud_context()]);
+      $form_state->setRedirect('view.aws_network_interfaces.page_1', ['cloud_context' => $entity->cloud_context()]);
     }
     else {
       $message = $this->t('The @type "@label" couldn\'t create.', [

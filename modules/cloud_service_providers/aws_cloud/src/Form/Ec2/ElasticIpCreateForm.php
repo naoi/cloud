@@ -100,7 +100,7 @@ class ElasticIpCreateForm extends AwsCloudContentForm {
       $this->messenger->addError($message);
     }
 
-    $form_state->setRedirect('entity.aws_cloud_elastic_ip.collection', ['cloud_context' => $entity->cloud_context()]);
+    $form_state->setRedirect('view.aws_elastic_ip.page_1', ['cloud_context' => $entity->cloud_context()]);
   }
 
 }

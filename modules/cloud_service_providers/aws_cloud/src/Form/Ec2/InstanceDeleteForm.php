@@ -56,6 +56,7 @@ class InstanceDeleteForm extends AwsDeleteForm {
 
       $entity->delete();
       $this->messenger->addMessage($message);
+      $form_state->setRedirect('view.aws_instances.page_1', ['cloud_context' => $entity->cloud_context()]);
     }
     else {
       $message = $this->t('The @type "@label" couldn\'t terminate.', [

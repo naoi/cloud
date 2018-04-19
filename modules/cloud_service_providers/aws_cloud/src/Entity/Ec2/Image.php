@@ -50,7 +50,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "uuid"  = "uuid"
  *   },
  *   links = {
- *     "canonical"   = "/view.images.page_1"  ,
+ *     "canonical"   = "/view.aws_images.page_1"  ,
  *     "edit-form"   = "/entity.aws_cloud_image.edit_form"  ,
  *     "delete-form" = "/entity.aws_cloud_image.delete_form",
  *     "collection"  = "/entity.aws_cloud_image.collection"

@@ -119,7 +119,7 @@ class ImageImportForm extends FormBase {
       }
     }
 
-    return $form_state->setRedirect('view.images.page_1', [
+    return $form_state->setRedirect('view.aws_images.page_1', [
       'cloud_context' => $cloud_context,
     ]);
   }

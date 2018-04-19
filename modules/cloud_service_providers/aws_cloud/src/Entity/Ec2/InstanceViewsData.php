@@ -26,13 +26,6 @@ class InstanceViewsData extends EntityViewsData implements EntityViewsDataInterf
       'help'  => t('The AWC Cloud Instance entity ID.'),
     ];
 
-    $data['aws_cloud_instance']['instance_id'] = [
-      'title' => t('Instance ID'),
-      'help' => t('AWS Cloud Instance ID'),
-      'field' => [
-        'id' => 'instance_id',
-      ],
-    ];
     return $data;
   }
 
