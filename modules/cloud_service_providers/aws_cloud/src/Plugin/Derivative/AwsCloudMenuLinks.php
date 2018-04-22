@@ -55,7 +55,7 @@ class AwsCloudMenuLinks extends DeriverBase implements ContainerDeriverInterface
       $id = $entity->getEntityType()->id() . '.local_tasks.' . $cloud_context;
       $this->derivatives[$id] = $base_plugin_definition;
       $this->derivatives[$id]['title'] = $entity->label();
-      $this->derivatives[$id]['route_name'] = 'entity.aws_cloud_instance.collection';
+      $this->derivatives[$id]['route_name'] = 'view.aws_instances.page_1';
       $this->derivatives[$id]['base_route'] = 'cloud.service_providers.menu';
       $this->derivatives[$id]['parent'] = 'cloud.service_providers.menu';
       $this->derivatives[$id]['route_parameters'] = ['cloud_context' => $cloud_context];

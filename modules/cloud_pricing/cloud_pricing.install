@@ -8,9 +8,9 @@
  * Works with Cloud and Billing module.
  *
  */
-\Drupal::moduleHandler()->loadInclude('cloud'        , 'inc', 'cloud.constants'        );
-\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing.constants');
-\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing.db'       );
+//\Drupal::moduleHandler()->loadInclude('cloud'        , 'inc', 'cloud.constants'        );
+//\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing.constants');
+//\Drupal::moduleHandler()->loadInclude('cloud_pricing', 'inc', 'cloud_pricing.db'       );
 
 /**
  * Implements hook_install().
@@ -83,33 +83,33 @@ function cloud_pricing_schema() {
  */
 function cloud_pricing_enable() {
 
-  \Drupal::moduleHandler()->load('cloud');
-  // Check for the Cloud information and update the Pricing info accordingly
-  $cloud_list = cloud_get_all_clouds();
-  foreach ($cloud_list as $cloud_context ) {
-
-    $module = cloud_get_module($cloud_context);
-    //new way to call cloud_set_info
-    drupal_load('module', $module);
-    $params = \Drupal::moduleHandler()->invoke($module, 'cloud_set_info', [$cloud_context]);
-
-    $pricing_data = empty($params['cloud_pricing_data'] )
-                  ? array()
-                  : $params['cloud_pricing_data'];
-
-    foreach ($pricing_data as $key => $data) {
-
-      $data_values = array();
-      $data_values['instance_type_select'] = $data['instance_type'     ];
-      $data_values['description_text'    ] = $data['description'       ];
-      $data_values['linux_usage_text'    ] = $data['linux_or_unix_cost'];
-      $data_values['windows_usage_text'  ] = $data['windows_cost'      ];
-      $data_values['cloud_context'       ] = $cloud_context             ;
-
-      // Insert the data in the Pricing table
-      _cloud_pricing_insert($data_values);
-    }
-  }
+//  \Drupal::moduleHandler()->load('cloud');
+//  // Check for the Cloud information and update the Pricing info accordingly
+//  $cloud_list = cloud_get_all_clouds();
+//  foreach ($cloud_list as $cloud_context ) {
+//
+//    $module = cloud_get_module($cloud_context);
+//    //new way to call cloud_set_info
+//    drupal_load('module', $module);
+//    $params = \Drupal::moduleHandler()->invoke($module, 'cloud_set_info', [$cloud_context]);
+//
+//    $pricing_data = empty($params['cloud_pricing_data'] )
+//                  ? array()
+//                  : $params['cloud_pricing_data'];
+//
+//    foreach ($pricing_data as $key => $data) {
+//
+//      $data_values = array();
+//      $data_values['instance_type_select'] = $data['instance_type'     ];
+//      $data_values['description_text'    ] = $data['description'       ];
+//      $data_values['linux_usage_text'    ] = $data['linux_or_unix_cost'];
+//      $data_values['windows_usage_text'  ] = $data['windows_cost'      ];
+//      $data_values['cloud_context'       ] = $cloud_context             ;
+//
+//      // Insert the data in the Pricing table
+//      _cloud_pricing_insert($data_values);
+//    }
+//  }
 }
 
 
@@ -120,6 +120,6 @@ function cloud_pricing_enable() {
  */
 function cloud_pricing_disable() {
 
-  \Drupal::moduleHandler()->load('cloud');
-  cloud_pricing_delete_all_data();
+//  \Drupal::moduleHandler()->load('cloud');
+//  cloud_pricing_delete_all_data();
 }

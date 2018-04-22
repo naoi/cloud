@@ -15,17 +15,12 @@
 
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentDeleteForm;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-
 /**
  * Provides a form for deleting a SecurityGroup entity.
  *
  * @ingroup aws_cloud
  */
-class SecurityGroupDeleteForm extends CloudContentDeleteForm {
-
-  // delegate parent class - CloudContentDeleteFrom
+class SecurityGroupDeleteForm extends AwsDeleteForm {
 
   /**
    * {@inheritdoc}
@@ -33,26 +28,27 @@ class SecurityGroupDeleteForm extends CloudContentDeleteForm {
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
 
     $entity = $this->entity;
-    $apiController = new ApiController($this->query_factory);
+    $this->awsEc2Service->setCloudContext($entity->cloud_context());
 
-    $status  = 'error';
-    $message = $this->t('The @type "@group_name" couldn\'t delete.', [
-                  '@type'       => $entity->getEntityType()->getLabel(),
-                  '@group_name' => $entity->group_name(),
-               ]);
+    if($this->awsEc2Service->deleteSecurityGroup([
+      'GroupId'   => $entity->group_id(),
+    ]) != NULL) {
 
-    if($apiController->deleteSecurityGroup($entity)) {
-
-      $status  = 'status';
       $message = $this->t('The @type "@group_name" has been deleted.', [
                     '@type'       => $entity->getEntityType()->getLabel(),
                     '@group_name' => $entity->group_name(),
                  ]);
 
       $entity->delete();
+      $this->messenger->addMessage($message);
     }
-
-    drupal_set_message($message, $status);
+    else {
+      $message = $this->t('The @type "@group_name" couldn\'t delete.', [
+        '@type'       => $entity->getEntityType()->getLabel(),
+        '@group_name' => $entity->group_name(),
+      ]);
+      $this->messenger->addError($message);
+    }
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

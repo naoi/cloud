@@ -17,10 +17,10 @@
 // Created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\VolumeInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the Volume entity.
@@ -60,7 +60,7 @@ use Drupal\aws_cloud\Aws\Ec2\VolumeInterface;
  *   field_ui_base_route = "aws_cloud_volume.settings"
  * )
  */
-class Volume extends EC2ContentEntityBase implements VolumeInterface {
+class Volume extends CloudContentEntityBase implements VolumeInterface {
 
   /**
    * {@inheritdoc}
@@ -184,22 +184,8 @@ class Volume extends EC2ContentEntityBase implements VolumeInterface {
   /**
    * {@inheritdoc}
    */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function setCreated($created = 0) {
     return $this->set('created', $created);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
   }
 
   /**
@@ -214,34 +200,6 @@ class Volume extends EC2ContentEntityBase implements VolumeInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('user_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($uid) {
-    return $this->set('user_id', $uid);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
   }
 
   /**

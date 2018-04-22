@@ -42,10 +42,10 @@ entity.aws_cloud_instance.add_form:
   route_name: entity.aws_cloud_instance.add_form
   title: 'Add | Launch AWS Cloud Instance'
   appears_on:
-    - entity.aws_cloud_instance.collection
+    - view.aws_instances.page_1
 
 entity.aws_cloud_instance.collection:
-  route_name: entity.aws_cloud_instance.collection
+  route_name: view.aws_instances.page_1
   title: 'List AWS Cloud Instances'
   appears_on:
     - entity.aws_cloud_instance.add_form
@@ -61,10 +61,17 @@ entity.aws_cloud_image.add_form:
   route_name: entity.aws_cloud_image.add_form
   title: 'Add AWS Cloud Image'
   appears_on:
-    - entity.aws_cloud_image.collection
+    - view.aws_images.page_1
+
+entity.aws_cloud_image.import:
+  route_name: entity.aws_cloud_image.import
+  title: 'Import AWS Cloud Image'
+  appears_on:
+    - view.aws_images.page_1
+
 
 entity.aws_cloud_image.collection:
-  route_name: entity.aws_cloud_image.collection
+  route_name: view.aws_images.page_1
   title: 'List AWS Cloud Images'
   appears_on:
     - entity.aws_cloud_image.add_form
@@ -80,10 +87,10 @@ entity.aws_cloud_network_interface.add_form:
   route_name: entity.aws_cloud_network_interface.add_form
   title: 'Add AWS Cloud Network Interface'
   appears_on:
-    - entity.aws_cloud_network_interface.collection
+    - view.aws_network_interfaces.page_1
 
 entity.aws_cloud_network_interface.collection:
-  route_name: entity.aws_cloud_network_interface.collection
+  route_name: view.aws_network_interfaces.page_1
   title: 'List AWS Cloud Network Interfaces'
   appears_on:
     - entity.aws_cloud_network_interface.add_form
@@ -99,10 +106,10 @@ entity.aws_cloud_elastic_ip.add_form:
   route_name: entity.aws_cloud_elastic_ip.add_form
   title: 'Add AWS Cloud Elastic IP'
   appears_on:
-    - entity.aws_cloud_elastic_ip.collection
+    - view.aws_elastic_ip.page_1
 
 entity.aws_cloud_elastic_ip.collection:
-  route_name: entity.aws_cloud_elastic_ip.collection
+  route_name: view.aws_elastic_ip.page_1
   title: 'List AWS Cloud Elastic IPs'
   appears_on:
     - entity.aws_cloud_elastic_ip.add_form
@@ -118,10 +125,10 @@ entity.aws_cloud_key_pair.add_form:
   route_name: entity.aws_cloud_key_pair.add_form
   title: 'Add AWS Cloud Key Pair'
   appears_on:
-    - entity.aws_cloud_key_pair.collection
+    - view.aws_cloud_key_pairs.page_1
 
 entity.aws_cloud_key_pair.collection:
-  route_name: entity.aws_cloud_key_pair.collection
+  route_name: view.aws_cloud_key_pairs.page_1
   title: 'List AWS Cloud Key Pairs'
   appears_on:
     - entity.aws_cloud_key_pair.add_form
@@ -137,10 +144,10 @@ entity.aws_cloud_security_group.add_form:
   route_name: entity.aws_cloud_security_group.add_form
   title: 'Add AWS Cloud Security Group'
   appears_on:
-    - entity.aws_cloud_security_group.collection
+    - view.aws_security_group.page_1
 
 entity.aws_cloud_security_group.collection:
-  route_name: entity.aws_cloud_security_group.collection
+  route_name: view.aws_security_group.page_1
   title: 'List AWS Cloud Security Groups'
   appears_on:
     - entity.aws_cloud_security_group.add_form
@@ -156,10 +163,10 @@ entity.aws_cloud_volume.add_form:
   route_name: entity.aws_cloud_volume.add_form
   title: 'Add AWS Cloud Volume'
   appears_on:
-    - entity.aws_cloud_volume.collection
+    - view.aws_volume.page_1
 
 entity.aws_cloud_volume.collection:
-  route_name: entity.aws_cloud_volume.collection
+  route_name: view.aws_volume.page_1
   title: 'List AWS Cloud Volumes'
   appears_on:
     - entity.aws_cloud_volume.add_form
@@ -175,10 +182,10 @@ entity.aws_cloud_snapshot.add_form:
   route_name: entity.aws_cloud_snapshot.add_form
   title: 'Add AWS Cloud Snapshot'
   appears_on:
-    - entity.aws_cloud_snapshot.collection
+    - view.aws_snapshot.page_1
 
 entity.aws_cloud_snapshot.collection:
-  route_name: entity.aws_cloud_snapshot.collection
+  route_name: view.aws_snapshot.page_1
   title: 'List AWS Cloud Snapshots'
   appears_on:
     - entity.aws_cloud_snapshot.add_form

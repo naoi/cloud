@@ -10,37 +10,31 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
+use Drupal\aws_cloud\Entity\Config\Config;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-use Drupal\aws_cloud\Entity\Config\Config;
 
 /**
  * Form controller for the SecurityGroup entity create form.
  *
  * @ingroup aws_cloud
  */
-class SecurityGroupCreateForm extends CloudContentForm {
+class SecurityGroupCreateForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
    */
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
     $cloudContext = Config::load($cloud_context);
-    if(isset($cloudContext)) {
 
-      $cloud_type = $cloudContext->cloud_type();
-      $this->apiController = new ApiController($this->query_factory);
-    }
-    else {
-
-      $status  = 'error';
+    if(!isset($cloudContext)) {
       $message = $this->t("Not found: AWS Cloud provider '@cloud_context'", [
         '@cloud_context'  => $cloud_context,
       ]);
-      drupal_set_message($message, $status);
+      $this->messenger->addError($message);
     }
+
+    $this->awsEc2Service->setCloudContext($cloud_context);
 
     /* @var $entity \Drupal\aws_cloud\Entity\Ec2\SecurityGroup */
     $form = parent::buildForm($form, $form_state);
@@ -69,7 +63,7 @@ class SecurityGroupCreateForm extends CloudContentForm {
       '#required'      => TRUE,
     ];
 
-    $vpcs = $this->apiController->getVpcs($cloudContext);
+    $vpcs = $this->awsEc2Service->getVpcs();
     $vpcs[$entity->vpc_id()] = 'N/A';
     ksort($vpcs);
     $form['vpc_id'] = [
@@ -110,13 +104,10 @@ class SecurityGroupCreateForm extends CloudContentForm {
 
     $entity = $this->entity;
 
-    $apiController = new ApiController($this->query_factory);
-    $result = $apiController->createSecurityGroup($entity);
-
-    $status  = 'error';
-    $message = $this->t('The @label "@group_name" couldn\'t create.', [
-      '@label'      => $entity->getEntityType()->getLabel(),
-      '@group_name' => $entity->group_name(),
+    $result = $this->awsEc2Service->createSecurityGroup([
+      'GroupName'   => $entity->group_name(),
+      'VpcId'       => $entity->vpc_id(),
+      'Description' => $entity->description(),
     ]);
 
     if (isset($result['GroupId'])
@@ -129,12 +120,16 @@ class SecurityGroupCreateForm extends CloudContentForm {
         '@group_name' => $entity->group_name(),
       ]);
 
-      $form_state->setRedirectUrl($entity
-                 ->urlInfo('collection')
-                 ->setRouteParameter('cloud_context', $entity->cloud_context()));
+      $form_state->setRedirect('view.aws_security_group.page_1', ['cloud_context' => $entity->cloud_context()]);
+      $this->messenger->addMessage($message);
     }
-
-    drupal_set_message($message, $status);
+    else {
+      $message = $this->t('The @label "@group_name" couldn\'t create.', [
+        '@label'      => $entity->getEntityType()->getLabel(),
+        '@group_name' => $entity->group_name(),
+      ]);
+      $this->messenger->addError($message);
+    }
   }
 
 }

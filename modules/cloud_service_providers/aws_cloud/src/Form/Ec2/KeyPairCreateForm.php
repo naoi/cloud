@@ -8,17 +8,15 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
 
 /**
  * Form controller for the KeyPair entity create form.
  *
  * @ingroup aws_cloud
  */
-class KeyPairCreateForm extends CloudContentForm {
+class KeyPairCreateForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
@@ -26,6 +24,8 @@ class KeyPairCreateForm extends CloudContentForm {
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
     /* @var $entity \Drupal\aws_cloud\Entity\Ec2\KeyPair */
     $form = parent::buildForm($form, $form_state);
+
+    $this->awsEc2Service->setCloudContext($cloud_context);
 
     $entity = $this->entity;
 
@@ -71,32 +71,30 @@ class KeyPairCreateForm extends CloudContentForm {
 
     $entity = $this->entity;
 
-    $apiController = new ApiController($this->query_factory);
-    $result = $apiController->createKeyPair($entity);
-
-    $status  = 'error';
-    $message = $this->t('The @label "@key_pair_name" couldn\'t create.', [
-      '@label'         => $entity->getEntityType()->getLabel(),
-      '@key_pair_name' => $entity->key_pair_name(),
+    $result = $this->awsEc2Service->createKeyPair([
+      'KeyName' => $entity->key_pair_name(),
     ]);
 
     if (isset($result['KeyName'])
     && ($entity->setKeyFingerprint($result['KeyFingerprint']))
     && ($entity->setKeyMaterial($result['KeyMaterial']))
     && ($entity->save())) {
-
-      $status  = 'status';
       $message = $this->t('The @label "@key_pair_name" has been created.', [
         '@label'         => $entity->getEntityType()->getLabel(),
         '@key_pair_name' => $entity->key_pair_name(),
       ]);
-
-      $form_state->setRedirectUrl($entity
-                 ->urlInfo('collection')
-                 ->setRouteParameter('cloud_context', $entity->cloud_context()));
+      $this->messenger->addMessage($message);
+    }
+    else {
+      $message = $this->t('The @label "@key_pair_name" couldn\'t create.', [
+        '@label'         => $entity->getEntityType()->getLabel(),
+        '@key_pair_name' => $entity->key_pair_name(),
+      ]);
+      $this->messenger->addError($message);
     }
 
-    drupal_set_message($message, $status);
+    $form_state->setRedirect('view.aws_cloud_key_pairs.page_1', ['cloud_context' => $entity->cloud_context()]);
+
   }
 
 }

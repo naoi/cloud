@@ -16,12 +16,10 @@
 // created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\ImageInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the Image entity.
@@ -48,11 +46,11 @@ use Drupal\aws_cloud\Aws\Ec2\ImageInterface;
  *   fieldable = TRUE,
  *   entity_keys = {
  *     "id"    = "id",
- *     "label" = "name",
+ *     "label" = "ami_name",
  *     "uuid"  = "uuid"
  *   },
  *   links = {
- *     "canonical"   = "/entity.aws_cloud_image.canonical"  ,
+ *     "canonical"   = "/view.aws_images.page_1"  ,
  *     "edit-form"   = "/entity.aws_cloud_image.edit_form"  ,
  *     "delete-form" = "/entity.aws_cloud_image.delete_form",
  *     "collection"  = "/entity.aws_cloud_image.collection"
@@ -60,14 +58,8 @@ use Drupal\aws_cloud\Aws\Ec2\ImageInterface;
  *   field_ui_base_route = "aws_cloud_image.settings"
  * )
  */
-class Image extends EC2ContentEntityBase implements ImageInterface {
+class Image extends CloudContentEntityBase implements ImageInterface {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function cloud_context() {
-    return $this->get('cloud_context')->value;
-  }
 
   /**
    * {@inheritdoc}
@@ -205,22 +197,15 @@ class Image extends EC2ContentEntityBase implements ImageInterface {
   /**
    * {@inheritdoc}
    */
+  public function name() {
+    return $this->get('name')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function visibility() {
     return $this->get('visibility')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
   }
 
   /**
@@ -240,30 +225,8 @@ class Image extends EC2ContentEntityBase implements ImageInterface {
   /**
    * {@inheritdoc}
    */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('user_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($uid) {
-    $this->set('user_id', $uid);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
+  public function setName($name) {
+    return $this->set('name', $name);
   }
 
   /**
@@ -474,7 +437,7 @@ class Image extends EC2ContentEntityBase implements ImageInterface {
       ])
       ->setReadOnly(TRUE);
 
-    $fields['block_devices'] = BaseFieldDefinition::create('string')
+    $fields['block_devices'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Block Devices'))
       ->setDescription(t("Comma separated list of volumes associated with this AMI. Indicates if it's the root device, provides device name, the snapshot ID, capacity of volume in GiB when launched, and whether that volume should be deleted on instance termination."))
       ->setDisplayOptions('view', [

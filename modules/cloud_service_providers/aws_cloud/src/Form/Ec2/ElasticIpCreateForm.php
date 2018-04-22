@@ -11,16 +11,14 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
 
 /**
  * Form controller for the ElasticIp entity create form.
  *
  * @ingroup aws_cloud
  */
-class ElasticIpCreateForm extends CloudContentForm {
+class ElasticIpCreateForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
@@ -28,6 +26,8 @@ class ElasticIpCreateForm extends CloudContentForm {
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
     /* @var $entity \Drupal\aws_cloud\Entity\Ec2\ElasticIp */
     $form = parent::buildForm($form, $form_state);
+
+    $this->awsEc2Service->setCloudContext($cloud_context);
 
     $entity = $this->entity;
 
@@ -77,33 +77,30 @@ class ElasticIpCreateForm extends CloudContentForm {
 
     $entity = $this->entity;
 
-    $apiController = new ApiController($this->query_factory);
-    $result = $apiController->createElasticIp($entity);
-
-    $status  = 'error';
-    $message = $this->t('The @label "%label" couldn\'t create.', [
-      '@label' => $entity->getEntityType()->getLabel(),
-      '%label' => $entity->label(),
+    $result = $this->awsEc2Service->allocateAddress([
+      'Domain' => $entity->domain(),
     ]);
 
     if (isset($result['PublicIp'])
     && ($entity->setPublicIp($result['PublicIp']))
     && ($entity->setAllocationId($result['AllocationId']))
     && ($entity->save())) {
-
-      $status  = 'status';
       $message = $this->t('The @label "%label (@elastic_ip)" has been created.', [
         '@label'      => $entity->getEntityType()->getLabel(),
         '%label'      => $entity->label(),
         '@elastic_ip' => $result['PublicIp'],
       ]);
-
-      $form_state->setRedirectUrl($entity
-                 ->urlInfo('collection')
-                 ->setRouteParameter('cloud_context', $entity->cloud_context()));
+      $this->messenger->addMessage($message);
+    }
+    else {
+      $message = $this->t('The @label "%label" couldn\'t create.', [
+        '@label' => $entity->getEntityType()->getLabel(),
+        '%label' => $entity->label()
+      ]);
+      $this->messenger->addError($message);
     }
 
-    drupal_set_message($message, $status);
+    $form_state->setRedirect('view.aws_elastic_ip.page_1', ['cloud_context' => $entity->cloud_context()]);
   }
 
 }

@@ -1,9 +1,22 @@
 # Created by yas 2016/06/23.
 
-# MENU_NORMAL_ITEM
-cloud_server_template.menu:
-  title: 'Server Templates'
-  route_name: 'entity.cloud_server_template.collection.list_all'
-# base_route: 'cloud.design.menu'
+# Cloud Server Template menu items definition
+entity.cloud_server_template.collection:
+  title: 'Cloud Server Template'
+  route_name: entity.cloud_server_template.collection
+  description: 'List Server Templates'
   parent: 'cloud.design.menu'
-  weight: -100
+  weight: 100
+
+# Cloud Server Template type menu items definition
+entity.cloud_server_template_type.collection:
+  title: 'Cloud Server Template type'
+  route_name: entity.cloud_server_template_type.collection
+  description: 'List Server Template type (bundles)'
+  parent: system.admin_structure
+  weight: 99
+
+# Deriver for Cloud Context based collection links.
+entity.cloud_server_template.cloud_context.collection:
+  deriver: 'Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateMenuLinks'
+  weigth: 100

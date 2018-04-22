@@ -14,10 +14,10 @@
 // Created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\KeyPairInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the KeyPair entity.
@@ -30,6 +30,7 @@ use Drupal\aws_cloud\Aws\Ec2\KeyPairInterface;
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder"              ,
  *     "list_builder" = "Drupal\aws_cloud\Controller\Ec2\KeyPairListBuilder",
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data"   = "Drupal\aws_cloud\Entity\Ec2\KeyPairViewsData"      ,
  *     "form" = {
  *       "default"    = "Drupal\aws_cloud\Form\Ec2\KeyPairEditForm"  ,
@@ -49,14 +50,14 @@ use Drupal\aws_cloud\Aws\Ec2\KeyPairInterface;
  *   },
  *   links = {
  *     "canonical"   = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}"  ,
- *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}"  ,
+ *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/edit"  ,
  *     "delete-form" = "/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/delete",
  *     "collection"  = "/clouds/aws_cloud/{cloud_context}/key_pair"
  *   },
  *   field_ui_base_route = "aws_cloud_key_pair.settings"
  * )
  */
-class KeyPair extends EC2ContentEntityBase implements KeyPairInterface {
+class KeyPair extends CloudContentEntityBase implements KeyPairInterface {
 
   /**
    * {@inheritdoc}
@@ -96,20 +97,6 @@ class KeyPair extends EC2ContentEntityBase implements KeyPairInterface {
   /**
    * {@inheritdoc}
    */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function refreshed() {
     return $this->get('refreshed')->value;
   }
@@ -119,34 +106,6 @@ class KeyPair extends EC2ContentEntityBase implements KeyPairInterface {
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('owner_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($owner_id) {
-    return $this->set('owner_id', $owner_id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    return $this->set('user_id', $account->id());
   }
 
   /**

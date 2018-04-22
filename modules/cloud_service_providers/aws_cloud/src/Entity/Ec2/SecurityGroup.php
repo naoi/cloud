@@ -15,10 +15,10 @@
 // created by yas 2016/04/21.
 namespace Drupal\aws_cloud\Entity\Ec2;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 use Drupal\aws_cloud\Aws\Ec2\SecurityGroupInterface;
+use Drupal\cloud\Entity\CloudContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Defines the Security Group entity.
@@ -29,13 +29,13 @@ use Drupal\aws_cloud\Aws\Ec2\SecurityGroupInterface;
  *   id = "aws_cloud_security_group",
  *   label = @Translation("AWS Cloud Security Group"),
  *   handlers = {
- *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder"                    ,
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\aws_cloud\Controller\Ec2\SecurityGroupListBuilder",
- *     "views_data"   = "Drupal\aws_cloud\Entity\Ec2\SecurityGroupViewsData"      ,
+ *     "views_data"   = "Drupal\views\EntityViewsData",
  *     "form" = {
- *       "default"    = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm"  ,
+ *       "default"    = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm",
  *       "add"        = "Drupal\aws_cloud\Form\Ec2\SecurityGroupCreateForm",
- *       "edit"       = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm"  ,
+ *       "edit"       = "Drupal\aws_cloud\Form\Ec2\SecurityGroupEditForm",
  *       "delete"     = "Drupal\aws_cloud\Form\Ec2\SecurityGroupDeleteForm",
  *     },
  *     "access"       = "Drupal\aws_cloud\Controller\Ec2\SecurityGroupAccessControlHandler",
@@ -49,15 +49,15 @@ use Drupal\aws_cloud\Aws\Ec2\SecurityGroupInterface;
  *     "uuid"  = "uuid"
  *   },
  *   links = {
- *     "canonical"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}"  ,
- *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/edit"  ,
+ *     "canonical"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}",
+ *     "edit-form"   = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/edit",
  *     "delete-form" = "/clouds/aws_cloud/{cloud_context}/security_group/{aws_cloud_security_group}/delete",
  *     "collection"  = "/clouds/aws_cloud/{cloud_context}/security_group"
  *   },
  *   field_ui_base_route = "aws_cloud_security_group.settings"
  * )
  */
-class SecurityGroup extends EC2ContentEntityBase implements SecurityGroupInterface {
+class SecurityGroup extends CloudContentEntityBase implements SecurityGroupInterface {
 
   /**
    * {@inheritdoc}
@@ -111,20 +111,6 @@ class SecurityGroup extends EC2ContentEntityBase implements SecurityGroupInterfa
   /**
    * {@inheritdoc}
    */
-  public function created() {
-    return $this->get('created')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function changed() {
-    return $this->get('changed')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function refreshed() {
     return $this->get('refreshed')->value;
   }
@@ -134,35 +120,6 @@ class SecurityGroup extends EC2ContentEntityBase implements SecurityGroupInterfa
    */
   public function setRefreshed($time) {
     return $this->set('refreshed', $time);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('owner_id')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($owner_id) {
-    return $this->set('owner_id', $owner_id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwner() {
-    return $this->get('user_id')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    $this->set('user_id', $account->id());
-    return $this;
   }
 
   /**

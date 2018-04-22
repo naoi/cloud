@@ -30,56 +30,56 @@ aws_cloud.updateInstanceList:
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateInstanceList'
   requirements:
-    _permission: 'list aws cloud instance'
+    _permission: 'edit aws cloud instance'
 
 aws_cloud.updateImageList:
   path: '/clouds/aws_cloud/{cloud_context}/image/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateImageList'
   requirements:
-    _permission: 'list aws cloud image'
+    _permission: 'edit aws cloud image'
 
 aws_cloud.updateSecurityGroupList:
   path: '/clouds/aws_cloud/{cloud_context}/security_group/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateSecurityGroupList'
   requirements:
-    _permission: 'list aws cloud security_group'
+    _permission: 'edit aws cloud security_group'
 
 aws_cloud.updateNetworkInterfaceList:
   path: '/clouds/aws_cloud/{cloud_context}/network_interface/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateNetworkInterfaceList'
   requirements:
-    _permission: 'list aws cloud network_interface'
+    _permission: 'edit aws cloud network_interface'
 
 aws_cloud.updateElasticIpList:
   path: '/clouds/aws_cloud/{cloud_context}/elastic_ip/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateElasticIpList'
   requirements:
-    _permission: 'list aws cloud elastic_ip'
+    _permission: 'edit aws cloud elastic_ip'
 
 aws_cloud.updateKeyPairList:
   path: '/clouds/aws_cloud/{cloud_context}/key_pair/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateKeyPairList'
   requirements:
-    _permission: 'list aws cloud key_pair'
+    _permission: 'edit aws cloud key_pair'
 
 aws_cloud.updateVolumeList:
   path: '/clouds/aws_cloud/{cloud_context}/volume/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateVolumeList'
   requirements:
-    _permission: 'list aws cloud volume'
+    _permission: 'edit aws cloud volume'
 
 aws_cloud.updateSnapshotList:
   path: '/clouds/aws_cloud/{cloud_context}/snapshot/update'
   defaults:
     _controller: '\Drupal\aws_cloud\Controller\Ec2\ApiController::updateSnapshotList'
   requirements:
-    _permission: 'list aws cloud snapshot'
+    _permission: 'edit aws cloud snapshot'
 
 
 ##########################
@@ -216,14 +216,6 @@ entity.aws_cloud_image.canonical:
     _entity_access: 'aws_cloud_image.view'
     _permission: 'view aws cloud image'
 
-entity.aws_cloud_image.collection:
-  path: '/clouds/aws_cloud/{cloud_context}/image'
-  defaults:
-    _entity_list: 'aws_cloud_image'
-    _title: 'AWS Cloud Image'
-  requirements:
-    _permission: 'list aws cloud image'
-
 entity.aws_cloud_image.add_form:
   path: '/clouds/aws_cloud/{cloud_context}/image/add'
   defaults:
@@ -255,6 +247,14 @@ entity.aws_cloud_image.delete_form:
     _title: 'Delete AWS Cloud Image'
   requirements:
     _permission: 'delete aws cloud image'
+
+entity.aws_cloud_image.import:
+  path: '/cloud/aws_cloud/{cloud_context}/images/import'
+  defaults:
+    _form: '\Drupal\aws_cloud\Form\Ec2\ImageImportForm'
+    _title: 'Import Images'
+  requirements:
+    _permission: 'list aws cloud image'
 
 
 ##############################

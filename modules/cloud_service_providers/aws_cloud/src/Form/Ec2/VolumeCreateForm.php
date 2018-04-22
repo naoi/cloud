@@ -9,18 +9,16 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
+use Drupal\aws_cloud\Entity\Config\Config;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
-use Drupal\aws_cloud\Entity\Config\Config;
 
 /**
  * Form controller for the Volume entity create form.
  *
  * @ingroup aws_cloud
  */
-class VolumeCreateForm extends CloudContentForm {
+class VolumeCreateForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
@@ -28,19 +26,14 @@ class VolumeCreateForm extends CloudContentForm {
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
 
     $cloudContext = Config::load($cloud_context);
-    if(isset($cloudContext)) {
-
-      $cloud_type = $cloudContext->cloud_type();
-      $this->apiController = new ApiController($this->query_factory);
-    }
-    else {
-
-      $status  = 'error';
+    if(!isset($cloudContext)) {
       $message = $this->t("Not found: AWS Cloud provider '@cloud_context'", [
         '@cloud_context'  => $cloud_context,
       ]);
-      drupal_set_message($message, $status);
+      $this->messenger->addError($message);
     }
+
+    $this->awsEc2Service->setCloudContext($cloud_context);
 
     /* @var $entity \Drupal\aws_cloud\Entity\Ec2\Volume */
     $form = parent::buildForm($form, $form_state);
@@ -79,7 +72,8 @@ class VolumeCreateForm extends CloudContentForm {
       '#required'      => FALSE,
     ];
 
-    $availability_zones = $this->apiController->getAvailabilityZones($cloudContext);
+    $availability_zones = $this->awsEc2Service->getAvailabilityZones();
+
     $form['availability_zone'] = [
       '#type'          => 'select',
       '#title'         => $this->t('Availability Zone'),
@@ -145,14 +139,21 @@ class VolumeCreateForm extends CloudContentForm {
 
     $entity = $this->entity;
 
-    $apiController = new ApiController($this->query_factory);
-    $result = $apiController->createVolume($entity);
+    $params = [
+      'Size'             => $entity->size(),
+      'SnapshotId'       => $entity->snapshot_id(),
+      'AvailabilityZone' => $entity->availability_zone(), // REQUIRED.
+      'VolumeType'       => $entity->volume_type(),
+      // TODO: Need to specify volume type before reenabling this
+      //'Iops'             => (int)$entity->iops(),
+      //'Encrypted'        => $entity->encrypted() ? true : false,
+    ];
+    $kms_key_id = $entity->kms_key_id();
+    if (isset($kms_key_id)) {
+      $params['KmsKeyId'] = $entity->kms_key_id();
+    }
 
-    $status  = 'error';
-    $message = $this->t('The @label "%label" couldn\'t create.', [
-      '@label' => $entity->getEntityType()->getLabel(),
-      '%label' => $entity->label(),
-    ]);
+    $result = $this->awsEc2Service->createVolume($params);
 
     if (isset($result['VolumeId'])
     && ($entity->setVolumeId($result['VolumeId']))
@@ -160,19 +161,22 @@ class VolumeCreateForm extends CloudContentForm {
     && ($entity->setState($result['State']))
     && ($entity->save())) {
 
-      $status  = 'status';
       $message = $this->t('The @label "%label (@volume_id)" has been created.', [
         '@label'     => $entity->getEntityType()->getLabel(),
         '%label'     => $entity->label(),
         '@volume_id' => $entity->volume_id(),
       ]);
-
-      $form_state->setRedirectUrl($entity
-                 ->urlInfo('collection')
-                 ->setRouteParameter('cloud_context', $entity->cloud_context()));
+      $this->messenger->addMessage($message);
+      $form_state->setRedirect('view.aws_volume.page_1', ['cloud_context' => $entity->cloud_context()]);
+    }
+    else {
+      $message = $this->t('The @label "%label" couldn\'t create.', [
+        '@label' => $entity->getEntityType()->getLabel(),
+        '%label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
     }
 
-    drupal_set_message($message, $status);
   }
 
 }

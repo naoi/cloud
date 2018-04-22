@@ -1,0 +1,4 @@
+services:
+  aws_cloud.ec2:
+    class: Drupal\aws_cloud\Service\AwsEc2Service
+    arguments: ['@entity_type.manager', '@logger.factory', '@config.factory', '@messenger', '@string_translation', '@entity.query']

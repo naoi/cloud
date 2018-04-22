@@ -8,17 +8,15 @@
 // Created by yas 2016/05/19.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Drupal\aws_cloud\Controller\Ec2\ApiController;
 
 /**
  * Form controller for the NetworkInterface entity create form.
  *
  * @ingroup aws_cloud
  */
-class NetworkInterfaceCreateForm extends CloudContentForm {
+class NetworkInterfaceCreateForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
@@ -26,6 +24,8 @@ class NetworkInterfaceCreateForm extends CloudContentForm {
   public function buildForm(array $form, FormStateInterface $form_state, $cloud_context = '') {
     /* @var $entity \Drupal\aws_cloud\Entity\Ec2\NetworkInterface */
     $form = parent::buildForm($form, $form_state);
+
+    $this->awsEc2Service->setCloudContext($cloud_context);
 
     $entity = $this->entity;
 
@@ -95,7 +95,6 @@ class NetworkInterfaceCreateForm extends CloudContentForm {
       '#size'          => 60,
       '#default_value' => $entity->primary(),
       '#weight'        => -5,
-      '#required'      => TRUE,
     ];
 
     $form['security_groups'] = [
@@ -126,13 +125,21 @@ class NetworkInterfaceCreateForm extends CloudContentForm {
 
     $entity = $this->entity;
 
-    $apiController = new ApiController($this->query_factory);
-    $result = $apiController->createNetworkInterface($entity);
-
-    $status  = 'error';
-    $message = $this->t('The @type "@label" couldn\'t create.', [
-      '@type' => $entity->getEntityType()->getLabel(),
-      '@label' => $entity->label(),
+    $result = $this->awsEc2Service->createNetworkInterface([
+      'SubnetId'                       => $entity->subnet_id(),
+      // PrivateIpAddresses is an array and required.
+      'PrivateIpAddress'               => $entity->primary_private_ip(),
+      // Groups is an array.
+      'Groups'                         => [$entity->security_groups()],
+      // PrivateIpAddresses is an array and PrivateIpAddress is required.
+      'PrivateIpAddresses'             => [
+        [
+          'PrivateIpAddress' => $entity->secondary_private_ips(),  // REQUIRED
+          'Primary'          => $entity->primary() ? true : false, // TRUE or FALSE
+        ],
+      ],
+      'SecondaryPrivateIpAddressCount' => count(explode(',', $entity->secondary_private_ips())),
+      'Description'                    => $entity->description(),
     ]);
 
     if (isset($result['NetworkInterfaceId'])
@@ -141,19 +148,21 @@ class NetworkInterfaceCreateForm extends CloudContentForm {
     && ($entity->setVpcId($result['VpcId']))
     && ($entity->save())) {
 
-      $status  = 'status';
       $message = $this->t('The @type "@label (@network_interface_id)" has been created.', [
         '@type'                 => $entity->getEntityType()->getLabel(),
         '@label'                => $entity->label(),
         '@network_interface_id' => $result['NetworkInterfaceId'],
       ]);
-
-      $form_state->setRedirectUrl($entity
-                 ->urlInfo('collection')
-                 ->setRouteParameter('cloud_context', $entity->cloud_context()));
+      $this->messenger->addMessage($message);
+      $form_state->setRedirect('view.aws_network_interfaces.page_1', ['cloud_context' => $entity->cloud_context()]);
     }
-
-    drupal_set_message($message, $status);
+    else {
+      $message = $this->t('The @type "@label" couldn\'t create.', [
+        '@type' => $entity->getEntityType()->getLabel(),
+        '@label' => $entity->label(),
+      ]);
+      $this->messenger->addError($message);
+    }
   }
 
 }

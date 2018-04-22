@@ -1,34 +1,34 @@
 # Updated by yas 2016/06/23.
 
-# Cloud Server Template routing definition
-# cloud_server_template.settings_tab:
-#  route_name: 'cloud_server_template.settings'
-#  base_route: 'cloud_server_template.settings'
-#  title: 'Settings'
+## Cloud Server Template routing definition
 
 entity.cloud_server_template.canonical:
-  route_name: 'entity.cloud_server_template.canonical'
-  base_route: 'entity.cloud_server_template.canonical'
+  route_name: entity.cloud_server_template.canonical
+  base_route: entity.cloud_server_template.canonical
+  class: '\Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateTab'
   title: 'View'
 
 entity.cloud_server_template.edit_form:
-  route_name: 'entity.cloud_server_template.edit_form'
-  base_route: 'entity.cloud_server_template.canonical'
+  route_name: entity.cloud_server_template.edit_form
+  base_route: entity.cloud_server_template.canonical
+  class: '\Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateTab'
   title: 'Edit'
 
 entity.cloud_server_template.delete_form:
-  route_name: 'entity.cloud_server_template.delete_form'
-  base_route: 'entity.cloud_server_template.canonical'
+  route_name:  entity.cloud_server_template.delete_form
+  base_route:  entity.cloud_server_template.canonical
+  class: '\Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateTab'
   title: 'Delete'
 
-cloud_server_template.local_tasks.cloud_context.list_all:
-  route_name: 'entity.cloud_server_template.collection.list_all'
-  base_route: 'cloud_server_template.local_tasks.cloud_context.list_all'
-  title: 'All'
-  weight: -1
+entity.cloud_server_template.version_history:
+  route_name: entity.cloud_server_template.version_history
+  base_route: entity.cloud_server_template.canonical
+  title: 'Revisions'
 
-cloud_server_template.local_tasks.cloud_context:
-  deriver: 'Drupal\cloud_server_template\Plugin\Derivative\CloudServerTemplateLocalTasks'
-# route_name: 'entity.aws_cloud_instance.collection'
-# class: 'Drupal\aws_cloud\Plugin\Menu\AwsCloudTab'
-  weight: 10
+entity.cloud_server_template.launch:
+  route_name: entity.cloud_server_template.launch
+  base_route: entity.cloud_server_template.canonical
+  title: 'Launch'
+
+
+

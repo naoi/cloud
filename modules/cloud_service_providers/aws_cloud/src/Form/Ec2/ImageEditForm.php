@@ -41,7 +41,7 @@ class ImageEditForm extends CloudContentForm {
       '#title'         => $this->t('Name'),
       '#maxlength'     => 255,
       '#size'          => 60,
-      '#default_value' => $entity->label(),
+      '#default_value' => $entity->name(),
       '#required'      => TRUE,
       '#weight'        => -5,
     ];
