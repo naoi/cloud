@@ -81,7 +81,15 @@ interface KeyPairInterface extends ContentEntityInterface, EntityOwnerInterface 
   /**
    * {@inheritdoc}
    */
-/*
-  public function setCloudContext($cloud_context);
-*/
+  public function getKeyFileLocation();
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getKeyFileName();
+
+  /**
+   * {@inheritdoc}
+   */
+  public function saveKeyFile($key);
 }

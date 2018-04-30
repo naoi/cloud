@@ -109,6 +109,38 @@ class KeyPair extends CloudContentEntityBase implements KeyPairInterface {
   }
 
   /**
+   * Helper function that returns the file location of the key file.
+   * @return bool|string
+   */
+  public function getKeyFileLocation() {
+    $file = FALSE;
+    if (file_exists(file_directory_temp() . '/' . $this->key_pair_name() . '.pem')) {
+      $file = file_directory_temp() . '/' . $this->key_pair_name() . '.pem';
+    }
+    return $file;
+  }
+
+  /**
+   * Helper function that returns the file location, starting
+   * with stream wrapper URI
+   * @return string
+   */
+  public function getKeyFileName() {
+    return 'temporary://' . $this->key_pair_name() . '.pem';
+  }
+
+  /**
+   * Helper function to save private key to temporary file system
+   * @param $key
+   *  String of the private key
+   */
+  public function saveKeyFile($key) {
+    if (!empty($key)) {
+      file_unmanaged_save_data($key, $this->getKeyFileName());
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {

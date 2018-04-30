@@ -11,6 +11,7 @@
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\aws_cloud\Aws\Ec2\KeyPairInterface;
 
 /**
  * Implements hook_libraries_info()
@@ -118,6 +119,22 @@ function aws_cloud_entity_type_alter(array &$entity_types) {
   // Add aws constraint to cloud_server_template.
   // This constraint will perform AWS specific validations
   $entity_types['cloud_server_template']->addConstraint('AWSConstraint');
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function aws_cloud_entity_view(array &$build, \Drupal\aws_cloud\Aws\Ec2\KeyPairInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->getEntityTypeId() == 'aws_cloud_key_pair' && $view_mode == 'full') {
+    // if the key is on the server, prompt user to download it
+    if ($entity->getKeyFileLocation() != FALSE) {
+      $url = \Drupal\Core\Url::fromRoute('entity.aws_cloud_key_pair.download', ['cloud_context' => $entity->cloud_context(), 'aws_cloud_key_pair' => $entity->id()])->toString();
+      $messenger = \Drupal::messenger();
+      $messenger->addWarning(t('<a href="@download_link">Download private key</a>.  Once downloaded, the key will be deleted from the server.',
+        ['@download_link' => $url]
+      ));
+    }
+  }
 }
 
 /**

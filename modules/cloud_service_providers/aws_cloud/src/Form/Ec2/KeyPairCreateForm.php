@@ -10,6 +10,7 @@ namespace Drupal\aws_cloud\Form\Ec2;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Form controller for the KeyPair entity create form.
@@ -75,15 +76,23 @@ class KeyPairCreateForm extends AwsCloudContentForm {
       'KeyName' => $entity->key_pair_name(),
     ]);
 
+    // following AWS specification and not storing key material.
+    // prompt user to download it
     if (isset($result['KeyName'])
     && ($entity->setKeyFingerprint($result['KeyFingerprint']))
-    && ($entity->setKeyMaterial($result['KeyMaterial']))
+    //&& ($entity->setKeyMaterial($result['KeyMaterial']))
     && ($entity->save())) {
       $message = $this->t('The @label "@key_pair_name" has been created.', [
         '@label'         => $entity->getEntityType()->getLabel(),
         '@key_pair_name' => $entity->key_pair_name(),
       ]);
       $this->messenger->addMessage($message);
+
+      // save the file to temp
+      $entity->saveKeyFile($result['KeyMaterial']);
+
+      $form_state->setRedirect('entity.aws_cloud_key_pair.canonical', ['cloud_context' => $entity->cloud_context(), 'aws_cloud_key_pair' => $entity->id()]);
+
     }
     else {
       $message = $this->t('The @label "@key_pair_name" couldn\'t create.', [
@@ -91,9 +100,8 @@ class KeyPairCreateForm extends AwsCloudContentForm {
         '@key_pair_name' => $entity->key_pair_name(),
       ]);
       $this->messenger->addError($message);
+      $form_state->setRedirect('view.aws_cloud_key_pairs.page_1', ['cloud_context' => $entity->cloud_context()]);
     }
-
-    $form_state->setRedirect('view.aws_cloud_key_pairs.page_1', ['cloud_context' => $entity->cloud_context()]);
 
   }
 

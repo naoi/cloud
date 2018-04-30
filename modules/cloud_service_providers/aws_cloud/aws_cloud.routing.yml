@@ -438,6 +438,20 @@ entity.aws_cloud_key_pair.canonical:
       aws_cloud_key_pair:
         type: "entity:aws_cloud_key_pair"
 
+entity.aws_cloud_key_pair.download:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}/download'
+  defaults:
+    _controller: '\Drupal\aws_cloud\Controller\Ec2\AWSKeyPairController::downloadKey'
+    _title: 'Download KeyPair'
+  requirements:
+    _permission: 'add aws cloud key pair'
+  options:
+    parameters:
+      cloud_context:
+        type: "entity:cloud_context"
+      aws_cloud_key_pair:
+        type: "entity:aws_cloud_key_pair"
+
 entity.aws_cloud_key_pair.collection:
   path: '/clouds/aws_cloud/{cloud_context}/key_pair'
   defaults:
