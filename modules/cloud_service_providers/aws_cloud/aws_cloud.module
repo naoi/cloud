@@ -8,10 +8,10 @@
  *
  */
 
+use Drupal\Core\Entity;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\aws_cloud\Aws\Ec2\KeyPairInterface;
 
 /**
  * Implements hook_libraries_info()
@@ -124,11 +124,13 @@ function aws_cloud_entity_type_alter(array &$entity_types) {
 /**
  * Implements hook_entity_view().
  */
-function aws_cloud_entity_view(array &$build, \Drupal\aws_cloud\Aws\Ec2\KeyPairInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+function aws_cloud_entity_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->getEntityTypeId() == 'aws_cloud_key_pair' && $view_mode == 'full') {
+    $keypair = \Drupal::entityTypeManager()->getStorage('aws_cloud_key_pair')->load($entity->id());
+
     // if the key is on the server, prompt user to download it
-    if ($entity->getKeyFileLocation() != FALSE) {
-      $url = \Drupal\Core\Url::fromRoute('entity.aws_cloud_key_pair.download', ['cloud_context' => $entity->cloud_context(), 'aws_cloud_key_pair' => $entity->id()])->toString();
+    if ($keypair->getKeyFileLocation() != FALSE) {
+      $url = \Drupal\Core\Url::fromRoute('entity.aws_cloud_key_pair.download', ['cloud_context' => $keypair->cloud_context(), 'aws_cloud_key_pair' => $keypair->id()])->toString();
       $messenger = \Drupal::messenger();
       $messenger->addWarning(t('<a href="@download_link">Download private key</a>.  Once downloaded, the key will be deleted from the server.',
         ['@download_link' => $url]
