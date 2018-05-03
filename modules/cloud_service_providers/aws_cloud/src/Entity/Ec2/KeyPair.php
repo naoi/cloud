@@ -37,6 +37,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *       "add"        = "Drupal\aws_cloud\Form\Ec2\KeyPairCreateForm",
  *       "edit"       = "Drupal\aws_cloud\Form\Ec2\KeyPairEditForm"  ,
  *       "delete"     = "Drupal\aws_cloud\Form\Ec2\KeyPairDeleteForm",
+ *       "import"     = "Drupal\aws_cloud\Form\Ec2\KeyPairImportForm",
  *     },
  *     "access"       = "Drupal\aws_cloud\Controller\Ec2\KeyPairAccessControlHandler",
  *   },

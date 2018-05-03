@@ -468,6 +468,15 @@ entity.aws_cloud_key_pair.add_form:
   requirements:
     _permission: 'add aws cloud key pair'
 
+entity.aws_cloud_key_pair.import_form:
+  path: '/clouds/aws_cloud/{cloud_context}/key_pair/import'
+  defaults:
+    _entity_form: 'aws_cloud_key_pair.import'
+    _title: 'Import AWS Cloud Key Pair'
+  requirements:
+    _permission: 'add aws cloud key pair'
+
+
 entity.aws_cloud_key_pair.edit_form:
   path: '/clouds/aws_cloud/{cloud_context}/key_pair/{aws_cloud_key_pair}'
   defaults:

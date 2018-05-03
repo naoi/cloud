@@ -194,6 +194,17 @@ interface AwsEc2ServiceInterface {
   public function describeVpcs($params = []);
 
   /**
+   * Calls the Ec2 API endpoint ImportKeyPair.
+   * are returned.
+   *
+   * @param array $params
+   *  Parameters array to send to API
+   * @return Array of VPCs or NULL if there is an error
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function importKeyPair($params = []);
+
+  /**
    * Calls the Ec2 API endpoint TerminateInstances.
    * are returned.
    *
