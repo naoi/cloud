@@ -505,18 +505,30 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $updated = FALSE;
     $entity_type = 'aws_cloud_instance';
 
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
-
     // call the api and get all instances
     $result = $this->describeInstances();
 
     if ($result != NULL) {
 
+      $all_instances = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the instances by setting up
+      // the array with the instance_id
+      foreach ($all_instances as $instance) {
+        $stale[$instance->instance_id()] = $instance;
+      }
+
       // loop through the reservations and store each one as an Instance entity
       foreach ($result['Reservations'] as $reservation) {
 
         foreach ($reservation['Instances'] as $instance) {
+
+          // keep track of instances that do not exist anymore
+          // delete them after saving the rest of the instances
+          if (isset($stale[$instance['InstanceId']])) {
+            unset($stale[$instance['InstanceId']]);
+          }
+
           $instanceName = '';
           foreach ($instance['Tags'] as $tag) {
             if ($tag['Key'] == 'Name') {
@@ -578,6 +590,11 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
           $entity->save();
         }
       }
+
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
+      }
+
       $updated = TRUE;
     }
     return $updated;
@@ -586,7 +603,7 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   /**
    * {@inheritdoc}
    */
-  public function updateImages($params = [], $clear = TRUE) {
+  public function updateImages($params = [], $clear = FALSE) {
     $timestamp = $this->getTimestamp();
 
     $updated = FALSE;
@@ -656,14 +673,24 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $updated = FALSE;
     $entity_type = 'aws_cloud_security_group';
 
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
-
     $result = $this->describeSecurityGroups();
     if ($result != NULL) {
-      // 3. Add objects
+      $all_groups = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the groups by setting up
+      // the array with the group_id
+      foreach ($all_groups as $group) {
+        $stale[$group->group_id()] = $group;
+      }
+
       $security_groups = $result['SecurityGroups'];
       foreach ($security_groups as $security_group) {
+
+        // keep track of instances that do not exist anymore
+        // delete them after saving the rest of the instances
+        if (isset($stale[$security_group['GroupId']])) {
+          unset($stale[$security_group['GroupId']]);
+        }
 
         $entity_id = $this->getEntityId($entity_type, 'group_id', $security_group['GroupId']);
 
@@ -676,20 +703,24 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         }
 
         $entity = SecurityGroup::create([
-          // $cloud_context,.
-          'cloud_context'     => $this->cloud_context,
-          'name'              => !empty($security_group['GroupName']) ? $security_group['GroupName'] : $security_group['GroupId'],
-          'group_id'          => $security_group['GroupId'],
-          'group_name'        => $security_group['GroupName'],
+          'cloud_context' => $this->cloud_context,
+          'name' => !empty($security_group['GroupName']) ? $security_group['GroupName'] : $security_group['GroupId'],
+          'group_id' => $security_group['GroupId'],
+          'group_name' => $security_group['GroupName'],
           'group_description' => $security_group['Description'],
-          'vpc_id'            => $security_group['VpcId'],
-          'owner_id'          => $security_group['OwnerId'],
-          'created'           => $timestamp,
-          'changed'           => $timestamp,
-          'refreshed'         => $timestamp,
+          'vpc_id' => $security_group['VpcId'],
+          'owner_id' => $security_group['OwnerId'],
+          'created' => $timestamp,
+          'changed' => $timestamp,
+          'refreshed' => $timestamp,
         ]);
         $entity->save();
       }
+
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
+      }
+
       $updated = TRUE;
     }
     return $updated;
@@ -703,13 +734,25 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $updated = FALSE;
     $entity_type = 'aws_cloud_network_interface';
 
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
-
     $result = $this->describeNetworkInterfaceList();
     if ($result != NULL) {
+      $all_interfaces = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the groups by setting up
+      // the array with the group_id
+      foreach ($all_interfaces as $interface) {
+        $stale[$interface->network_interface_id()] = $interface;
+      }
+
       $network_interfaces = $result['NetworkInterfaces'];
       foreach ($network_interfaces as $network_interface) {
+
+        // keep track of network interfaces that do not exist anymore
+        // delete them after saving the rest of the network interfaces
+        if (isset($stale[$network_interface['NetworkInterfaceId']])) {
+          unset($stale[$network_interface['NetworkInterfaceId']]);
+        }
+
         $private_ip_addresses = [];
         foreach ($network_interface['PrivateIpAddresses'] as $private_ip_address) {
           $private_ip_addresses[] = $private_ip_address['PrivateIpAddress'];
@@ -732,36 +775,41 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         }
 
         $entity = NetworkInterface::create([
-          'cloud_context'         => $this->cloud_context,
-          'name'                  => $network_interface['NetworkInterfaceId'],
+          'cloud_context' => $this->cloud_context,
+          'name'  => $network_interface['NetworkInterfaceId'],
           'network_interface_id'  => $network_interface['NetworkInterfaceId'],
-          'vpc_id'                => $network_interface['VpcId'],
-          'mac_address'           => $network_interface['MacAddress'],
-          'security_groups'       => implode(', ', $security_groups),
-          'status'                => $network_interface['Status'],
-          'private_dns'           => $network_interface['PrivateDnsName'],
-          'primary_private_ip'    => $network_interface['PrivateIpAddress'],
+          'vpc_id' => $network_interface['VpcId'],
+          'mac_address' => $network_interface['MacAddress'],
+          'security_groups' => implode(', ', $security_groups),
+          'status' => $network_interface['Status'],
+          'private_dns' => $network_interface['PrivateDnsName'],
+          'primary_private_ip'=> $network_interface['PrivateIpAddress'],
           'secondary_private_ips' => implode(', ', $private_ip_addresses),
-          'attachment_id'         => $network_interface['Attachment']['AttachmentId'],
-          'attachment_owner'      => $network_interface['Attachment']['InstanceOwnerId'],
-          'attachment_status'     => $network_interface['Attachment']['Status'],
-          'owner_id'              => $network_interface['OwnerId'],
-          'association_id'        => $network_interface['Association']['AssociationId'],
-          'subnet_id'             => $network_interface['SubnetId'],
-          'description'           => $network_interface['Description'],
-          'public_ips'            => $network_interface['Association']['PublicIp'],
-          'source_dest_check'     => $network_interface['SourceDestCheck'],
-          'instance_id'           => $network_interface['Attachment']['InstanceId'],
-          'device_index'          => $network_interface['Attachment']['DeviceIndex'],
+          'attachment_id' => $network_interface['Attachment']['AttachmentId'],
+          'attachment_owner' => $network_interface['Attachment']['InstanceOwnerId'],
+          'attachment_status'  => $network_interface['Attachment']['Status'],
+          'owner_id' => $network_interface['OwnerId'],
+          'association_id' => $network_interface['Association']['AssociationId'],
+          'subnet_id' => $network_interface['SubnetId'],
+          'description' => $network_interface['Description'],
+          'public_ips' => $network_interface['Association']['PublicIp'],
+          'source_dest_check' => $network_interface['SourceDestCheck'],
+          'instance_id' => $network_interface['Attachment']['InstanceId'],
+          'device_index' => $network_interface['Attachment']['DeviceIndex'],
           'delete_on_termination' => $network_interface['Attachment']['DeleteOnTermination'],
-          'allocation_id'         => $network_interface['Association']['AllocationId'],
-          'owner'                 => $network_interface['Attachment']['InstanceOwnerId'],
-          'created'               => $timestamp,
-          'changed'               => $timestamp,
-          'refreshed'             => $timestamp,
+          'allocation_id' => $network_interface['Association']['AllocationId'],
+          'owner' => $network_interface['Attachment']['InstanceOwnerId'],
+          'created' => $timestamp,
+          'changed' => $timestamp,
+          'refreshed' => $timestamp,
         ]);
         $entity->save();
       }
+
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
+      }
+
       $updated = TRUE;
     }
     return $updated;
@@ -775,14 +823,25 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $timestamp = $this->getTimestamp();
     $updated = FALSE;
     $entity_type = 'aws_cloud_elastic_ip';
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
 
     $result = $this->describeAddresses();
 
     if ($result != NULL) {
+      $all_ips = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the groups by setting up
+      // the array with the group_id
+      foreach ($all_ips as $ip) {
+        $stale[$ip->public_ip()] = $ip;
+      }
+
       $elastic_ips = $result['Addresses'];
       foreach ($elastic_ips as $elastic_ip) {
+        // keep track of Ips that do not exist anymore
+        // delete them after saving the rest of the Ips
+        if (isset($stale[$elastic_ip['PublicIp']])) {
+          unset($stale[$elastic_ip['PublicIp']]);
+        }
 
         $entity_id = $this->getEntityId($entity_type, 'public_ip', $elastic_ip['PublicIp']);
 
@@ -795,21 +854,25 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         }
 
         $entity = ElasticIp::create([
-          'cloud_context'           => $this->cloud_context,
-          'name'                    => $elastic_ip['PublicIp'],
-          'public_ip'               => $elastic_ip['PublicIp'],
-          'instance_id'             => !empty($elastic_ip['InstanceId']) ? $elastic_ip['InstanceId'] : '',
-          'network_interface_id'    => !empty($elastic_ip['NetworkInterfaceId']) ? $elastic_ip['NetworkInterfaceId'] : '',
-          'private_ip_address'      => !empty($elastic_ip['PrivateIpAddress']) ? $elastic_ip['PrivateIpAddress'] : '',
+          'cloud_context' => $this->cloud_context,
+          'name' => $elastic_ip['PublicIp'],
+          'public_ip' => $elastic_ip['PublicIp'],
+          'instance_id' => !empty($elastic_ip['InstanceId']) ? $elastic_ip['InstanceId'] : '',
+          'network_interface_id' => !empty($elastic_ip['NetworkInterfaceId']) ? $elastic_ip['NetworkInterfaceId'] : '',
+          'private_ip_address' => !empty($elastic_ip['PrivateIpAddress']) ? $elastic_ip['PrivateIpAddress'] : '',
           'network_interface_owner' => !empty($elastic_ip['NetworkInterfaceOwnerId']) ? $elastic_ip['NetworkInterfaceOwnerId'] : '',
-          'allocation_id'           => !empty($elastic_ip['AllocationId']) ? $elastic_ip['AllocationId'] : '',
-          'association_id'          => !empty($elastic_ip['AssociationId']) ? $elastic_ip['AssociationId'] : '',
-          'domain'                  => !empty($elastic_ip['Domain']) ? $elastic_ip['Domain'] : '',
-          'created'                 => $timestamp,
-          'changed'                 => $timestamp,
-          'refreshed'               => $timestamp,
+          'allocation_id' => !empty($elastic_ip['AllocationId']) ? $elastic_ip['AllocationId'] : '',
+          'association_id' => !empty($elastic_ip['AssociationId']) ? $elastic_ip['AssociationId'] : '',
+          'domain' => !empty($elastic_ip['Domain']) ? $elastic_ip['Domain'] : '',
+          'created' => $timestamp,
+          'changed' => $timestamp,
+          'refreshed' => $timestamp,
         ]);
         $entity->save();
+      }
+
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
       }
       $updated = TRUE;
     }
@@ -824,14 +887,25 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $updated = FALSE;
 
     $entity_type = 'aws_cloud_key_pair';
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
 
     $result = $this->describeKeyPairs();
     if ($result != NULL) {
-      // 3. Add objects.
+      $all_keys = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the groups by setting up
+      // the array with the group_id
+      foreach ($all_keys as $key) {
+        $stale[$key->key_pair_name()] = $key;
+      }
+
       $key_pairs = $result['KeyPairs'];
       foreach ($key_pairs as $key_pair) {
+
+        // keep track of key pair that do not exist anymore
+        // delete them after saving the rest of the key pair
+        if (isset($stale[$key_pair['KeyName']])) {
+          unset($stale[$key_pair['KeyName']]);
+        }
 
         $entity_id = $this->getEntityId($entity_type, 'key_pair_name', $key_pair['KeyName']);
 
@@ -845,15 +919,20 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
 
         $entity = KeyPair::create([
           // $cloud_context,.
-          'cloud_context'   => $this->cloud_context,
-          'key_pair_name'   => $key_pair['KeyName'],
+          'cloud_context' => $this->cloud_context,
+          'key_pair_name' => $key_pair['KeyName'],
           'key_fingerprint' => $key_pair['KeyFingerprint'],
-          'created'         => $timestamp,
-          'changed'         => $timestamp,
-          'refreshed'       => $timestamp,
+          'created' => $timestamp,
+          'changed' => $timestamp,
+          'refreshed' => $timestamp,
         ]);
         $entity->save();
       }
+
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
+      }
+
       $updated = TRUE;
     }
     return $updated;
@@ -867,13 +946,26 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $updated = FALSE;
 
     $entity_type = 'aws_cloud_volume';
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
+
     $result = $this->describeVolumes();
 
     if ($result != NULL) {
+      $all_volumes = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the groups by setting up
+      // the array with the group_id
+      foreach ($all_volumes as $volume) {
+        $stale[$volume->volume_id()] = $volume;
+      }
+
       $volumes = $result['Volumes'];
       foreach ($volumes as $volume) {
+        // keep track of network interfaces that do not exist anymore
+        // delete them after saving the rest of the network interfaces
+        if (isset($stale[$volume['VolumeId']])) {
+          unset($stale[$volume['VolumeId']]);
+        }
+
         $attachments = [];
         foreach ($volume['Attachments'] as $attachment) {
           $attachments[] = $attachment['InstanceId'];
@@ -891,26 +983,30 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         }
 
         $entity = Volume::create([
-          // $cloud_context,.
-          'cloud_context'          => $this->cloud_context,
-          'name'                   => $volume['VolumeId'],
-          'volume_id'              => $volume['VolumeId'],
-          'size'                   => $volume['Size'],
-          'state'                  => $volume['State'],
-          'volume_status'          => $volume['VirtualizationType'],
+          'cloud_context' => $this->cloud_context,
+          'name' => $volume['VolumeId'],
+          'volume_id' => $volume['VolumeId'],
+          'size' => $volume['Size'],
+          'state' => $volume['State'],
+          'volume_status' => $volume['VirtualizationType'],
           'attachment_information' => implode(', ', $attachments),
-          'volume_type'            => $volume['VolumeType'],
-          'iops'                   => $volume['Iops'],
-          'snapshot'               => $volume['SnapshotId'],
-          'availability_zone'      => $volume['AvailabilityZone'],
-          'encrypted'              => $volume['Encrypted'],
-          'kms_key_id'             => $volume['KmsKeyId'],
-          'created'                => strtotime($volume['CreateTime']),
-          'changed'                => $timestamp,
-          'refreshed'              => $timestamp,
+          'volume_type' => $volume['VolumeType'],
+          'iops' => $volume['Iops'],
+          'snapshot' => $volume['SnapshotId'],
+          'availability_zone' => $volume['AvailabilityZone'],
+          'encrypted' => $volume['Encrypted'],
+          'kms_key_id' => $volume['KmsKeyId'],
+          'created' => strtotime($volume['CreateTime']),
+          'changed' => $timestamp,
+          'refreshed' => $timestamp,
         ]);
         $entity->save();
       }
+
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
+      }
+
       $updated = TRUE;
     }
 
@@ -925,41 +1021,57 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $updated = FALSE;
 
     $entity_type = 'aws_cloud_snapshot';
-    // clear out entities that are expired
-    $this->clearEntities($entity_type, $timestamp);
+
     $result = $this->describeSnapshots();
     if ($result != NULL) {
+      $all_snapshots = $this->loadAllEntities($entity_type);
+      $stale = [];
+      // make it easier to lookup the snapshot by setting up
+      // the array with the snapshot_id
+      foreach ($all_snapshots as $snapshot) {
+        $stale[$snapshot->snapshot_id()] = $snapshot;
+      }
+
       $snapshots = $result['Snapshots'];
       foreach ($snapshots as $snapshot) {
+        // keep track of snapshot that do not exist anymore
+        // delete them after saving the rest of the snapshots
+        if (isset($stale[$snapshot['SnapshotId']])) {
+          unset($stale[$snapshot['SnapshotId']]);
+        }
 
         $entity_id = $this->getEntityId($entity_type, 'snapshot_id', $snapshot['SnapshotId']);
 
         // Skip if $entity already exists, by updating 'refreshed' time.
         if (!empty($entity_id)) {
           $entity = Snapshot::load($entity_id);
+          $entity->setStatus($snapshot['State']);
           $entity->setRefreshed($timestamp);
-
+          $entity->save();
           continue;
         }
 
         $entity = Snapshot::create([
           'cloud_context' => $this->cloud_context,
-          'snapshot_id'   => $snapshot['SnapshotId'],
-          'size'          => $snapshot['VolumeSize'],
-          'description'   => $snapshot['Description'],
-          'status'        => $snapshot['State'],
-          'volume_id'     => $snapshot['VolumeId'],
-          'progress'      => $snapshot['Progress'],
-          'encrypted'     => $snapshot['Encrypted'],
-          'kms_key_id'    => $snapshot['KmsKeyId'],
-          'owner_id'      => $snapshot['OwnerId'],
+          'snapshot_id' => $snapshot['SnapshotId'],
+          'size' => $snapshot['VolumeSize'],
+          'description' => $snapshot['Description'],
+          'status' => $snapshot['State'],
+          'volume_id' => $snapshot['VolumeId'],
+          'progress' => $snapshot['Progress'],
+          'encrypted' => $snapshot['Encrypted'],
+          'kms_key_id' => $snapshot['KmsKeyId'],
+          'owner_id' => $snapshot['OwnerId'],
           'owner_aliases' => $snapshot['OwnerAlias'],
           'state_message' => $snapshot['StateMessage'],
-          'created'       => strtotime($snapshot['StartTime']),
-          'changed'       => $timestamp,
-          'refreshed'     => $timestamp,
+          'created' => strtotime($snapshot['StartTime']),
+          'changed' => $timestamp,
+          'refreshed'  => $timestamp,
         ]);
         $entity->save();
+      }
+      if (count($stale)) {
+        $this->deleteStaleEntities($entity_type, $stale);
       }
       $updated = TRUE;
     }
@@ -1055,6 +1167,24 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     return array_shift($this->queryFactory->get($entity_type)
       ->condition($id_field, $id_value)
       ->execute());
+  }
+
+  /**
+   * Helper method to load all entities of a given type
+   * @param $entity_type
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   */
+  private function loadAllEntities($entity_type) {
+    return $this->entityTypeManager->getStorage($entity_type)->loadMultiple();
+  }
+
+  /**
+   * Helper method to delete stale entities
+   * @param $entity_type
+   * @param $entities
+   */
+  private function deleteStaleEntities($entity_type, $entities) {
+    $this->entityTypeManager->getStorage($entity_type)->delete($entities);
   }
 
 }

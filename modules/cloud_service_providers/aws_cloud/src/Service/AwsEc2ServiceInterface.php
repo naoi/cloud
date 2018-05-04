@@ -313,7 +313,7 @@ interface AwsEc2ServiceInterface {
    *    FALSE if nothing is updated.  Number of images imported returned as
    *    integer if successful
    */
-  public function updateImages($params = [], $clear = TRUE);
+  public function updateImages($params = [], $clear = FALSE);
 
   /**
    * Update the Ec2 Security Groups.  Delete old Security Groups entities,
@@ -355,6 +355,8 @@ interface AwsEc2ServiceInterface {
    * Update the Ec2 Volumes.  Delete old Volumes entities,
    * query the api for updated entities and store them as Volumes entities.
    *
+   * @params boolean $clear
+   *   TRUE to delete images entities before importing
    *  @return boolean
    *    indicates success so failure
    */
@@ -364,6 +366,8 @@ interface AwsEc2ServiceInterface {
    * Update the Ec2 snapshots.  Delete old snapshots entities,
    * query the api for updated entities and store them as snapshots entities.
    *
+   * @params boolean $clear
+   *   TRUE to delete images entities before importing
    *  @return boolean
    *    indicates success so failure
    */
