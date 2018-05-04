@@ -127,6 +127,12 @@ entity.aws_cloud_key_pair.add_form:
   appears_on:
     - view.aws_cloud_key_pairs.page_1
 
+entity.aws_cloud_key_pair.import_form:
+  route_name: entity.aws_cloud_key_pair.import_form
+  title: 'Import AWS Cloud Key Pair'
+  appears_on:
+    - view.aws_cloud_key_pairs.page_1
+
 entity.aws_cloud_key_pair.collection:
   route_name: view.aws_cloud_key_pairs.page_1
   title: 'List AWS Cloud Key Pairs'

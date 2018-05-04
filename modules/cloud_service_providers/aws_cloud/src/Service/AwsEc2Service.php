@@ -383,6 +383,16 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   /**
    * {@inheritdoc}
    */
+  public function importKeyPair($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('ImportKeyPair', $params);
+    return $results;
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
   public function terminateInstance($params = []) {
     $params += $this->getDefaultParameters();
     $results = $this->execute('TerminateInstances', $params);

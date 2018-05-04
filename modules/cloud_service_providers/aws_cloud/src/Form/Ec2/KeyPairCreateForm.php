@@ -10,7 +10,6 @@ namespace Drupal\aws_cloud\Form\Ec2;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Form controller for the KeyPair entity create form.
@@ -70,6 +69,7 @@ class KeyPairCreateForm extends AwsCloudContentForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
 
+    /* @var \Drupal\aws_cloud\Entity\Ec2\KeyPair $entity */
     $entity = $this->entity;
 
     $result = $this->awsEc2Service->createKeyPair([
