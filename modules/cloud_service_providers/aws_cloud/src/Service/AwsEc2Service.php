@@ -10,13 +10,14 @@ use Drupal\aws_cloud\Entity\Ec2\Instance;
 use Drupal\aws_cloud\Entity\Ec2\KeyPair;
 use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
 use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
-use Drupal\aws_cloud\Entity\Ec2\Volume;
 use Drupal\aws_cloud\Entity\Ec2\Snapshot;
+use Drupal\aws_cloud\Entity\Ec2\Volume;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Messenger\Messenger;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 
@@ -80,6 +81,13 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   protected $configFactory;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * TRUE to run the operation.  FALSE to run the operation in validation mode
    * @var boolean
    */
@@ -100,8 +108,10 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    *   The string translation service.
    * @param \Drupal\Core\Entity\Query\QueryFactory $query_factory
    *   The entity_query object.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, ConfigFactoryInterface $config_factory, Messenger $messenger, TranslationInterface $string_translation, QueryFactory $query_factory) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, ConfigFactoryInterface $config_factory, Messenger $messenger, TranslationInterface $string_translation, QueryFactory $query_factory, AccountInterface $current_user) {
     // setup the entity type manager for querying entities
     $this->entityTypeManager = $entity_type_manager;
     // setup the cloud_context configs
@@ -118,6 +128,8 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $this->stringTranslation = $string_translation;
 
     $this->queryFactory = $query_factory;
+
+    $this->currentUser = $current_user;
   }
 
 
@@ -448,6 +460,28 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    */
   public function runInstances($params = []) {
     $params += $this->getDefaultParameters();
+
+    // add meta tags to identify where the instance was launched from
+    $params['TagSpecifications'] = [
+      [
+        'ResourceType' => 'instance',
+        'Tags' => [
+          [
+            'Key' => 'cloud_launch_origin',
+            'Value' => \Drupal::request()->getHost(),
+          ],
+          [
+            'Key' => 'cloud_launch_software',
+            'Value' => 'Drupal 8 Cloud Orchestrator',
+          ],
+          [
+            'Key' => 'cloud_launched_by',
+            'Value' => $this->currentUser->getAccountName(),
+          ],
+        ],
+      ],
+    ];
+
     $results = $this->execute('RunInstances', $params);
     return $results;
   }
