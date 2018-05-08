@@ -483,6 +483,13 @@ class Instance extends CloudContentEntityBase implements InstanceInterface {
   /**
    * {@inheritdoc}
    */
+  public function setName($name) {
+    return $this->set('name', $name);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
 
     $fields['id'] = BaseFieldDefinition::create('integer')

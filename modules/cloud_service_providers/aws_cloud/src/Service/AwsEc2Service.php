@@ -265,6 +265,12 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     return $results;
   }
 
+  public function createTags($params = []) {
+    $params += $this->getDefaultParameters();
+    $results = $this->execute('CreateTags', $params);
+    return $results;
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -531,7 +537,7 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
 
           $instanceName = '';
           foreach ($instance['Tags'] as $tag) {
-            if ($tag['Key'] == 'Name') {
+            if ($tag['Key'] == 'cloud_instance_nickname') {
               $instanceName = $tag['Value'];
             }
           }
@@ -545,6 +551,7 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
           // Skip if $entity already exists, by updating 'refreshed' time.
           if (!empty($entity_id)) {
             $entity = Instance::load($entity_id);
+            $entity->setName($instanceName);
             $entity->setInstanceState($instance['State']['Name']);
             $entity->setElasticIp($instance['elastic_ip']);
             $entity->setRefreshed($timestamp);
@@ -635,28 +642,28 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
         }
 
         $entity = Image::create([
-          // $cloud_context,.
-          'cloud_context'       => $this->cloud_context,
-          'image_id'            => $image['ImageId'],
-          'owner'               => $image['OwnerId'],
-          'architecture'        => $image['Architecture'],
+          'cloud_context' => $this->cloud_context,
+          'image_id' => $image['ImageId'],
+          'owner' => $image['OwnerId'],
+          'architecture' => $image['Architecture'],
           'virtualization_type' => $image['VirtualizationType'],
-          'root_device_type'    => $image['RootDeviceType'],
-          'root_device_name'    => $image['RootDeviceName'],
-          'ami_name'            => $image['Name'],
-          'kernel_id'           => $image['KernelId'],
-          'ramdisk_id'          => $image['RamdiskId'],
-          'image_type'          => $image['ImageType'],
-          'product_code'        => $image['product_code'],
-          'source'              => $image['ImageLocation'],
-          'state_reason'        => $image['StateReason']['Message'],
-          'platform'            => $image['Platform'],
-          'description'         => $image['Description'],
-          'visibility'          => $image['Public'],
-          'block_devices'       => implode(', ', $block_devices),
-          'created'             => strtotime($image['CreationDate']),
-          'changed'             => $timestamp,
-          'refreshed'           => $timestamp,
+          'root_device_type' => $image['RootDeviceType'],
+          'root_device_name' => $image['RootDeviceName'],
+          'ami_name' => $image['Name'],
+          'name' => $image['Name'],
+          'kernel_id' => $image['KernelId'],
+          'ramdisk_id'  => $image['RamdiskId'],
+          'image_type' => $image['ImageType'],
+          'product_code' => $image['product_code'],
+          'source' => $image['ImageLocation'],
+          'state_reason' => $image['StateReason']['Message'],
+          'platform' => $image['Platform'],
+          'description' => $image['Description'],
+          'visibility' => $image['Public'],
+          'block_devices' => implode(', ', $block_devices),
+          'created' => strtotime($image['CreationDate']),
+          'changed' => $timestamp,
+          'refreshed' => $timestamp,
         ]);
         $entity->save();
       }

@@ -4,7 +4,6 @@
 // Created by yas 2016/05/30.
 namespace Drupal\aws_cloud\Form\Ec2;
 
-use Drupal\cloud\Form\CloudContentForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
 
@@ -13,7 +12,7 @@ use Drupal\Core\Language\Language;
  *
  * @ingroup aws_cloud
  */
-class InstanceEditForm extends CloudContentForm {
+class InstanceEditForm extends AwsCloudContentForm {
 
   /**
    * Overrides Drupal\Core\Entity\EntityFormController::buildForm().
@@ -171,6 +170,26 @@ class InstanceEditForm extends CloudContentForm {
     $form['actions'] = $this->actions($form, $form_state, $cloud_context);
 
     return $form;
+  }
+
+  /**
+   * {@inheritdocs}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    parent::save($form, $form_state);
+
+    // update the instance name - it is a tag
+    $params = [
+      'Resources' => [$this->entity->get('instance_id')->value],
+      'Tags' => [
+        [
+          'Key' => 'cloud_instance_nickname',
+          'Value' => $this->entity->get('name')->value
+        ],
+      ]
+    ];
+    $this->awsEc2Service->setCloudContext($this->entity->get('cloud_context')->value);
+    $this->awsEc2Service->createTags($params);
   }
 
 }
