@@ -313,7 +313,6 @@ interface InstanceInterface extends ContentEntityInterface, EntityOwnerInterface
   /**
    * {@inheritdoc}
    */
-/*
-  public function setCloudContext($cloud_context);
-*/
+  public function setName($name);
+
 }

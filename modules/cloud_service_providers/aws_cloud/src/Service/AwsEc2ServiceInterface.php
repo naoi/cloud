@@ -80,6 +80,16 @@ interface AwsEc2ServiceInterface {
   public function createSecurityGroup($params = []);
 
   /**
+   * Calls the Ec2 API endpoint Create Tags.
+   *
+   * @param array $params
+   *   Parameters array to send to API
+   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
+   */
+  public function createTags($params = []);
+
+
+  /**
    * Calls the Ec2 API endpoint DeregisterImage.
    *
    * @param array $params
