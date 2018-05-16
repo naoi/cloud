@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - cloud
+    - options
+id: cloud_config.field_region
+field_name: field_region
+entity_type: cloud_config
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: us-east-1
+      label: us-east-1
+    -
+      value: us-east-2
+      label: us-east-2
+    -
+      value: us-west-1
+      label: us-west-1
+    -
+      value: us-west-2
+      label: us-west-2
+    -
+      value: ca-central-1
+      label: ca-central-1
+    -
+      value: eu-west-1
+      label: eu-west-1
+    -
+      value: eu-central-1
+      label: eu-central-1
+    -
+      value: ap-south-1
+      label: ap-south-1
+    -
+      value: ap-northeast-1
+      label: ap-northeast-1
+    -
+      value: ap-northeast-2
+      label: ap-northeast-2
+    -
+      value: ap-southeast-1
+      label: ap-southeast-1
+    -
+      value: ap-southeast-2
+      label: ap-southeast-2
+    -
+      value: sa-east-1
+      label: sa-east-1
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

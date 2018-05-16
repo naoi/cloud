@@ -1,0 +1,62 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - cloud
+    - options
+id: cloud_config.field_api_endpoint_uri
+field_name: field_api_endpoint_uri
+entity_type: cloud_config
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: 'https://ec2.amazonaws.com'
+      label: 'https://ec2.amazonaws.com'
+    -
+      value: 'https://ec2.us-east-2.amazonaws.com'
+      label: 'https://ec2.us-east-2.amazonaws.com'
+    -
+      value: 'https://ec2.us-west-1.amazonaws.com'
+      label: 'https://ec2.us-west-1.amazonaws.com'
+    -
+      value: 'https://ec2.us-west-2.amazonaws.com'
+      label: 'https://ec2.us-west-2.amazonaws.com'
+    -
+      value: 'https://ec2.ca-central-1.amazonaws.com'
+      label: 'https://ec2.ca-central-1.amazonaws.com'
+    -
+      value: 'https://ec2.eu-west-1.amazonaws.com'
+      label: 'https://ec2.eu-west-1.amazonaws.com'
+    -
+      value: 'https://ec2.eu-central-1.amazonaws.com'
+      label: 'https://ec2.eu-central-1.amazonaws.com'
+    -
+      value: 'https://ec2.eu-west-2.amazonaws.com'
+      label: 'https://ec2.eu-west-2.amazonaws.com'
+    -
+      value: 'https://ec2.ap-south-1.amazonaws.com'
+      label: 'https://ec2.ap-south-1.amazonaws.com'
+    -
+      value: 'https://ec2.ap-northeast-1.amazonaws.com'
+      label: 'https://ec2.ap-northeast-1.amazonaws.com'
+    -
+      value: 'https://ec2.ap-northeast-2.amazonaws.com'
+      label: 'https://ec2.ap-northeast-2.amazonaws.com'
+    -
+      value: 'https://ec2.ap-southeast-1.amazonaws.com'
+      label: 'https://ec2.ap-southeast-1.amazonaws.com'
+    -
+      value: 'https://ec2.ap-southeast-2.amazonaws.com'
+      label: 'https://ec2.ap-southeast-2.amazonaws.com'
+    -
+      value: 'https://ec2.sa-east-1.amazonaws.com'
+      label: 'https://ec2.sa-east-1.amazonaws.com'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
