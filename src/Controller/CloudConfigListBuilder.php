@@ -20,6 +20,7 @@ class CloudConfigListBuilder extends EntityListBuilder {
   public function buildHeader() {
     $header['id'] = $this->t('Cloud config ID');
     $header['name'] = $this->t('Name');
+    $header['type'] = $this->t('Type');
     $header['cloud_context'] = $this->t('Cloud Context');
     return $header + parent::buildHeader();
   }
@@ -35,6 +36,7 @@ class CloudConfigListBuilder extends EntityListBuilder {
       'entity.cloud_config.edit_form',
       ['cloud_config' => $entity->id()]
     );
+    $row['type'] = $entity->bundle();
     $row['cloud_context'] = $entity->cloud_context();
     return $row + parent::buildRow($entity);
   }
