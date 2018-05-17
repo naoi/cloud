@@ -112,7 +112,7 @@ class CloudConfigPluginManager extends DefaultPluginManager implements CloudConf
   public function loadConfigEntity() {
     $config_entity = $this->plugin->loadCloudConfigEntity($this->cloud_context);
     if ($config_entity == FALSE) {
-      throw new CloudConfigPluginExeception(sprintf('Cannot load configuration entity for %s', ['%s' => $this->cloud_context]));
+      throw new CloudConfigPlugException(sprintf('Cannot load configuration entity for %s', ['%s' => $this->cloud_context]));
     }
     return $config_entity;
   }
@@ -124,7 +124,7 @@ class CloudConfigPluginManager extends DefaultPluginManager implements CloudConf
     /* @var \Drupal\cloud\Plugin\CloudConfigPluginInterface $plugin */
     $plugin = $this->loadBasePluginDefinition($entity_bundle);
     if ($plugin == FALSE) {
-      throw new CloudConfigPluginExeception(sprintf('Cannot load Cloud Config Entity for %s', ['%s' => $entity_bundle]));
+      throw new CloudConfigPluginException(sprintf('Cannot load Cloud Config Entity for %s', ['%s' => $entity_bundle]));
     }
     return $plugin->loadConfigEntities();
   }

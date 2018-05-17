@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @file
  * Enables users to access the Privately managed clouds.
@@ -54,12 +53,3 @@ function cloud_theme_suggestions_cloud_config(array $variables) {
   $suggestions[] = 'cloud_config__' . $entity->id() . '__' . $sanitized_view_mode;
   return $suggestions;
 }
-
-///**
-// * Implements hook_form_BASE_FORM_ID_alter().
-// */
-//function cloud_form_cloud_config_aws_ec2_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-//  /* @var \Drupal\cloud\Plugin\CloudConfigPluginManager $plugin_manager */
-//  $plugin_manager = \Drupal::service('plugin.manager.cloud_config_plugin');
-//  $entities = $plugin_manager->loadConfigEntities();
-//}
