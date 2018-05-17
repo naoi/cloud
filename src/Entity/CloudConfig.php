@@ -212,6 +212,32 @@ class CloudConfig extends RevisionableContentEntityBase implements CloudConfigIn
     $this->set('cloud_context', $cloud_context);
     return $this;
   }
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    parent::delete();
+    $this->updateCache();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save() {
+    $return = parent::save();
+    $this->updateCache();
+    return $return;
+  }
+
+  /**
+   * Clear the menu, render cache and rebuild the routers
+   */
+  private function updateCache() {
+    // clear block and menu cache
+    menu_cache_clear_all();
+    \Drupal::service('cache.render')->deleteAll();
+    \Drupal::service('router.builder')->rebuild();
+  }
 
   /**
    * Check if a specific cloud_context exists.

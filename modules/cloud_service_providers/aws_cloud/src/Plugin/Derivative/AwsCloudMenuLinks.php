@@ -6,8 +6,8 @@
 
 namespace Drupal\aws_cloud\Plugin\Derivative;
 
+use Drupal\cloud\Plugin\CloudConfigPluginManagerInterface;
 use Drupal\Component\Plugin\Derivative\DeriverBase;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,20 +19,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class AwsCloudMenuLinks extends DeriverBase implements ContainerDeriverInterface {
 
   /**
-   * The config storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * CloudConfigPlugin
+   * @var \Drupal\cloud\Plugin\CloudConfigPluginManagerInterface
    */
-  protected $config_storage;
+  protected $cloudConfigPluginManager;
 
   /**
    * Constructs new AwsCloudLocalTasks.
-   *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $cloud_context
-   *   The config storage.
+   * @param \Drupal\cloud\Plugin\CloudConfigPluginManagerInterface $cloud_config_plugin_manager
    */
-  public function __construct(EntityStorageInterface $config_storage) {
-    $this->config_storage = $config_storage;
+  public function __construct(CloudConfigPluginManagerInterface $cloud_config_plugin_manager) {
+    $this->cloudConfigPluginManager = $cloud_config_plugin_manager;
   }
 
   /**
@@ -40,7 +37,7 @@ class AwsCloudMenuLinks extends DeriverBase implements ContainerDeriverInterface
    */
   public static function create(ContainerInterface $container, $base_plugin_id) {
     return new static(
-      $container->get('entity.manager')->getStorage('cloud_context')
+      $container->get('plugin.manager.cloud_config_plugin')
     );
   }
 
@@ -48,21 +45,17 @@ class AwsCloudMenuLinks extends DeriverBase implements ContainerDeriverInterface
    * {@inheritdoc}
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
+    $entities = $this->cloudConfigPluginManager->loadConfigEntities('aws_ec2');
 
-    foreach ($this->config_storage->loadMultiple() as $cloud_context => $entity) {
-
-      // Building Local Tasks
-      $id = $entity->getEntityType()->id() . '.local_tasks.' . $cloud_context;
+    foreach ($entities as $entity) {
+      /* @var \Drupal\cloud\Entity\CloudConfig $entity */
+      $id = $entity->id() . '.local_tasks.' . $entity->cloud_context();
       $this->derivatives[$id] = $base_plugin_definition;
       $this->derivatives[$id]['title'] = $entity->label();
       $this->derivatives[$id]['route_name'] = 'view.aws_instances.page_1';
       $this->derivatives[$id]['base_route'] = 'cloud.service_providers.menu';
       $this->derivatives[$id]['parent'] = 'cloud.service_providers.menu';
-      $this->derivatives[$id]['route_parameters'] = ['cloud_context' => $cloud_context];
-    }
-
-    foreach ($this->derivatives as &$entry) {
-      $entry += $base_plugin_definition;
+      $this->derivatives[$id]['route_parameters'] = ['cloud_context' => $entity->cloud_context()];
     }
 
     return $this->derivatives;

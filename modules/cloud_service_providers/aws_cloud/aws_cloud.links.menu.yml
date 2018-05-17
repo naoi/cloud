@@ -11,6 +11,4 @@ entity.cloud_context.collection:
 
 aws_cloud.menu.cloud_context:
   deriver: 'Drupal\aws_cloud\Plugin\Derivative\AwsCloudMenuLinks'
-# route_name: 'entity.aws_cloud_instance.collection'
-# class: 'Drupal\aws_cloud\Plugin\Menu\AwsCloudTab'
   weight: 100

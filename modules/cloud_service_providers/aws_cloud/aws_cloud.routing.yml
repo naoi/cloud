@@ -19,9 +19,6 @@
 # AWS Cloud Routing Definition
 ##############################
 
-# route_callbacks:
-#  - '\Drupal\aws_cloud\Routing\AwsCloudRoutes::routes'
-
 ######################
 # AWS SDK API Callback
 ######################

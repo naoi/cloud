@@ -25,7 +25,6 @@ aws_cloud.local_tasks.cloud_context.list_all:
 aws_cloud.local_tasks.cloud_context:
   deriver: 'Drupal\aws_cloud\Plugin\Derivative\AwsCloudLocalTasks'
 # # route_name: 'entity.aws_cloud_instance.collection'
-# # class: 'Drupal\aws_cloud\Plugin\Menu\AwsCloudTab'
   weight: 10
 
 aws_cloud.local_tasks.instance:
