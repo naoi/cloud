@@ -19,7 +19,7 @@ interface CloudConfigPluginManagerInterface extends PluginManagerInterface {
   /**
    * Load all configuration entities for a given bundle
    *
-   * @param String $bundle
+   * @param String $entity_bundle
    *  The bundle to load
    * @return mixed
    */
