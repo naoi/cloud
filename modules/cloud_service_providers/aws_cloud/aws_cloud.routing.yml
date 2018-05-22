@@ -377,8 +377,6 @@ entity.aws_cloud_key_pair.canonical:
     _permission: 'view aws cloud key pair'
   options:
     parameters:
-      cloud_context:
-        type: "entity:cloud_context"
       aws_cloud_key_pair:
         type: "entity:aws_cloud_key_pair"
 
@@ -391,8 +389,6 @@ entity.aws_cloud_key_pair.download:
     _permission: 'add aws cloud key pair'
   options:
     parameters:
-      cloud_context:
-        type: "entity:cloud_context"
       aws_cloud_key_pair:
         type: "entity:aws_cloud_key_pair"
 

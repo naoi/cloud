@@ -88,7 +88,7 @@ class CloudConfigPluginManager extends DefaultPluginManager implements CloudConf
     // load the plugin variant since we know the cloud_context
     $this->plugin = $this->loadPluginVariant();
     if ($this->plugin == FALSE) {
-      throw new CloudConfigException(sprintf('Cannot load cloud config plugin for %s', ['%s' => $cloud_context]));
+      throw new CloudConfigPluginException(sprintf('Cannot load cloud config plugin for %s', ['%s' => $cloud_context]));
     }
   }
 
@@ -110,7 +110,7 @@ class CloudConfigPluginManager extends DefaultPluginManager implements CloudConf
    * {@inheritdoc}
    */
   public function loadConfigEntity() {
-    $config_entity = $this->plugin->loadCloudConfigEntity($this->cloud_context);
+    $config_entity = $this->plugin->loadConfigEntity($this->cloud_context);
     if ($config_entity == FALSE) {
       throw new CloudConfigPlugException(sprintf('Cannot load configuration entity for %s', ['%s' => $this->cloud_context]));
     }

@@ -237,6 +237,7 @@ class CloudConfig extends RevisionableContentEntityBase implements CloudConfigIn
     menu_cache_clear_all();
     \Drupal::service('cache.render')->deleteAll();
     \Drupal::service('router.builder')->rebuild();
+    \Drupal::service('plugin.cache_clearer')->clearCachedDefinitions();
   }
 
   /**

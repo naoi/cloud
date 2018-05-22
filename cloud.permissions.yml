@@ -1,6 +1,8 @@
 access dashboard:
   title: 'Access cloud dashboard'
-  description: 'Allow access to cloud dashboard'add cloud config entities:
+  description: 'Allow access to cloud dashboard'
+
+add cloud config entities:
   title: 'Create new Cloud config entities'
 
 administer cloud config entities:

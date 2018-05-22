@@ -1171,7 +1171,9 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    * @return \Drupal\Core\Entity\EntityInterface[]
    */
   private function loadAllEntities($entity_type) {
-    return $this->entityTypeManager->getStorage($entity_type)->loadMultiple();
+    return $this->entityTypeManager->getStorage($entity_type)->loadByProperties(
+      ['cloud_context' => [$this->cloud_context]]
+    );
   }
 
   /**
