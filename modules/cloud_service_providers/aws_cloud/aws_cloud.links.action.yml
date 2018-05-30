@@ -13,26 +13,6 @@ aws_cloud.settings:
   weight: -1
   base_route: aws_cloud.settings
 
-############################
-# AWS Cloud Service Provider
-############################
-
-entity.cloud_context.add_form:
-  route_name: entity.cloud_context.add_form
-  title: 'Add AWS Cloud Service Provider'
-  appears_on:
-    - entity.cloud_context.collection
-
-entity.cloud_context.collection:
-  route_name: entity.cloud_context.collection
-  title: 'List AWS Cloud Service Providers'
-  weight: 1
-  base_route: aws_cloud.settings
-  appears_on:
-    - entity.cloud_context.add_form
-    - entity.cloud_context.edit_form
-    - entity.cloud_context.delete_form
-
 
 ####################
 # AWS Cloud Instance

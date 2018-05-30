@@ -2,7 +2,6 @@
 
 namespace Drupal\aws_cloud\Controller\Ec2;
 
-use Drupal\aws_cloud\Aws\Config\ConfigInterface;
 use Drupal\aws_cloud\Aws\Ec2\ApiControllerInterface;
 use Drupal\aws_cloud\Service\AwsEc2ServiceInterface;
 use Drupal\Core\Controller\ControllerBase;
@@ -54,9 +53,10 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
   /**
    * {@inheritdoc}
    */
-  public function updateInstanceList(ConfigInterface $cloud_context) {
+  public function updateInstanceList($cloud_context) {
+  //public function updateInstanceList(ConfigInterface $cloud_context) {
 
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateInstances();
 
     if ($updated != FALSE) {
@@ -67,16 +67,16 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     }
 
     return $this->redirect('view.aws_instances.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateImageList(ConfigInterface $cloud_context) {
+  public function updateImageList($cloud_context) {
 
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateImages();
 
     if ($updated != FALSE) {
@@ -86,15 +86,15 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update images.'));
     }
     return $this->redirect('view.aws_images.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateSecurityGroupList(ConfigInterface $cloud_context) {
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+  public function updateSecurityGroupList($cloud_context) {
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateSecurityGroups();
 
     if ($updated != FALSE) {
@@ -104,15 +104,15 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
       $this->messageUser($this->t('Unable to update security groups.'));
     }
     return $this->redirect('view.aws_security_group.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateNetworkInterfaceList(ConfigInterface $cloud_context) {
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+  public function updateNetworkInterfaceList($cloud_context) {
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateNetworkInterfaces();
 
     if ($updated != FALSE) {
@@ -123,16 +123,16 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     }
 
     return $this->redirect('view.aws_network_interfaces.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateElasticIpList(ConfigInterface $cloud_context) {
+  public function updateElasticIpList($cloud_context) {
 
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateElasticIp();
 
     if ($updated != FALSE) {
@@ -143,16 +143,16 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     }
 
     return $this->redirect('entity.aws_cloud_elastic_ip.collection', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateKeyPairList(ConfigInterface $cloud_context) {
+  public function updateKeyPairList($cloud_context) {
 
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateKeyPairs();
 
     if ($updated != FALSE) {
@@ -163,16 +163,16 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     }
 
     return $this->redirect('view.aws_cloud_key_pairs.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateVolumeList(ConfigInterface $cloud_context) {
+  public function updateVolumeList($cloud_context) {
 
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateVolumes();
 
     if ($updated != FALSE) {
@@ -183,16 +183,16 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     }
 
     return $this->redirect('view.aws_volume.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateSnapshotList(ConfigInterface $cloud_context) {
+  public function updateSnapshotList($cloud_context) {
 
-    $this->awsEc2Service->setCloudContext($cloud_context->id());
+    $this->awsEc2Service->setCloudContext($cloud_context);
     $updated = $this->awsEc2Service->updateSnapshots();
 
     if ($updated !== FALSE) {
@@ -203,7 +203,7 @@ class ApiController extends ControllerBase implements ApiControllerInterface {
     }
 
     return $this->redirect('view.aws_snapshot.page_1', [
-      'cloud_context' => $cloud_context->id(),
+      'cloud_context' => $cloud_context,
     ]);
   }
 

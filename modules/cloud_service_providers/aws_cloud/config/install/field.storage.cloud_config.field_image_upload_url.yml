@@ -1,0 +1,44 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - cloud
+    - options
+id: cloud_config.field_image_upload_url
+field_name: field_image_upload_url
+entity_type: cloud_config
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: 'https://ec2.amazonaws.com'
+      label: 'https://ec2.amazonaws.com'
+    -
+      value: 'https://ec2.us-west-1.amazonaws.com'
+      label: 'https://ec2.us-west-1.amazonaws.com'
+    -
+      value: 'https://ec2.us-west-2.amazonaws.com'
+      label: 'https://ec2.us-west-2.amazonaws.com'
+    -
+      value: 'https://ec2.eu-west-1.amazonaws.com'
+      label: 'https://ec2.eu-west-1.amazonaws.com'
+    -
+      value: 'https://ec2.ap-northeast-1.amazonaws.com'
+      label: 'https://ec2.ap-northeast-1.amazonaws.com'
+    -
+      value: 'https://ec2.ap-southeast-1.amazonaws.com'
+      label: 'https://ec2.ap-southeast-1.amazonaws.com'
+    -
+      value: 'https://ec2.ap-southeast-2.amazonaws.com'
+      label: 'https://ec2.ap-southeast-2.amazonaws.com'
+    -
+      value: 'https://ec2.sa-east-1.amazonaws.com'
+      label: 'https://ec2.sa-east-1.amazonaws.com'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

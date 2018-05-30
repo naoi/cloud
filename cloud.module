@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @file
  * Enables users to access the Privately managed clouds.
@@ -19,4 +18,38 @@ function cloud_help($route_name, RouteMatchInterface $route_match) {
     default:
       return '';
   }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cloud_theme() {
+  $theme = [];
+  $theme['cloud_config'] = [
+    'render element' => 'elements',
+    'file' => 'cloud_config.page.inc',
+    'template' => 'cloud_config',
+  ];
+  $theme['cloud_config_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'cloud_config.page.inc',
+  ];
+  return $theme;
+}
+
+/**
+* Implements hook_theme_suggestions_HOOK().
+*/
+function cloud_theme_suggestions_cloud_config(array $variables) {
+  $suggestions = [];
+  $entity = $variables['elements']['#cloud_config'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'cloud_config__' . $sanitized_view_mode;
+  $suggestions[] = 'cloud_config__' . $entity->bundle();
+  $suggestions[] = 'cloud_config__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'cloud_config__' . $entity->id();
+  $suggestions[] = 'cloud_config__' . $entity->id() . '__' . $sanitized_view_mode;
+  return $suggestions;
 }

@@ -1,0 +1,23 @@
+# Cloud config routing definition
+
+entity.cloud_config.canonical:
+  route_name: entity.cloud_config.canonical
+  base_route: entity.cloud_config.canonical
+  title: 'View'
+
+entity.cloud_config.edit_form:
+  route_name: entity.cloud_config.edit_form
+  base_route: entity.cloud_config.canonical
+  title: 'Edit'
+
+entity.cloud_config.version_history:
+  route_name: entity.cloud_config.version_history
+  base_route: entity.cloud_config.canonical
+  title: 'Revisions'
+
+entity.cloud_config.delete_form:
+  route_name:  entity.cloud_config.delete_form
+  base_route:  entity.cloud_config.canonical
+  title: Delete
+  weight: 10
+

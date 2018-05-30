@@ -19,9 +19,6 @@
 # AWS Cloud Routing Definition
 ##############################
 
-# route_callbacks:
-#  - '\Drupal\aws_cloud\Routing\AwsCloudRoutes::routes'
-
 ######################
 # AWS SDK API Callback
 ######################
@@ -92,59 +89,6 @@ aws_cloud.settings:
     _form: '\Drupal\aws_cloud\Form\Config\AwsCloudAdminSettings'
   requirements:
     _permission: 'administer aws_cloud'
-
-##################
-# AWS Cloud Config
-##################
-
-entity.cloud_context.canonical:
-  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}'
-  defaults:
-    _entity_view: 'cloud_context'
-    _title: 'AWS Cloud Service Provider Configuration'
-  requirements:
-    _permission: 'view aws cloud provider'
-
-entity.cloud_context.collection:
-  path: '/admin/config/services/cloud/aws_cloud/cloud_context'
-  defaults:
-    _entity_list: 'cloud_context'
-    _title: 'AWS Cloud Service Provider'
-  requirements:
-    _permission: 'list aws cloud provider'
-
-entity.cloud_context.add_form:
-  path: '/admin/config/services/cloud/aws_cloud/cloud_context/add'
-  defaults:
-    _entity_form: 'cloud_context.add'
-    _title: 'Add AWS Cloud Service Provider Configuration'
-  requirements:
-    _permission: 'add aws cloud provider'
-
-entity.cloud_context.edit_form:
-  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}/edit'
-  defaults:
-    _entity_form: 'cloud_context.edit'
-    _title: 'Edit AWS Cloud Service Provider | Region'
-  requirements:
-    _permission: 'edit aws cloud provider'
-
-entity.cloud_context.edit_form.edit:
-  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}/edit'
-  defaults:
-    _entity_form: 'cloud_context.edit'
-    _title: 'Edit AWS Cloud Service Provider Configuration'
-  requirements:
-    _permission: 'edit aws cloud provider'
-
-entity.cloud_context.delete_form:
-  path: '/admin/config/services/cloud/aws_cloud/cloud_context/{cloud_context}/delete'
-  defaults:
-    _entity_form: 'cloud_context.delete'
-    _title: 'Delete AWS Cloud Service Provider Configuration'
-  requirements:
-    _permission: 'delete aws cloud provider'
-
 
 #####################
 # AWS Cloud Instances
@@ -433,8 +377,6 @@ entity.aws_cloud_key_pair.canonical:
     _permission: 'view aws cloud key pair'
   options:
     parameters:
-      cloud_context:
-        type: "entity:cloud_context"
       aws_cloud_key_pair:
         type: "entity:aws_cloud_key_pair"
 
@@ -447,8 +389,6 @@ entity.aws_cloud_key_pair.download:
     _permission: 'add aws cloud key pair'
   options:
     parameters:
-      cloud_context:
-        type: "entity:cloud_context"
       aws_cloud_key_pair:
         type: "entity:aws_cloud_key_pair"
 

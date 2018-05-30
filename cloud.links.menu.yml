@@ -7,3 +7,21 @@ cloud.service_providers.menu:
 cloud.design.menu:
   title: 'Design'
   route_name: 'cloud.design'
+
+# Cloud config menu items definition
+entity.cloud_config.collection:
+  title: 'Cloud config list'
+  route_name: entity.cloud_config.collection
+  description: 'List Cloud config entities'
+  parent: system.admin_structure
+  weight: 100
+
+
+# Cloud config type menu items definition
+entity.cloud_config_type.collection:
+  title: 'Cloud config type'
+  route_name: entity.cloud_config_type.collection
+  description: 'List Cloud config type (bundles)'
+  parent: system.admin_structure
+  weight: 99
+

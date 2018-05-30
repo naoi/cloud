@@ -1,3 +1,34 @@
 access dashboard:
   title: 'Access cloud dashboard'
   description: 'Allow access to cloud dashboard'
+
+add cloud config entities:
+  title: 'Create new Cloud config entities'
+
+administer cloud config entities:
+  title: 'Administer Cloud config entities'
+  description: 'Allow to access the administration form to configure Cloud config entities.'
+  restrict access: true
+
+delete cloud config entities:
+  title: 'Delete Cloud config entities'
+
+edit cloud config entities:
+  title: 'Edit Cloud config entities'
+
+view published cloud config entities:
+  title: 'View published Cloud config entities'
+
+view unpublished cloud config entities:
+  title: 'View unpublished Cloud config entities'
+
+view all cloud config revisions:
+  title: 'View all Cloud config revisions'
+
+revert all cloud config revisions:
+  title: 'Revert all Cloud config revisions'
+  description: 'Role requires permission <em>view Cloud config revisions</em> and <em>edit rights</em> for cloud config entities in question or <em>administer cloud config entities</em>.'
+
+delete all cloud config revisions:
+  title: 'Delete all revisions'
+  description: 'Role requires permission to <em>view Cloud config revisions</em> and <em>delete rights</em> for cloud config entities in question or <em>administer cloud config entities</em>.'

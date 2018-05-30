@@ -1,0 +1,4 @@
+services:
+  plugin.manager.cloud_config_plugin:
+    class: Drupal\cloud\Plugin\CloudConfigPluginManager
+    arguments: ['@module_handler', '@cache.discovery']

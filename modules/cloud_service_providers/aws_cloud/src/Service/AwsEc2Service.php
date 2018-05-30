@@ -12,6 +12,7 @@ use Drupal\aws_cloud\Entity\Ec2\NetworkInterface;
 use Drupal\aws_cloud\Entity\Ec2\SecurityGroup;
 use Drupal\aws_cloud\Entity\Ec2\Snapshot;
 use Drupal\aws_cloud\Entity\Ec2\Volume;
+use Drupal\cloud\Plugin\CloudConfigPluginManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
@@ -55,13 +56,6 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
   private $cloud_context;
 
   /**
-   * The config storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected $config_storage;
-
-  /**
    * A logger instance.
    *
    * @var \Psr\Log\LoggerInterface
@@ -79,6 +73,12 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
+
+  /**
+   * CloudConfigPlugin
+   * @var \Drupal\cloud\Plugin\CloudConfigPluginManagerInterface
+   */
+  protected $cloudConfigPluginManager;
 
   /**
    * The current user.
@@ -111,11 +111,9 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, ConfigFactoryInterface $config_factory, Messenger $messenger, TranslationInterface $string_translation, QueryFactory $query_factory, AccountInterface $current_user) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, ConfigFactoryInterface $config_factory, Messenger $messenger, TranslationInterface $string_translation, QueryFactory $query_factory, AccountInterface $current_user, CloudConfigPluginManagerInterface $cloud_config_plugin_manager) {
     // setup the entity type manager for querying entities
     $this->entityTypeManager = $entity_type_manager;
-    // setup the cloud_context configs
-    $this->config_storage = $this->entityTypeManager->getStorage('cloud_context');
     // setup the logger
     $this->logger = $logger_factory->get('aws_ec2_service');
     // setup the configuration factory
@@ -126,10 +124,9 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     $this->messenger = $messenger;
     // setup the $this->t()
     $this->stringTranslation = $string_translation;
-
     $this->queryFactory = $query_factory;
-
     $this->currentUser = $current_user;
+    $this->cloudConfigPluginManager = $cloud_config_plugin_manager;
   }
 
 
@@ -138,25 +135,17 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    */
   public function setCloudContext($cloud_context) {
     $this->cloud_context = $cloud_context;
+    $this->cloudConfigPluginManager->setCloudContext($cloud_context);
   }
 
   /**
    * Load and return an Ec2Client
    */
   private function getEc2Client() {
-    /* @var \Drupal\aws_cloud\Entity\Config\Config $configs */
-    $cloud_config = $this->loadCloudConfig();
-
+    // Use the plugin manager to load the aws credentials
+    $credentials = $this->cloudConfigPluginManager->loadCredentials();
     try {
-      $ec2_client = Ec2Client::factory([
-        'credentials' => [
-          'key'    => $cloud_config->aws_access_key(),
-          'secret' => $cloud_config->aws_secret_key(),
-        ],
-        'region'   => $cloud_config->region(),
-        'version'  => $cloud_config->api_version(),
-        'endpoint' => $cloud_config->endpoint(),
-      ]);
+      $ec2_client = Ec2Client::factory($credentials);
     }
     catch (\Exception $e) {
       $ec2_client = NULL;
@@ -357,7 +346,7 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    */
   public function describeSnapshots($params = []) {
     $params += $this->getDefaultParameters();
-    $params['RestorableByUserIds'] = [$this->loadCloudConfig()->user_id()];
+    $params['RestorableByUserIds'] = [$this->cloudConfigPluginManager->loadConfigEntity()->get('field_user_id')->value];
     $results = $this->execute('DescribeSnapshots', $params);
     return $results;
   }
@@ -1182,7 +1171,9 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
    * @return \Drupal\Core\Entity\EntityInterface[]
    */
   private function loadAllEntities($entity_type) {
-    return $this->entityTypeManager->getStorage($entity_type)->loadMultiple();
+    return $this->entityTypeManager->getStorage($entity_type)->loadByProperties(
+      ['cloud_context' => [$this->cloud_context]]
+    );
   }
 
   /**
