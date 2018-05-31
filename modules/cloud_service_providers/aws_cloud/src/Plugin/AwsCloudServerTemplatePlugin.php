@@ -107,9 +107,6 @@ class AwsCloudServerTemplatePlugin extends PluginBase implements CloudServerTemp
       $params['SubnetId'] = $cloud_server_template->get('field_network')->entity->subnet_id();
     }
 
-    // Let other modules alter the parameters before sending to AWS
-    //$params = \Drupal::moduleHandler()->invokeAll('aws_cloud_parameter_alter', [$params, $cloud_server_template->cloud_context()]);
-
     $this->awsEc2Service->setCloudContext($cloud_server_template->cloud_context());
 
     if ($this->awsEc2Service->runInstances($params) != null) {

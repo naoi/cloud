@@ -176,8 +176,14 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
     }
 
     try {
+      // Let other modules alter the parameters before they are sent through the API
+      \Drupal::moduleHandler()->invokeAll('aws_cloud_pre_execute_alter', [&$params, $operation, $this->cloud_context]);
+
       $command = $ec2_client->getCommand($operation, $params);
       $results = $ec2_client->execute($command);
+
+      // Let other modules alter the results before the module processes it
+      \Drupal::moduleHandler()->invokeAll('aws_cloud_post_execute_alter', [&$results, $operation, $this->cloud_context]);
     }
     catch (Ec2Exception $e) {
       $this->messenger->addError($this->t('Error: The operation "@operation" could not be performed.', [
@@ -203,19 +209,6 @@ class AwsEc2Service implements AwsEc2ServiceInterface {
       $this->messenger->addError($e->getMessage());
     }
     return $results;
-  }
-
-  /**
-   * Return the cloud configuration object
-   *
-   * @return \Drupal\Core\Entity\EntityInterface|null
-   * @throws \Drupal\aws_cloud\Service\AwsEc2ServiceException
-   */
-  private function loadCloudConfig() {
-    if (!isset($this->cloud_context)) {
-      throw new AwsEc2ServiceException("Cloud Context not set.  Cannot load cloud configuration");
-    }
-    return $this->config_storage->load($this->cloud_context);
   }
 
   /**

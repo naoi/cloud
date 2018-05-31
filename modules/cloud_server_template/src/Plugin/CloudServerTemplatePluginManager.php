@@ -8,6 +8,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Plugin\Discovery\ContainerDerivativeDiscoveryDecorator;
 use Drupal\Core\Plugin\Discovery\YamlDiscovery;
+use Drupal\cloud_server_template\Entity\CloudServerTemplateInterface;
 
 /**
  * Provides the default cloud_server_template_plugin manager.
@@ -81,5 +82,13 @@ class CloudServerTemplatePluginManager extends DefaultPluginManager implements C
       }
     }
     return $plugin;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function launch(CloudServerTemplateInterface $cloud_server_template) {
+    $plugin = $this->loadPluginVariant($cloud_server_template->cloud_context());
+    return $plugin->launch($cloud_server_template);
   }
 }

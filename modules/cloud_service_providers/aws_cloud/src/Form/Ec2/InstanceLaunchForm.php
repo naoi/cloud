@@ -23,6 +23,9 @@ use Drupal\Core\Language\Language;
 /**
  * Form controller for the Instance entity launch form.
  *
+ * @TODO: Remove this form.  This is not in use anymore.
+ * Use the cloud server templates to launch instances.
+ *
  * @ingroup aws_cloud
  */
 class InstanceLaunchForm extends AwsCloudContentForm {

@@ -1,7 +1,18 @@
 CHANGE HISTORY
 ==============
+2018/05/31 8.x-1.x-dev
+- Re-architect Server Template to use Entity/Bundles.  Server Templates are fieldable
+- Server Template uses a plugin manager.  Implementing clouds can provide a plugin to launch instances,
+  and perform other cloud specific operations
+- Cloud Configuration uses Entity/Bundles.  Each cloud configuration is fieldable.
+- Cloud Configuration uses a PluginManager to manager implementing cloud configuration entities
+- Fixed cron for aws_cloud
+- aws_cloud listing pages are using Views
+- Added aws image importing
+- Cleaned up old drupal 7 files
+
 2016/04/15 8.x-1.x-dev
-- Fixed and testd on drupal-8.2.x-dev
+- Fixed and tested on drupal-8.2.x-dev
 - NOTE: Changed the URL removing 'cloud' for Server Templates and Scripting in case of conflict including 'cloud' in hostname (e.g. http://cloud.example.com or http://example.com/cloud)
 
 2015/09/28 8.x-1.x-dev

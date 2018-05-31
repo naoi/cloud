@@ -19,7 +19,8 @@ aws_cloud.settings:
 ####################
 
 entity.aws_cloud_instance.add_form:
-  route_name: entity.aws_cloud_instance.add_form
+#  route_name: entity.aws_cloud_instance.add_form
+  route_name: entity.cloud_server_template.collection.list_all.context
   title: 'Add | Launch AWS Cloud Instance'
   appears_on:
     - view.aws_instances.page_1
