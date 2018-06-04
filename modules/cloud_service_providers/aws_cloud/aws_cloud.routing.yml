@@ -113,13 +113,14 @@ entity.aws_cloud_instance.collection:
   requirements:
     _permission: 'list aws cloud instance'
 
-entity.aws_cloud_instance.add_form:
-  path: '/clouds/aws_cloud/{cloud_context}/instance/launch'
-  defaults:
-    _entity_form: 'aws_cloud_instance.add'
-    _title: 'Launch AWS Cloud Instance'
-  requirements:
-    _permission: 'add aws cloud instance'
+# With working cloud_server_template, deprecate this
+#entity.aws_cloud_instance.add_form:
+#  path: '/clouds/aws_cloud/{cloud_context}/instance/launch'
+#  defaults:
+#    _entity_form: 'aws_cloud_instance.add'
+#    _title: 'Launch AWS Cloud Instance'
+#  requirements:
+#    _permission: 'add aws cloud instance'
 
 entity.aws_cloud_instance.edit_form:
   path: '/clouds/aws_cloud/{cloud_context}/instance/{aws_cloud_instance}/edit'

@@ -4,10 +4,10 @@ namespace Drupal\cloud_server_template\Controller;
 
 use Drupal\cloud_server_template\Entity\CloudServerTemplateInterface;
 use Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginManagerInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -203,11 +203,9 @@ class CloudServerTemplateController extends ControllerBase implements ContainerI
    * {@inheritdoc}
    */
   public function launch(CloudServerTemplateInterface $cloud_server_template) {
-    /* @var \Drupal\cloud_server_template\Plugin\CloudServerTemplatePluginInterface $plugin */
-    $plugin = $this->serverTemplatePluginManager->loadPluginVariant($cloud_server_template->cloud_context());
-
-    // The plugin method returns an associative array with a route and parameters.
-    $redirect_route = $plugin->launch($cloud_server_template);
+    $redirect_route = $this->serverTemplatePluginManager->launch($cloud_server_template);
+    // Let other modules alter the redirect after a server template has been launched
+    \Drupal::moduleHandler()->invokeAll('cloud_server_template_post_launch_redirect_alter', [&$redirect_route, $cloud_server_template]);
     return $this->redirect($redirect_route['route_name'], isset($redirect_route['params']) ? $redirect_route['params']: []);
   }
 }
